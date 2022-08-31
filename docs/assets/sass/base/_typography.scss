@@ -1,0 +1,207 @@
+///
+/// Archetype by Pixelarity
+/// pixelarity.com | hello@pixelarity.com
+/// License: pixelarity.com/license
+///
+
+/* Typography */
+
+	body {
+		background-color: _palette(bg);
+		color: _palette(fg);
+	}
+
+	body, input, select, textarea {
+		font-family: _font(family);
+		font-size: 14pt;
+		font-weight: _font(weight);
+		line-height: 1.65em;
+
+		@include breakpoint('<=xlarge') {
+			font-size: 12pt;
+		}
+
+		@include breakpoint('<=small') {
+			font-size: 11pt;
+		}
+	}
+
+	a {
+		text-decoration: underline;
+
+		&:hover {
+			text-decoration: none;
+		}
+	}
+
+	strong, b {
+		font-weight: _font(weight-bold);
+	}
+
+	em, i {
+		font-style: italic;
+	}
+
+	p {
+		margin: 0 0 _size(element-margin) 0;
+	}
+
+	h1, h2, h3, h4, h5, h6 {
+		font-weight: _font(weight-bold);
+		line-height: 1em;
+		margin: 0 0 (_size(element-margin) * 0.5) 0;
+		text-transform: uppercase;
+		letter-spacing: 0.05em;
+
+		a {
+			color: inherit;
+			text-decoration: none;
+		}
+	}
+
+	h2 {
+		font-size: 1.75em;
+		line-height: 1.5em;
+	}
+
+	h3 {
+		font-size: 0.9em;
+		line-height: 1.5em;
+	}
+
+	h4 {
+		font-size: 0.9em;
+		line-height: 1.5em;
+	}
+
+	h5 {
+		font-size: 0.9em;
+		line-height: 1.5em;
+	}
+
+	h6 {
+		font-size: 0.7em;
+		line-height: 1.5em;
+	}
+
+	@include breakpoint('<=large') {
+		h2 {
+			font-size: 1.5em;
+		}
+	}
+
+	@include breakpoint('<=small') {
+		h2 {
+			font-size: 1.25em;
+		}
+	}
+
+	sub {
+		font-size: 0.8em;
+		position: relative;
+		top: 0.5em;
+	}
+
+	sup {
+		font-size: 0.8em;
+		position: relative;
+		top: -0.5em;
+	}
+
+	blockquote {
+		border-left: solid (_size(border-width) * 4);
+		font-style: italic;
+		margin: 0 0 _size(element-margin) 0;
+		padding: (_size(element-margin) / 4) 0 (_size(element-margin) / 4) _size(element-margin);
+	}
+
+	code {
+		border-radius: _size(border-radius);
+		border: solid _size(border-width);
+		font-family: _font(family-fixed);
+		font-size: 0.9em;
+		margin: 0 0.25em;
+		padding: 0.25em 0.65em;
+	}
+
+	pre {
+		-webkit-overflow-scrolling: touch;
+		font-family: _font(family-fixed);
+		font-size: 0.9em;
+		margin: 0 0 _size(element-margin) 0;
+
+		code {
+			display: block;
+			line-height: 1.75em;
+			padding: 1em 1.5em;
+			overflow-x: auto;
+		}
+	}
+
+	hr {
+		border: 0;
+		border-bottom: solid _size(border-width);
+		margin: (_size(element-margin) * 1.5) 0;
+
+		&.major {
+			margin: (_size(element-margin) * 2) 0;
+			border-bottom-width: (_size(border-width) * 2);
+		}
+	}
+
+	.align-left {
+		text-align: left;
+	}
+
+	.align-center {
+		text-align: center;
+	}
+
+	.align-right {
+		text-align: right;
+	}
+
+	@mixin color-typography($p: null) {
+		$highlight: _palette($p, highlight);
+
+		@if $p != null {
+			background-color: _palette($p, bg);
+			color: _palette($p, fg);
+		}
+
+		input, select, textarea {
+			color: _palette($p, fg-bold);
+		}
+
+		a {
+			@if $p == $highlight {
+				color: _palette($p, fg-bold);
+			}
+			@else {
+				color: _palette(accent1, bg);
+			}
+		}
+
+		strong, b {
+			color: _palette($p, fg-bold);
+		}
+
+		h1, h2, h3, h4, h5, h6 {
+			color: _palette($p, fg-bold);
+		}
+
+		blockquote {
+			border-left-color: _palette($p, border);
+		}
+
+		code {
+			background: _palette($p, border-bg);
+			border-color: _palette($p, border);
+		}
+
+		hr {
+			border-bottom-color: _palette($p, border);
+		}
+	}
+
+	@include color-typography;

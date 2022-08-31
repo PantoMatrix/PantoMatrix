@@ -1,0 +1,110 @@
+///
+/// Archetype by Pixelarity
+/// pixelarity.com | hello@pixelarity.com
+/// License: pixelarity.com/license
+///
+
+/* Nav Panel */
+
+	#navPanel {
+		@include color-typography(accent4);
+		@include vendor('transform', 'translateX(#{_size(navPanel-width)})');
+		@include vendor('transition', ('transform #{_duration(nav)} ease', 'box-shadow #{_duration(nav)} ease', 'visibility #{_duration(nav)}'));
+		-webkit-overflow-scrolling: touch;
+		background-color: _palette(accent4, bg-alt);
+		box-shadow: none;
+		display: none;
+		height: 100%;
+		max-width: 80%;
+		overflow-y: auto;
+		position: fixed;
+		right: 0;
+		top: 0;
+		visibility: hidden;
+		width: _size(navPanel-width);
+		z-index: _misc(z-index-base) + 2;
+
+		nav {
+			padding: 3em 2em;
+		}
+
+		.link {
+			border: 0;
+			border-top: solid 1px _palette(accent4, border-bg);
+			color: inherit !important;
+			display: block;
+			font-size: 0.8em;
+			letter-spacing: 0.05em;
+			padding: 0.75em 0;
+			text-decoration: none;
+			text-transform: uppercase;
+
+			&:first-child {
+				border-top: 0;
+			}
+
+			&.depth-0 {
+				font-weight: _font(weight-bold);
+				color: inherit !important;
+			}
+
+			.indent-1 { display: inline-block; width: 1.25em; }
+			.indent-2 { display: inline-block; width: 2.5em; }
+			.indent-3 { display: inline-block; width: 3.75em; }
+			.indent-4 { display: inline-block; width: 5em; }
+			.indent-5 { display: inline-block; width: 6.25em; }
+		}
+
+		.close {
+			@include icon(false, solid);
+			@include vendor('transition', 'color #{_duration(transition)} ease-in-out');
+			-webkit-tap-highlight-color: rgba(0,0,0,0);
+			border: 0;
+			color: _palette(accent2, fg-bold);
+			cursor: pointer;
+			display: block;
+			height: 4em;
+			padding-right: 1.25em;
+			position: absolute;
+			right: 0;
+			text-align: right;
+			top: 0;
+			vertical-align: middle;
+			width: 5em;
+
+			&:before {
+				content: '\f00d';
+				width: 3em;
+				height: 3em;
+				line-height: 3em;
+				display: block;
+				position: absolute;
+				right: 0;
+				top: 0;
+				text-align: center;
+			}
+
+			&:hover {
+				color: inherit;
+			}
+
+			@include breakpoint('<=small') {
+				height: 4em;
+				line-height: 4em;
+			}
+		}
+
+		&.visible {
+			@include vendor('transform', 'translateX(0)');
+			box-shadow: 0 0 1.5em 0 rgba(0,0,0,0.2);
+			visibility: visible;
+		}
+
+		@include breakpoint('<=small') {
+			display: block;
+
+			nav {
+				padding: 2.25em 1.25em;
+			}
+		}
+	}

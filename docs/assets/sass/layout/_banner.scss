@@ -1,0 +1,103 @@
+///
+/// Archetype by Pixelarity
+/// pixelarity.com | hello@pixelarity.com
+/// License: pixelarity.com/license
+///
+
+/* Banner */
+
+	#banner {
+		@include banner-bg('../../images/banner.jpg');
+		position: relative;
+		min-height: 70vh;
+		height: 35em;
+
+		.content {
+			position: absolute;
+			bottom: 0;
+			left: 0;
+			@include color-typography(accent4);
+			@include color-button(accent4);
+			@include color-section(accent4);
+			@include padding(6.5em, 0);
+			width: 100%;
+
+			> .inner {
+				@include vendor('display', 'flex');
+				@include vendor('align-items', 'center');
+				margin: 0 auto;
+				width: _size(inner-width, default);
+
+				header {
+					width: 75%;
+				}
+
+				.actions {
+					padding-left: (_size(element-margin) * 1.5);
+					text-align: right;
+				}
+			}
+		}
+
+		body.is-mobile & {
+			background-attachment: scroll;
+		}
+
+		@include breakpoint('<=large') {
+			min-height: 0;
+
+			.content {
+				@include padding(4em, 3em);
+
+				> .inner {
+					width: _size(inner-width, large);
+				}
+			}
+		}
+
+		@include breakpoint('<=medium') {
+			@include orientation(landscape) {
+				height: 30em;
+			}
+
+			@include orientation(portrait) {
+				height: 50em;
+			}
+
+			.content {
+				> .inner {
+					@include vendor('flex-direction', 'column');
+
+					header {
+						width: 100%;
+					}
+
+					.actions {
+						width: 100%;
+						padding-left: 0;
+						text-align: left;
+					}
+				}
+			}
+		}
+
+		@include breakpoint('<=small') {
+			@include orientation(landscape) {
+				height: 25em;
+			}
+
+			@include orientation(portrait) {
+				height: 30em;
+			}
+
+			.content {
+				@include padding(2.5em, 2em);
+			}
+		}
+
+		@include breakpoint('<=xsmall') {
+			.content {
+				@include padding(2.5em, 1.5em);
+			}
+		}
+	}

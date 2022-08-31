@@ -1,0 +1,99 @@
+///
+/// Archetype by Pixelarity
+/// pixelarity.com | hello@pixelarity.com
+/// License: pixelarity.com/license
+///
+
+/* Posts */
+
+	.posts {
+		@include vendor('display', 'flex');
+		@include vendor('flex-wrap', 'wrap');
+		margin: 0 0 _size(element-margin) 0;
+
+		.post {
+			@include vendor('display', 'flex');
+
+			.image {
+				display: block;
+				margin-right: _size(element-margin);
+				width: 40%;
+				-ms-flex: auto;
+
+				img {
+					display: block;
+					width: 100%;
+				}
+			}
+
+			.content {
+				width: 60%;
+				-ms-flex: auto;
+
+				> :last-child {
+					margin-bottom: 0;
+				}
+			}
+		}
+
+		> * {
+			margin: 0 0 (_size(element-margin) * 2) 0;
+			padding: 0 (_size(element-margin) * 0.75);
+			width: 50%;
+		}
+
+		> :nth-child(2n) {
+			padding-right: 0;
+		}
+
+		> :nth-child(2n + 1) {
+			padding-left: 0;
+		}
+
+		> :nth-last-child(1), > :nth-last-child(2) {
+			margin-bottom: 0;
+		}
+
+		@include breakpoint('<=medium') {
+			.post {
+				.image {
+					width: 30%;
+				}
+
+				.content {
+					width: 70%;
+				}
+			}
+
+			> * {
+				margin: 0 0 (_size(element-margin) * 1.5) 0 !important;
+				padding: 0;
+				width: 100%;
+			}
+
+			> :last-child {
+				margin-bottom: 0 !important;
+			}
+		}
+
+		@include breakpoint('<=small') {
+			.post {
+				.image {
+					width: 30%;
+					min-width: 6em;
+				}
+
+				.content {
+					width: 70%;
+				}
+			}
+		}
+
+		@include breakpoint('<=xsmall') {
+			.post {
+				.image {
+					margin-right: (_size(element-margin) * 0.75);
+				}
+			}
+		}
+	}

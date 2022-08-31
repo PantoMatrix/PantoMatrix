@@ -1,0 +1,81 @@
+///
+/// Archetype by Pixelarity
+/// pixelarity.com | hello@pixelarity.com
+/// License: pixelarity.com/license
+///
+
+/* Section/Article */
+
+	section, article {
+		&.special {
+			text-align: center;
+		}
+	}
+
+	header {
+		p {
+			position: relative;
+			margin: 0 0 (_size(element-margin) * 0.75) 0;
+		}
+
+		h2 + p {
+			font-size: 1.25em;
+			margin-top: (_size(element-margin) * -0.35);
+			line-height: 1.5em;
+		}
+
+		h3 + p {
+			font-size: 1.1em;
+			margin-top: (_size(element-margin) * -0.25);
+			line-height: 1.5em;
+		}
+
+		h4 + p,
+		h5 + p,
+		h6 + p {
+			font-size: 0.9em;
+			margin-top: (_size(element-margin) * -0.3);
+			line-height: 1.5em;
+		}
+
+		&.major {
+			margin: 0 0 (_size(element-margin) * 1.5) 0;
+
+			p {
+				margin-bottom: (_size(element-margin) * 0.5);
+			}
+
+			&:after {
+				content: '';
+				display: inline-block;
+				height: (_size(border-width) * 2);
+				width: 4em;
+			}
+		}
+
+		@include breakpoint('<=small') {
+			p {
+				font-size: 1em !important;
+			}
+
+			&.major {
+				margin: 0 0 _size(element-margin) 0;
+			}
+		}
+	}
+
+	@mixin color-section($p: null) {
+		header {
+			p {
+				color: _palette($p, fg-light);
+			}
+
+			&.major {
+				&:after {
+					background-color: _palette($p, border);
+				}
+			}
+		}
+	}
+
+	@include color-section;

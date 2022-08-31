@@ -1,0 +1,49 @@
+///
+/// Archetype by Pixelarity
+/// pixelarity.com | hello@pixelarity.com
+/// License: pixelarity.com/license
+///
+
+/* Icons */
+
+	ul.icons {
+		cursor: default;
+		list-style: none;
+		padding-left: 0;
+
+		li {
+			display: inline-block;
+			padding: 0 1em 0 0;
+
+			&:last-child {
+				padding-right: 0;
+			}
+
+			.icon {
+				&:before {
+					font-size: 2em;
+				}
+			}
+		}
+
+		&.bulleted {
+			li {
+				padding-left: 2em;
+				position: relative;
+				display: block;
+
+				&.icon {
+					&:before {
+						font-size: 0.8em;
+						left: 0;
+						position: absolute;
+						top: 0.25em;
+					}
+				}
+
+				> :last-child {
+					margin-bottom: (_size(element-margin) * 0.5);
+				}
+			}
+		}
+	}

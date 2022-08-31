@@ -1,0 +1,132 @@
+///
+/// Archetype by Pixelarity
+/// pixelarity.com | hello@pixelarity.com
+/// License: pixelarity.com/license
+///
+
+/* Features */
+
+	ul.features {
+		list-style: none;
+		padding: 0;
+
+		li {
+			@include vendor('display', 'flex');
+			border-top: solid (_size(border-width) * 2);
+			margin: (_size(element-margin) * 1.5) 0 0 0;
+			padding: (_size(element-margin) * 1.5) 0 0 0;
+
+			h3 {
+				margin-bottom: 0;
+				min-width: 20em;
+				padding-left: 4.5em;
+				position: relative;
+				width: 35%;
+				-ms-flex: auto;
+
+				&:before {
+					border-radius: 100%;
+					border: solid (_size(border-width) * 2);
+					font-size: 1.25em;
+					height: 2.5em;
+					left: 0;
+					line-height: 2.25em;
+					position: absolute;
+					text-align: center;
+					top: 0;
+					width: 2.5em;
+				}
+			}
+
+			p {
+				width: 65%;
+				-ms-flex: auto;
+				margin-bottom: 0;
+				padding-left: (_size(element-margin) * 1.5);
+			}
+
+			&:first-child {
+				border-top: 0;
+				margin-top: 0;
+				padding-top: 0;
+			}
+		}
+
+		@include breakpoint('<=small') {
+			li {
+				h3 {
+					min-width: 15em;
+				}
+
+				p {
+					padding-left: _size(element-margin);
+				}
+			}
+		}
+
+		@include breakpoint('<=xsmall') {
+			li {
+				@include vendor('flex-direction', 'column');
+
+				h3 {
+					width: 100%;
+					margin: 0 0 _size(element-margin) 0;
+					padding-left: 4.25em;
+				}
+
+				p {
+					padding-left: 3.75em;
+					width: 100%;
+				}
+			}
+		}
+	}
+
+	@mixin color-features($p: null) {
+		ul.features {
+			li {
+				border-top-color: _palette($p, border);
+
+				h3 {
+					&:before {
+						border-color: _palette($p, border);
+					}
+				}
+
+				@if $p == null {
+					&:nth-child(3n - 2) {
+						h3 {
+							&:before {
+								color: _palette(accent1, bg);
+							}
+						}
+					}
+
+					&:nth-child(3n - 1) {
+						h3 {
+							&:before {
+								color: _palette(accent2, bg);
+							}
+						}
+					}
+
+					&:nth-child(3n) {
+						h3 {
+							&:before {
+								color: _palette(accent3, bg);
+							}
+						}
+					}
+				}
+				@else {
+					h3 {
+						&:before {
+							color: _palette($p, fg-bold);
+						}
+					}
+				}
+			}
+		}
+	}
+
+	@include color-features;
