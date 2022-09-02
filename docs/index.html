@@ -17,36 +17,40 @@
 
 		<!-- Header -->
 			<header id="header" class="alt">
-				<h1 id="logo"><a href="index.html">BEAT</a></h1>
+				<h1 id="logo"><a href="index.html">BEAT</a> </h1>
 				<nav id="nav">
 					<ul>
 						<li><a href="index.html">Home</a></li>
 						<li>
 							<a href="#" class="submenu">Dataset</a>
 							<ul>
-								<li><a href="left-sidebar.html">Introduction</a></li>
-								<li><a href="three">Example Videos</a></li>
-								<li><a href="no-sidebar.html">Download</a></li>
-								<li><a href="right-sidebar.html">Paper (ECCV2022)</a></li>
+								<li><a href="#introduction">Introduction</a></li>
+								<li><a href="#download">Download</a></li>
+								<li><a href="#example_videos">Example Videos</a></li>
+								<li><a href="#paper_eccv">Paper (ECCV2022)</a></li>
 							</ul>
 						</li>
 						<!-- <li><a href="elements.html">Benchmark</a></li> -->
 						<li>
 							<a href="#" class="submenu">Benchmark</a>
 							<ul>
-								<li><a href="no-sidebar.html">Model&Codes</a></li>
-								<li><a href="left-sidebar.html">Gesture Synthesis</a></li>
-								<li><a href="no-sidebar.html">Emotion Recognition</a></li>
-								<li><a href="no-sidebar.html">Blendshape Estimation</a></li>
+								<li><a href="#model">Model&Codes</a></li>
+								<li><a href="#gesture">Gesture Synthesis</a></li>
+								<li><a href="#emotion">Emotion Recognition</a></li>
+								<li><a href="#blendshape">Blendshape Estimation</a></li>
 							</ul>
 						</li>
 						<li>
-							<a href="#" class="submenu">Group</a>
+							<a href="#" class="submenu">Member</a>
 							<ul>
-								<li><a href="no-sidebar.html">Model&Codes</a></li>
-								<li><a href="left-sidebar.html">Gesture Synthesis</a></li>
-								<li><a href="no-sidebar.html">Emotion Recognition</a></li>
-								<li><a href="no-sidebar.html">Blendshape Estimation</a></li>
+								<li><a href="no-sidebar.html">Haiyang Liu</a></li>
+								<li><a href="left-sidebar.html">Zihao Zhu</a></li>
+								<li><a href="no-sidebar.html">Naoya Iwamoto</a></li>
+								<li><a href="no-sidebar.html">Yichen Peng</a></li>
+								<li><a href="no-sidebar.html">Zhengqing Li</a></li>
+								<li><a href="left-sidebar.html">You Zhou</a></li>
+								<li><a href="no-sidebar.html">Elif Bouzert</a></li>
+								<li><a href="no-sidebar.html">Bo Zheng</a></li>
 							</ul>
 						</li>
 						<!-- <li>
@@ -75,27 +79,40 @@
 
 		<!-- Banner -->
 			<header id="banner">
+				<video autoplay controls muted loop id="myVideo">
+					<source src="./images/beat_long_video.mp4" type="video/mp4">
+				</video>
+				
 				<div class="content">
-					<div class="inner">
-						<header>
-							<h2>Body Expression Audio Text</h2>
-							<p>Multimodal human conversational gestures database with emotion and semantic annotations</p>
-						</header>
-						<!-- <ul class="actions">
-							<li><a href="#" class="button huge">Learn More</a></li>
-						</ul> -->
-					</div>
 				</div>
+				
 			</header>
+			
 			<section id="banner_new">
 				<div class="content">
 					<div class="inner">
 					</div>
 				</div>
 			</section>
+            
+			<section id="introduction_2" class="new_wrapper cta">
+				<div class="inner">
+					<header>
+						<h2>Adventages of BEAT</h2>
+						<!-- <ul class="actions">
+							<li><a href="https://drive.google.com/drive/folders/1CVyJOp3G_A9l1N_CsKdHgXQfB4pXhG8c?usp=sharing" class="button big">Download All</a></li>
+						</ul> -->
+					</header>
+					<!-- <p>We relased body, expression, auido recording, the annotations will be available on Oct. 1st after proofreadding.</p> -->
+				</div>
+			</section>
+			<!-- <section id="pad" class="padwrapper"></section> -->
 
 		<!-- One -->
-			<section id="one" class="wrapper">
+			<section id="introduction" class="wrapper">
+				<button onclick="toggleMute();">
+					Audio
+				</button> 
 				<div class="inner">
 					<ul class="features">
 						<li>
@@ -121,9 +138,10 @@
 					</ul>
 				</div>
 			</section>
-
+            
+			<!-- <section id="pad" class="padwrapper"></section> -->
 		<!-- Two -->
-			<section id="two" class="wrapper cta">
+			<section id="download" class="wrapper cta">
 				<div class="inner">
 					<header>
 						<h2>30 Speakers Recording </h2>
@@ -131,12 +149,13 @@
 							<li><a href="https://drive.google.com/drive/folders/1CVyJOp3G_A9l1N_CsKdHgXQfB4pXhG8c?usp=sharing" class="button big">Download All</a></li>
 						</ul>
 					</header>
-					<p>We relased body, expression, auido recording, the annotations will be available on Oct. 1st after proofreadding.</p>
+					<p>We relased body, expression, audio recording, the annotations will be available on Oct. 1st after proofreadding.</p>
 				</div>
 			</section>
-
+            
+			<!-- <section id="pad" class="padwrapper"></section> -->
 		<!-- Three -->
-			<section id="three" class="wrapper">
+			<section id="example_videos" class="wrapper">
 				<div class="inner">
 					<header class="major">
 						<h2>Example Videos</h2>
@@ -687,16 +706,30 @@
 				</div>
 			</section>
 
+			<section id="pad" class="padwrapper"></section>
+            
+			<section id="download" class="wrapper cta">
+				<div class="inner">
+					<header>
+						<h2>Paper</h2>
+						<ul class="actions">
+							<li><a href="#" class="button">ArXiv Version</a></li>
+						</ul>
+					</header>
+					<p>"BEAT: A Large-Scale Semantic and Emotional Multi-Modal Dataset for Conversational Gestures Synthesis." Haiyang Liu, Zihao Zhu, Naoya Iwamoto, Yichen Peng, Zhengqing Li, You Zhou, Elif Bouzert and Bo Zheng. <i>European conference on computer vision. 2022.</i></p>
+				</div>
+			</section>
+
 		<!-- Footer -->
 			<footer id="footer">
-				<div class="content">
+				<!-- <div class="content">
 					<div class="inner">
 						<section class="about">
-							<h3>Paper (ECCV2022)</h3>
+							<!-- <h3>Paper (ECCV2022)</h3>
 							<p>BEAT: A Large-Scale Semantic and Emotional Multi-Modal Dataset for Conversational Gestures Synthesis.</p>
 							<ul class="actions">
 								<li><a href="#" class="button">ArXiv Version</a></li>
-							</ul>
+							</ul> -->
 						<!-- </section>
 						<ul class="icons bulleted">
 							<li class="icon solid fa-map-marker-alt">
@@ -717,8 +750,8 @@
 								<p><a href="#">information@untitled.tld</a></p>
 							</li>
 						</ul> -->
-					</div>
-				</div>
+					<!-- </div>
+				</div> --> 
 				<p class="copyright">&copy; BEAT. 2022. All rights reserved.<br />
 				<!-- <a href="#">Terms of Use</a> | <a href="#">Privacy Policy</a> | <a href="#">Contact</a></p> -->
 			</footer>
