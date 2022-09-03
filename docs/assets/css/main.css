@@ -5352,7 +5352,7 @@ input, select, textarea {
 		bottom: 0;
 		left: 0;
 		height: 100vh;
-		width: 100%;
+		width: 100vw;
 	}
 
 		#banner .content {
@@ -5363,7 +5363,7 @@ input, select, textarea {
 			/* background-color: rgba(21, 27, 33, 0.6); */
 			color: #ffffff;
 			padding: 0em 0 0em 0 ;
-			width: 100%;
+			width: 100vw;
 			height: 100vh
 		}
 
