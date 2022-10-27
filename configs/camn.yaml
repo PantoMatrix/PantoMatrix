@@ -1,0 +1,31 @@
+# ------------- path and save name ---------------- #
+is_train: True 
+out_root_path: /outputs/ 
+train_data_path: /datasets/beat/train/ 
+val_data_path: /datasets/beat/val/ 
+test_data_path: /datasets/beat/test/ 
+mean_pose_path: /datasets/beat/train/
+std_pose_path: /datasets/beat/train/
+torch_hub_path: /datasets/checkpoints/ 
+e_path:  /datasets/beat/self_vae_256.bin
+dataset: beat
+pose_rep: toy_data_beat
+new_cache: True
+
+vae_length: 256
+audio_rep: wave16k
+facial_rep: facial52
+speaker_id: True
+word_f: 128
+emotion_f: 8
+speaker_f: 8
+audio_f: 128
+facial_f: 32
+pose_dims: 141
+batch_size: 16
+test_period: 20
+word_rep: textgrid
+sem_rep: sem
+no_adv_epoch: 40
+emo_rep: emo
+hidden_size: 256

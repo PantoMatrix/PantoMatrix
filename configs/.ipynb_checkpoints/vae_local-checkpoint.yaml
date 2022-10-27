@@ -1,0 +1,79 @@
+config: ./config/vae_local.yaml
+
+# ------------- path and save name ---------------- #
+name: vae_trinity
+is_train: True 
+out_root_path: /outputs/audio2pose/ 
+train_data_path: /datasets/trinity/train/ 
+val_data_path: /datasets/trinity/val/ 
+test_data_path: /datasets/trinity/test/ 
+mean_pose_path: /datasets/trinity/train/ 
+torch_hub_path: /datasets/checkpoints/ 
+test_root_dir: best.pth 
+std_pose_path: /datasets/trinity/train/  
+
+# --------------- device -------------------------- #
+random_seed: 2022
+gpus:
+ - 0
+ - 1
+loader_workers: 0 
+
+# --------------- data ---------------------------- #
+data_type: vae_data
+new_cache: False 
+use_aug: False 
+disable_filtering: False 
+# clean is 0 for test
+clean_first_seconds: 0 
+clean_final_seconds: 0 
+# wave, mfcc, mel, cqt 
+audio_rep: wave16k 
+pose_rep: fps15_trinity_joints_123 
+facial_rep: facial39 
+speaker_embdding: False 
+pose_dims: 123 
+pose_fps: 15 
+pose_length: 34 
+pre_frames: 4 
+# pre_pose zero, groundtruth, or random
+pre_type: zero 
+stride: 10 
+
+
+# --------------- model ---------------------------- #
+pretrain: False 
+g_name: motion_vae_res
+dropout_prob: 0.3 
+n_layers: 4 
+hidden_size: 300 
+audio_f: 128 
+facial_f: 0 
+speaker_f: 0 
+# Self-designed "Multi-Stage", "Seprate", or "Original"
+finger_net: original 
+vae_length: 32 
+
+
+# --------------- training ------------------------- #
+epochs: 10
+batch_size: 256 
+opt: adam 
+# 0.00000078125
+lr_base: 0.0003
+weight_decay: 0. 
+# for warmup and cosine
+lr_min: 1e-7 
+# for sgd
+momentum: 0.8 
+nesterov: True 
+# for adam
+opt_betas: 
+ - 0.5
+ - 0.999
+amsgrad: False 
+lr_policy: none 
+gan_noise_size: 0 
+# logging
+log_period: 20 
+test_period: 10 

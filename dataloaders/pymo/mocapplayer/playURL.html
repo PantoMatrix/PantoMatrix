@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<!-- GrooveNet Player - V 0.3
+By Omid Alemi
+ -->
+<html lang="en">
+
+<head>
+    <title>BVH Player</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+    <style>
+
+    </style>
+    <link rel="stylesheet" href="styles/pace.css"></link>
+
+    <script src="libs/pace.min.js"></script>
+    <script src="libs/math.min.js"></script>
+    <script src="libs/jquery.min.js"></script>
+    <script src="libs/threejs/three.min.js"></script>
+    <script src="libs/threejs/OrbitControls.js"></script>
+    <script src="libs/papaparse.min.js"></script>
+
+    <script src="libs/mocapjs.js"></script>
+    <script src="js/skeletonFactory.js"></script>
+</head>
+
+<body>
+    <script type="text/javascript">
+        var characters = [];
+        var playing = false;
+
+
+        $(document).on("keypress", function(e) {
+            if (e.charCode == 32)
+                playing = !playing;
+
+            characters.forEach(function(c) {
+                c.playing = playing;
+
+                if (playing)
+                    c.animStartTimeRef = Date.now();
+                else
+                    c.animOffset = c.animIndex;
+            });
+
+        });
+
+        $(window).on("resize", function(e) {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+
+           renderer.setSize(window.innerWidth, window.innerHeight);
+        });
+
+        var getUrlParameter = function getUrlParameter(sParam) {
+        var sPageURL = decodeURIComponent(window.location.search.substring(1)),
+            sURLVariables = sPageURL.split('&'),
+            sParameterName,
+            i;
+
+        for (i = 0; i < sURLVariables.length; i++) {
+            sParameterName = sURLVariables[i].split('=');            
+            if (sParameterName[0] === sParam) {
+                return sParameterName[1] === undefined ? true : sParameterName[1];
+            }
+        }
+    };
+    </script>
+
+    <script>
+        var scene, camera, renderer;
+        var geometry, material, mesh;
+        var played_count = 0;
+
+        function set_the_scene3() {
+			
+            // Add the light            
+			light = new THREE.PointLight(0xffffff, 0.9, 0);
+			light.position.set(0, 160, 40);
+			scene.add(light);
+
+			// Create a grid for the floor
+			var size = 200,
+				step = 20;
+
+            // Draw the plane
+			var planeGeometry = new THREE.PlaneGeometry(size * 2, size * 2);
+			var planeMaterial = new THREE.MeshPhongMaterial({
+				color: 0x444444,
+				emissive: 0x000000,
+				specular: 0x111111,
+				side: THREE.DoubleSide,
+				transparent: true,
+				opacity: 0.6
+			});
+			var plane = new THREE.Mesh(planeGeometry, planeMaterial);
+			plane.position.set(0, 0, 0);
+			plane.rotation.set(math.pi / 2, 0, 0);
+			scene.add(plane);
+
+            //Draw the lines
+			var lineGeometry = new THREE.Geometry();
+			var lineMaterial = new THREE.LineBasicMaterial({
+				color: 0x555555,
+				linewidth: 1.2
+			});
+			for (var i = -size; i <= size; i += step) {
+				lineGeometry.vertices.push(new THREE.Vector3(-size, -0.04, i));
+				lineGeometry.vertices.push(new THREE.Vector3(size, -0.04, i));
+				lineGeometry.vertices.push(new THREE.Vector3(i, -0.04, -size));
+				lineGeometry.vertices.push(new THREE.Vector3(i, -0.04, size));
+			}
+
+			var line = new THREE.LineSegments(lineGeometry, lineMaterial);
+			scene.add(line);
+		}
+
+        function add_basic_lights() {
+            // Add the light            
+			var light = new THREE.HemisphereLight(0xffffff, 0x000000, 0.8);            
+            scene.add(light);
+        }
+
+        function add_floor_theo() {
+            var textureLoader = new THREE.TextureLoader();
+
+            var texture = textureLoader.load('theo_floor1.jpg', function(tt) {    
+            });
+
+            texture.wrapS = THREE.RepeatWrapping;
+            texture.wrapT = THREE.RepeatWrapping;
+            texture.repeat = new THREE.Vector2(1,1.66);
+
+
+            var material = new THREE.MeshPhongMaterial({
+                color: 0xffffff,
+                specular: 0xffffff,
+                shininess: 100,
+                map: texture,
+
+            });
+            var geometry = new THREE.CubeGeometry(300, 300, 5);
+
+            var mesh = new THREE.Mesh(geometry, material);
+            mesh.position.y = -2;
+            mesh.rotation.x = -Math.PI / 2;
+            scene.add(mesh);
+        }
+
+        function init(cz) {
+            scene = new THREE.Scene();
+            camera = new THREE.PerspectiveCamera(30, window.innerWidth / window.innerHeight, 1, 4000);
+            camera.position.set(0, 80, 0);
+            camera.position.z = cz;
+            scene.add(camera);
+
+            // set_the_scene3();
+        }
+
+        function loadBVHFile(bvhURL, cname, jm, bm, scale) {            
+            var c2 = new BVHCharacter(cname, jm, bm, makeJointGeometry_Dode, makeBoneGeometry_Cylinder2);
+            // c2.setOriginPosition(0, 0, 0);
+            c2.skelScale = scale;
+            c2.loadFromURL(bvhURL, function() {
+                scene.add(c2.skeleton);
+            });
+
+            characters.push(c2);
+        }
+
+        function loadPosFile(csvURL, cname, jm, bm, scale, fr) {            
+            var c2 = new C3DCharacter(cname, markermaterial, makeJointGeometry_Sphere2);
+            // c2.setOriginPosition(0, 0, 0);
+            c2.scale = scale;
+            c2.frameTime = fr;
+            c2.loadFromURL(csvURL, function() {});
+
+            characters.push(c2);
+        }
+
+        function initRenderer() {
+            renderer = new THREE.WebGLRenderer({
+                antialias: true
+            });
+            renderer.setSize(window.innerWidth, window.innerHeight);
+            //renderer.setSize(600, 500);
+            renderer.gammaInput = true;
+            renderer.gammaOutput = true;
+            renderer.setPixelRatio(window.devicePixelRatio);
+            // renderer.setClearColor(0xdddddd, 1);
+            renderer.setClearColor(0xffffff, 1);
+
+            
+            document.body.appendChild(renderer.domElement);
+
+           controls = new THREE.OrbitControls(camera, renderer.domElement);
+        }
+
+        function animate() {
+            // if (!playing)
+            //     return;
+
+            requestAnimationFrame(animate);
+
+            characters.forEach(function(c) {
+                // console.log(c.playing);
+                if (1 && c.ready) {
+                    if (c.playing) {
+                        c.animIndex = c.animOffset + Math.floor((Date.now() - c.animStartTimeRef) / c.frameTime / 1000);
+
+                        if (c.animIndex >= c.frameCount) {
+                            c.animOffset = 0;
+                            c.animStartTimeRef = Date.now();
+                            c.animIndex = 0;
+                            played_count++;
+                            // if (played_count> 1)
+                            //     c.playing = false;
+
+                        }
+                        c.animFrame(c.animIndex);
+                    }
+                }
+            });
+
+            renderer.render(scene, camera);
+        }
+
+
+        $(document).ready(function () {            
+            var dataURL = getUrlParameter('data_url');                 
+            var cz = getUrlParameter('cz');
+            var scale = getUrlParameter('scale');
+            var frameTime = getUrlParameter('frame_time');
+            
+            if (cz === undefined)
+                cz = 550;
+            
+            if (scale === undefined)
+                scale = 1.0;
+            
+            if (frameTime === undefined)
+                frameTime = 1/120;
+            
+            init(cz);
+            add_basic_lights();
+            add_floor_theo();
+            initRenderer();
+            
+            if (dataURL !==  undefined) {                                
+                console.log("Loading " + dataURL);
+                
+                if (dataURL.endsWith('.bvh'))             
+                    loadBVHFile(dataURL, 'Fig', jm_a, bm_a, scale);
+                else if (dataURL.endsWith('.csv'))             
+                    loadPosFile(dataURL, 'Fig', jm_a, bm_a, scale, frameTime);
+                else
+                    console.error('Unsupport file.');
+            }
+            
+            
+
+            animate();
+        });
+
+        
+    </script>
+</body>
+
+</html>
