@@ -254,7 +254,7 @@ class PoseGenerator(nn.Module):
      
 
         
-        self.gru = nn.GRU(self.in_size, hidden_size=self.hidden_size, num_layers=args.n_layer, batch_first=True,
+        self.lstm = nn.LSTM(self.in_size, hidden_size=self.hidden_size, num_layers=args.n_layer, batch_first=True,
                           bidirectional=True, dropout=args.dropout_prob)
         self.out = nn.Sequential(
             nn.Linear(self.hidden_size, self.hidden_size//2),
@@ -262,7 +262,7 @@ class PoseGenerator(nn.Module):
             nn.Linear(self.hidden_size//2, 27)
         )
         
-        self.gru_hands = nn.GRU(self.in_size+27, hidden_size=self.hidden_size, num_layers=args.n_layer, batch_first=True,
+        self.lstm_hands = nn.LSTM(self.in_size+27, hidden_size=self.hidden_size, num_layers=args.n_layer, batch_first=True,
                           bidirectional=True, dropout=args.dropout_prob)
         self.out_hands = nn.Sequential(
             nn.Linear(self.hidden_size, self.hidden_size//2),
@@ -275,11 +275,9 @@ class PoseGenerator(nn.Module):
             self.do_flatten_parameters = True
             
 
-    def forward(self, pre_seq, in_audio, in_facial=None, in_text=None, in_id=None, in_emo=None, is_test=False):
-        decoder_hidden = decoder_hidden_hands = None
-        
+    def forward(self, pre_seq, in_audio, in_facial=None, in_text=None, in_id=None, in_emo=None, is_test=False):      
         if self.do_flatten_parameters:
-            self.gru.flatten_parameters()
+            self.lstm.flatten_parameters()
 
         text_feat_seq = audio_feat_seq = None
         if in_audio is not None:
@@ -343,13 +341,13 @@ class PoseGenerator(nn.Module):
             in_data = torch.cat((in_data, repeated_s), dim=2)
         
         
-        output, decoder_hidden = self.gru(in_data, decoder_hidden)
+        output, _ = self.lstm(in_data)
         output = output[:, :, :self.hidden_size] + output[:, :, self.hidden_size:]  # sum bidirectional outputs
         output = self.out(output.reshape(-1, output.shape[2]))
         decoder_outputs = output.reshape(in_data.shape[0], in_data.shape[1], -1)
         
         in_data = torch.cat((in_data, decoder_outputs), dim=2)
-        output_hands, decoder_hidden_hands = self.gru_hands(in_data, decoder_hidden_hands)
+        output_hands, _ = self.lstm_hands(in_data)
         output_hands = output_hands[:, :, :self.hidden_size] + output_hands[:, :, self.hidden_size:]
         output_hands = self.out_hands(output_hands.reshape(-1, output_hands.shape[2]))
         decoder_outputs_hands = output_hands.reshape(in_data.shape[0], in_data.shape[1], -1)
