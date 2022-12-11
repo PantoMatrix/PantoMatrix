@@ -1,864 +1,403 @@
-<!DOCTYPE HTML>
-<!--
-	Archetype by Pixelarity
-	pixelarity.com | hello@pixelarity.com
-	License: pixelarity.com/license
--->
-<html>
-	<head>
-		<title>BEAT Dataset</title>
-		<meta charset="utf-8" />
-		<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
-		<link rel="stylesheet" href="assets/css/main.css" />
-		<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
-		<script src=assets/js/vendor.js></script>
-	</head>
-	<body class="landing is-preload">
 
-		<!-- Header -->
-			<header id="header" class="alt">
-				<h1 id="logo"><a href="index.html">BEAT</a> </h1>
-				<nav id="nav">
-					<ul>
-						<li><a href="index.html">Home</a></li>
-						<li>
-							<a href="#" class="submenu">Dataset</a>
-							<ul>
-								<li><a href="#paper_eccv">Paper (ECCV2022)</a></li>
-								
-								<li><a href="#download">Download</a></li>
-								<li><a href="#introduction">Introduction</a></li>
-								<li><a href="#example_videos">Example Videos</a></li>
-								
-							</ul>
-						</li>
-						<!-- <li><a href="elements.html">Benchmark</a></li> -->
-						<li>
-							<a href="#" class="submenu">Benchmark</a>
-							<ul>
-								<li><a href="#model">Model&Codes</a></li>
-								<li><a href="#gesture">Gesture Synthesis</a></li>
-								<li><a href="#emotion">Emotion Recognition</a></li>
-								<li><a href="#blendshape">Blendshape Estimation</a></li>
-							</ul>
-						</li>
-						<!-- <li>
-							<a href="#" class="submenu">Member</a>
-							<ul>
-								<li><a href="no-sidebar.html">Haiyang Liu</a></li>
-								<li><a href="left-sidebar.html">Zihao Zhu</a></li>
-								<li><a href="no-sidebar.html">Naoya Iwamoto</a></li>
-								<li><a href="no-sidebar.html">Yichen Peng</a></li>
-								<li><a href="no-sidebar.html">Zhengqing Li</a></li>
-								<li><a href="left-sidebar.html">You Zhou</a></li>
-								<li><a href="no-sidebar.html">Elif Bozkurt</a></li>
-								<li><a href="no-sidebar.html">Bo Zheng</a></li>
-							</ul>
-						</li> -->
-						<li>
-							<button onclick="toggleMute();">
-								SOUND
-							</button>
-						</li>
-						<!-- <li>
-							<a href="#" class="submenu">Data</a>
-							<ul>
-								<li><a href="left-sidebar.html">Introduction</a></li>
-								<li><a href="no-sidebar.html">Example Videos</a></li>
-								<li><a href="no-sidebar.html">Download</a></li>
-								<li><a href="right-sidebar.html"></a>Paper (ECCV2022)</li>
+<DOCTYPE html>
+    <title>BEAT: A Large-Scale Semantic and Emotional Multi-Modal Dataset for Conversational Gestures Synthesis</title>
 
-								<li>
-									<a href="#">Submenu</a>
-									<ul>
-										<li><a href="#">Option One</a></li>
-										<li><a href="#">Option Two</a></li>
-										<li><a href="#">Option Three</a></li>
-										<li><a href="#">Option Four</a></li>
-									</ul>
-								</li>
-							</ul>
-						</li> -->
-						<!-- <li><a href="elements.html">Data</a></li> -->
-					</ul>
-				</nav>
-			</header>
+    <meta charset="utf-8">
 
-		<!-- Banner -->
-			<header id="banner">
-				<video autoplay controls muted loop id="myVideo">
-					<source src="./images/beat_long_video.mp4" type="video/mp4">
-				</video>
-				
-				<div class="content">
-				</div>
-				
-			</header>
-			
-			<section id="banner_new">
-				<div class="content">
-					<div class="inner">
-					</div>
-				</div>
-			</section>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta name="description" content="Project Page for BEAT">
+    <meta name="author" content="haiyang">
+
+    <meta property="og:image" content="https://google.github.io/aichoreographer/assets/web_preview.png">
+    <meta property="og:url" content="https://google.github.io/aichoreographer/">
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="BEAT: A Large-Scale Semantic and Emotional Multi-Modal Dataset for Conversational Gestures Synthesis">
+    <meta property="og:video" content="https://www.youtube.com/embed/VrVsAcgFK_4">
+    <meta property="og:description" content="BEAT: A Large-Scale Semantic and Emotional Multi-Modal Dataset for Conversational Gestures Synthesis.">
+
+
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-JM2CPK6QLP"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+
+        gtag('config', 'G-JM2CPK6QLP');
+    </script>
+</head>
+    <style>
+        /* greek-ext */
+        @font-face {
+            font-family: 'Roboto';
+            font-style: normal;
+            font-weight: 300;
+            font-display: swap;
+            src: url(https://fonts.gstatic.com/s/roboto/v20/KFOlCnqEu92Fr1MmSU5fCBc4EsA.woff2) format('woff2');
+            unicode-range: U+1F00-1FFF;
+        }
+
+        /* greek */
+        @font-face {
+            font-family: 'Roboto';
+            font-style: normal;
+            font-weight: 300;
+            font-display: swap;
+            src: url(https://fonts.gstatic.com/s/roboto/v20/KFOlCnqEu92Fr1MmSU5fBxc4EsA.woff2) format('woff2');
+            unicode-range: U+0370-03FF;
+        }
+
+        /* latin-ext */
+        @font-face {
+            font-family: 'Roboto';
+            font-style: normal;
+            font-weight: 300;
+            font-display: swap;
+            src: url(https://fonts.gstatic.com/s/roboto/v20/KFOlCnqEu92Fr1MmSU5fChc4EsA.woff2) format('woff2');
+            unicode-range: U+0100-024F, U+0259, U+1E00-1EFF, U+2020, U+20A0-20AB, U+20AD-20CF, U+2113, U+2C60-2C7F, U+A720-A7FF;
+        }
+
+        /* latin */
+        @font-face {
+            font-family: 'Roboto';
+            font-style: normal;
+            font-weight: 300;
+            font-display: swap;
+            src: url(https://fonts.gstatic.com/s/roboto/v20/KFOlCnqEu92Fr1MmSU5fBBc4.woff2) format('woff2');
+            unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+        }
+
+        /* greek-ext */
+        @font-face {
+            font-family: 'Roboto';
+            font-style: normal;
+            font-weight: 400;
+            font-display: swap;
+            src: url(https://fonts.gstatic.com/s/roboto/v20/KFOmCnqEu92Fr1Mu7mxKOzY.woff2) format('woff2');
+            unicode-range: U+1F00-1FFF;
+        }
+
+        /* greek */
+        @font-face {
+            font-family: 'Roboto';
+            font-style: normal;
+            font-weight: 400;
+            font-display: swap;
+            src: url(https://fonts.gstatic.com/s/roboto/v20/KFOmCnqEu92Fr1Mu4WxKOzY.woff2) format('woff2');
+            unicode-range: U+0370-03FF;
+        }
+
+        /* latin-ext */
+        @font-face {
+            font-family: 'Roboto';
+            font-style: normal;
+            font-weight: 400;
+            font-display: swap;
+            src: url(https://fonts.gstatic.com/s/roboto/v20/KFOmCnqEu92Fr1Mu7GxKOzY.woff2) format('woff2');
+            unicode-range: U+0100-024F, U+0259, U+1E00-1EFF, U+2020, U+20A0-20AB, U+20AD-20CF, U+2113, U+2C60-2C7F, U+A720-A7FF;
+        }
+
+        /* latin */
+        @font-face {
+            font-family: 'Roboto';
+            font-style: normal;
+            font-weight: 400;
+            font-display: swap;
+            src: url(https://fonts.gstatic.com/s/roboto/v20/KFOmCnqEu92Fr1Mu4mxK.woff2) format('woff2');
+            unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+        }
+    </style>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <body>
+        <div class="container">
+            <div class="row mb-2 mt-4" id="paper-title">
+                <h1 class="col-md-12 text-center">
+                    BEAT
+                </h1>
+                <h3 class="col-md-12 text-center">
+                    A Large-Scale Semantic and Emotional Multi-Modal Dataset for Conversational Gestures Synthesis
+                </h3>
+                <h3 class="col-md-12 text-center">
+                    <small>ECCV 2022</small>
+                </h3>
+
+            </div>
+
+            <div class="row" id="authors">
+                <div class="mx-auto text-center">
+                    <ul class="list-inline mb-0">
+                        <li class="list-inline-item">
+                            <a href="https://www.haiyangliu.me/">Haiyang Liu</a><sup>1</sup>
+
+                        <li class="list-inline-item">
+                            <a href="https://zzhat0706.github.io/PersonalPage/">Zihao Zhu</a><sup>2</sup>
+
+                        <li class="list-inline-item">
+                            <a href="https://iwanao731.github.io/">Naoya Iwamoto</a><sup>3</sup>
+
+                        <li class="list-inline-item">
+                            <a href="https://scholar.google.com/citations?user=9sWVrREAAAAJ&hl=en">Yichen Peng</a><sup>4</sup>
+                        
+                        <li class="list-inline-item">
+                            <a href="https://scholar.google.co.jp/citations?user=hgCoNowAAAAJ&hl=ja">Zhengqing Li</a><sup>3</sup>
+
+                        <li class="list-inline-item">
+                            <a href="https://people.eecs.berkeley.edu/~kanazawa/">You Zhou</a><sup>3</sup>
+
+                        <li class="list-inline-item">
+                            <a href="https://sites.google.com/site/bozkurtelif/">Elif Bozkurt</a><sup>3</sup>
+
+                        <li class="list-inline-item">
+                            <a href="http://www.bozheng-lab.com/">Bo Zheng</a><sup>3</sup>
+                    </ul>
+                    <p id="institution">
+                        <sup>1</sup>The University of Tokyo &nbsp;&nbsp;&nbsp;&nbsp;
+                        <sup>2</sup>Keio University &nbsp;&nbsp;&nbsp;&nbsp;
+                        <sup>3</sup>Digital Human Lab, HuaWei Technologies &nbsp;&nbsp;&nbsp;&nbsp;
+                        <sup>4</sup>Japan Advanced Institute of Science and Technology
+                    </p>
+                </div>
+            </div>
+            <div class="row mb-2" id="links">
+                <div class="mx-auto">
+                    <ul class="nav">
+                        <li class="nav-item text-center">
+                            <a href="https://www.ecva.net/papers/eccv_2022/papers_ECCV/papers/136670605.pdf" class="nav-link">
+                                <svg style="width:48px;height:48px" viewBox="0 0 24 24">
+                                    <path fill="currentColor" d="M16 0H8C6.9 0 6 .9 6 2V18C6 19.1 6.9 20 8 20H20C21.1 20 22 19.1 22 18V6L16 0M20 18H8V2H15V7H20V18M4 4V22H20V24H4C2.9 24 2 23.1 2 22V4H4M10 10V12H18V10H10M10 14V16H15V14H10Z" />
+                                </svg><br>
+                                Paper
+                            </a>
+                        </li>
+                        <li class="nav-item text-center">
+                            <a href="https://pantomatrix.github.io/BEAT-Dataset/" class="nav-link">
+                                <svg style="width:48px;height:48px" viewBox="0 0 24 24">
+                                    <path fill="currentColor" d="M12,3C7.58,3 4,4.79 4,7C4,9.21 7.58,11 12,11C16.42,11 20,9.21 20,7C20,4.79 16.42,3 12,3M4,9V12C4,14.21 7.58,16 12,16C16.42,16 20,14.21 20,12V9C20,11.21 16.42,13 12,13C7.58,13 4,11.21 4,9M4,14V17C4,19.21 7.58,21 12,21C16.42,21 20,19.21 20,17V14C20,16.21 16.42,18 12,18C7.58,18 4,16.21 4,14Z" />
+                                </svg><br>
+                                Dataset
+                            </a>
+                        </li>
+                        <li class="nav-item text-center">
+                            <a href="https://github.com/PantoMatrix/BEAT" class="nav-link">
+                                <svg style="width:48px;height:48px" viewBox="0 0 24 24">
+                                    <path fill="currentColor" d="M12,2A10,10 0 0,0 2,12C2,16.42 4.87,20.17 8.84,21.5C9.34,21.58 9.5,21.27 9.5,21C9.5,20.77 9.5,20.14 9.5,19.31C6.73,19.91 6.14,17.97 6.14,17.97C5.68,16.81 5.03,16.5 5.03,16.5C4.12,15.88 5.1,15.9 5.1,15.9C6.1,15.97 6.63,16.93 6.63,16.93C7.5,18.45 8.97,18 9.54,17.76C9.63,17.11 9.89,16.67 10.17,16.42C7.95,16.17 5.62,15.31 5.62,11.5C5.62,10.39 6,9.5 6.65,8.79C6.55,8.54 6.2,7.5 6.75,6.15C6.75,6.15 7.59,5.88 9.5,7.17C10.29,6.95 11.15,6.84 12,6.84C12.85,6.84 13.71,6.95 14.5,7.17C16.41,5.88 17.25,6.15 17.25,6.15C17.8,7.5 17.45,8.54 17.35,8.79C18,9.5 18.38,10.39 18.38,11.5C18.38,15.32 16.04,16.16 13.81,16.41C14.17,16.72 14.5,17.33 14.5,18.26C14.5,19.6 14.5,20.68 14.5,21C14.5,21.27 14.66,21.59 15.17,21.5C19.14,20.16 22,16.42 22,12A10,10 0 0,0 12,2Z" />
+                                </svg><br>
+                                Code
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            <div class="row mb-3 pt-2">
+                <div class="col-md-8 mx-auto">
+                    <div class="row no-gutters pb-2">
+                        <div class="col-md-12">
+                            <span></span><img src="assets/teaser2.png" class="img-responsive">
+                        </div>
+                    </div>
+                    <p class="text-justify">
+                        We present a new conversational gestures dataset (BEAT) with cascaded motion network (CaMN) model as a baseline for synthesis realistic, vivid and human-like conversational gestures.
+                        BEAT contains 76-hour 3D motion from the motion capture system, paired with 52D facial blendshape weights, audio, text, semantic relevancy and emotion categories annotations. 
+                    </p>
+
+                </div>
+            </div>
+            <div class="row mb-4" id="overview-video">
+                <div class="col-md-8 mx-auto grey-container">
+                    <h4 class="pb-2"><strong>Paper Overview</strong></h4>
+                    <div class="embed-responsive embed-responsive-16by9">
+                        <iframe class="embed-responsive-item" src="https://www.youtube.com/embed/F6nXVTUY0KQ" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                    </div>
+                </div>
+            </div>
+            <div class="row mb-4" id="overview-dataset">
+                <div class="col-md-8 mx-auto grey-container">
+                    <h4 class="pb-2"><strong>Semantic Relevany Annotations</strong></h4>
+                    <div class="row pt-1 pb-1">
+                        <div class="col-12">
+                            <video loop="" playsinline="" controls="" width="85%">
+                                <source src="assets/semantic.mp4" type="video/mp4">
+                            </video>
+                        </div>
+                    </div>
+                    <br>
+                    <p class="text-justify">
+                        In order to develop and evaluate the semantic relevancy between gestures and speech content, we provide a score and category-label for each frame: no gestures (0), beat gestures (1), low-middle-high quaility deictic gestures (2-3-4), iconic gestures (5-6-7), metaphoric gestures (8-9-10). The defination of gesture categories is from <a href="https://files.eric.ed.gov/fulltext/ED573247.pdf" target="_blank">Four-Type-Gestures</a>. 
+                        The annotation tool is based on <a href="https://www.robots.ox.ac.uk/~vgg/software/via/" target="_blank">VGG Image Annotator</a> and <a href="https://babel.is.tue.mpg.de/" target="_blank">BABEL</a>, and examples in the above video are in <a href="https://drive.google.com/file/d/1uroWlifFXGKUE-gv-HbPoU347DRsafBU/view?usp=share_link" target="_blank">Annotation Tools</a>.    
+                    </p>
+                </div>
+            </div>
+
+            <div class="row mb-4">
+                <div class="col-md-8 mx-auto">
+                    <h4><strong>Emotional Gestures</strong></h4>
+                    <p class="text-justify">
+                        Here we show raw captured gestures data in with 8 emotions for each speaker. The emotion categories are neutral, happiness, anger, sadness, contempt, surprise, fear and disgust. We also render all data in <a href="https://drive.google.com/drive/folders/1ghZ7_4LkCyM_IZxTElzAwPzGheLrBGBu?usp=share_link" target="_blank">All Renderd Videos</a>.
+                    </p>
+                    <div class="row pt-1 pb-1">
+                        <div class="col-md-6">
+                            <video class="results" loop="" playsinline="" controls="" width="85%" onloadstart="this.volume=0.9">
+                                <source src="assets/2_scott_neutral.mp4" type="video/mp4">
+                            </video>
+                        </div>
+                        <div class="col-md-6">
+                            <video class="results" loop="" playsinline="" controls="" width="85%" onloadstart="this.volume=0.9">
+                                <source src="assets/2_scott_happiness.mp4" type="video/mp4">
+                            </video>
+                        </div>
+                        <div class="col-md-6">
+                            <video class="results" loop="" playsinline="" controls="" width="85%" onloadstart="this.volume=0.9">
+                                <source src="assets/2_scott_anger.mp4" type="video/mp4">
+                            </video>
+                        </div>
+                        <div class="col-md-6">
+                            <video class="results" loop="" playsinline="" controls="" width="85%" onloadstart="this.volume=0.9">
+                                <source src="assets/2_scott_sadness.mp4" type="video/mp4">
+                            </video>
+                        </div>
+                        <div class="col-md-6">
+                            <video class="results" loop="" playsinline="" controls="" width="85%" onloadstart="this.volume=0.9">
+                                <source src="assets/2_scott_contempt.mp4" type="video/mp4">
+                            </video>
+                        </div>
+                        <div class="col-md-6">
+                            <video class="results" loop="" playsinline="" controls="" width="85%" onloadstart="this.volume=0.9">
+                                <source src="assets/2_scott_surprise.mp4" type="video/mp4">
+                            </video>
+                        </div>
+                        <div class="col-md-6">
+                            <video class="results" loop="" playsinline="" controls="" width="85%" onloadstart="this.volume=0.9">
+                                <source src="assets/2_scott_fear.mp4" type="video/mp4">
+                            </video>
+                        </div>
+                        <div class="col-md-6">
+                            <video class="results" loop="" playsinline="" controls="" width="85%" onloadstart="this.volume=0.9">
+                                <source src="assets/2_scott_disgust.mp4" type="video/mp4">
+                            </video>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row mb-4">
+                <div class="col-md-8 mx-auto">
+                    <h4><strong>Multi-Language Data</strong></h4>
+                    <p class="text-justify">
+                        BEAT contains recording in English (60h), Chinese (16h), Spanish (2h) and Japanese (2h). All Non-Engish speakers have the English recording with the same text content for comparsions.
+                    </p>
+                    <div class="row pt-1 pb-1">
+                        <div class="col-md-6">
+                            <video class="results" loop="" playsinline="" controls="" width="85%" onloadstart="this.volume=0.9">
+                                <source src="assets/english.mp4" type="video/mp4">
+                            </video>
+                        </div>
+                        <div class="col-md-6">
+                            <video class="results" loop="" playsinline="" controls="" width="85%" onloadstart="this.volume=0.9">
+                                <source src="assets/chinese.mp4" type="video/mp4">
+                            </video>
+                        </div>
+                        <div class="col-md-6">
+                            <video class="results" loop="" playsinline="" controls="" width="85%" onloadstart="this.volume=0.9">
+                                <source src="assets/spanish.mp4" type="video/mp4">
+                            </video>
+                        </div>
+                        <div class="col-md-6">
+                            <video class="results" loop="" playsinline="" controls="" width="85%" onloadstart="this.volume=0.9">
+                                <source src="assets/japanese.mp4" type="video/mp4">
+                            </video>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row mb-4">
+                <div class="col-md-8 mx-auto">
+                    <h4><strong>30 Speakers with Self-Talk and Converstion Recording</strong></h4>
+                    <p class="text-justify">
+                        Half of BEAT dataset are Self-Talk (read predefined text) recording, which is proposed to explore the personality of different speakers with the same speech content. 
+                        We list below a representative sample of six videos that include speakers of different ethnicities and genders. Each recording is one minuate with total 118 recordings.
+                    </p>
+                    <div class="row pt-1 pb-1">
+                        <div class="col-md-6">
+                            <video class="results" loop="" playsinline="" controls="" width="85%" onloadstart="this.volume=0.9">
+                                <source src="assets/21_ayana_9.mp4" type="video/mp4">
+                            </video>
+                        </div>
+                        <div class="col-md-6">
+                            <video class="results" loop="" playsinline="" controls="" width="85%" onloadstart="this.volume=0.9">
+                                <source src="assets/3_solomon_9.mp4" type="video/mp4">
+                            </video>
+                        </div>
+                        <div class="col-md-6">
+                            <video class="results" loop="" playsinline="" controls="" width="85%" onloadstart="this.volume=0.9">
+                                <source src="assets/gen_results_3.mp4" type="video/mp4">
+                            </video>
+                        </div>
+                        <div class="col-md-6">
+                            <video class="results" loop="" playsinline="" controls="" width="85%" onloadstart="this.volume=0.9">
+                                <source src="assets/gen_results_4.mp4" type="video/mp4">
+                            </video>
+                        </div>
+                        <div class="col-md-6">
+                            <video class="results" loop="" playsinline="" controls="" width="85%" onloadstart="this.volume=0.9">
+                                <source src="assets/gen_results_3.mp4" type="video/mp4">
+                            </video>
+                        </div>
+                        <div class="col-md-6">
+                            <video class="results" loop="" playsinline="" controls="" width="85%" onloadstart="this.volume=0.9">
+                                <source src="assets/gen_results_4.mp4" type="video/mp4">
+                            </video>
+                        </div>
+                    </div>
+
+                    <p class="text-justify">
+                        The other half of BEAT dataset are Converstion Recording (chat with director), Each recording is 10 minuates with total 12 recordings.
+                    </p>
+                    <div class="row pt-1 pb-1">
+                        <div class="col-md-12">
+                            <video class="results" loop="" playsinline="" controls="" width="85%" onloadstart="this.volume=0.9">
+                                <source src="assets/11_nidal_1_11_11.mp4" type="video/mp4">
+                            </video>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row mb-2">
+                <div class="col-md-8 mx-auto">
+                    <h4 class="mb-3">Bibtex</h4>
+                    <div class="bibtex">@article{liu2022beat,
+  title={BEAT: A Large-Scale Semantic and Emotional Multi-Modal Dataset for Conversational Gestures Synthesis},
+  author={Liu, Haiyang and Zhu, Zihao and Iwamoto, Naoya and Peng, Yichen and Li, Zhengqing and Zhou, You and Bozkurt, Elif and Zheng, Bo},
+  journal={arXiv preprint arXiv:2203.05297},
+  year={2022}}
+            </div>
+                </div>
+            </div>
+            <div class="row mb-3">
+                <div class="col-md-8 mx-auto">
+                    <h4><strong>More Thanks</strong></h4>
+                    <p class="text-justify">
+                        We thank Hailing Pi for communicating with the recording actors of the BEAT dataset.
+                        The website is inspired by the template of <a href="https://alexyu.net/pixelnerf/" target="_blank">pixelnerf</a>.
+                    </p>
+                </div>
+            </div>
+            <div class="row mb-4" id="license">
+                <div class="col-md-8 mx-auto grey-container">
+                    <br>
+                    <p class="text-justify">
+                        Licensed under the CC-BY 4.0 license.
+                    </p>
+                </div>
+            </div>
             
+        </div> <!-- container -->
+    </body>
 
-			<div class="section hero nerf-_v2">
-				<div class="container-2 nerf_header_v2 w-container">
-				  <h1 class="nerf_title_v2">BEAT: A Large-Scale Semantic and Emotional Multi-Modal Dataset for Conversational Gestures Synthesis.</h1>
-				  <h1 class="nerf_subheader_v2">ECCV 2022</h1>
-				  <div class="nerf_authors_list_single w-row">
-					  <div class="w-col w-col-2 w-col-small-4 w-col-tiny-6"><a href="https://www.haiyangliu.me/" target="_blank" class="nerf_authors_v2">Haiyang Liu</a></div>
-					  <div class="w-col w-col-2 w-col-small-4 w-col-tiny-6"><a href="https://zzhat0706.github.io/PersonalPage/" target="_blank" class="nerf_authors_v2">Zihao Zhu</a></div>
-					  <div class="w-col w-col-2 w-col-small-4 w-col-tiny-6"><a href="https://iwanao731.github.io/" target="_blank" class="nerf_authors_v2">Naoya Iwamoto</a></div>
-					  <div class="w-col w-col-2 w-col-small-4 w-col-tiny-6"><a href="https://scholar.google.com/citations?user=9sWVrREAAAAJ&hl=en" target="_blank" class="nerf_authors_v2">Yichen Peng</a></div>
-					  <div class="w-col w-col-2 w-col-small-4 w-col-tiny-6"><a href="https://scholar.google.co.jp/citations?user=hgCoNowAAAAJ&hl=ja" target="_blank" class="nerf_authors_v2">Zhengqing Li</a></div>
-					  <div class="w-col w-col-2 w-col-small-4 w-col-tiny-6"><a href="" target="_blank" class="nerf_authors_v2">You Zhou</a></div>
-					  <div class="w-col w-col-2 w-col-small-4 w-col-tiny-6"><a href="https://sites.google.com/site/bozkurtelif/" target="_blank" class="nerf_authors_v2">Elif Bozkurt</a></div>
-					  <div class="w-col w-col-2 w-col-small-4 w-col-tiny-6"><a href="http://www.bozheng-lab.com/" target="_blank" class="nerf_authors_v2">Bo Zheng</a></div>
-					</div>
-					  <!-- <div class="columns-6 w-row"><div class="nerf_mobile_col_inst w-col w-col-4 w-col-small-4 w-col-tiny-4">
-						<div class="nerf_mobile_inst"><span class="text-span_nerf">1 </span>Beijing </div></div>
-						<div class="nerf_mobile_col_inst w-col w-col-4 w-col-small-4 w-col-tiny-4"><div class="nerf_mobile_inst"><span class="text-span_nerf">2</span>Peking University</div></div>
-						<div class="nerf_mobile_col_inst w-col w-col-4 w-col-small-4 w-col-tiny-4"><div class="nerf_mobile_inst"><span class="text-span_nerf">3</span>Hebrew University</div></div>
-						<div class="nerf_mobile_col_inst w-col w-col-4 w-col-small-4 w-col-tiny-4"><div class="nerf_mobile_inst"><span class="text-span_nerf">4</span>ETH Zurich</div></div>
-						<div class="nerf_mobile_col_inst w-col w-col-4 w-col-small-4 w-col-tiny-4"><div class="nerf_mobile_inst"><span class="text-span_nerf">5</span>Tel-Aviv University</div></div>
-					  </div>
-						<div class="nerf_authors_list_single nerf_authors_affiliation w-row">
-						  <div class="w-col w-col-2"><h1 class="nerf_affiliation_v2">Beijing Film Academy</h1></div>
-						  <div class="column w-col w-col-2"><h1 class="nerf_affiliation_v2">Peking University</h1></div>
-						  <div class="w-col w-col-2"><h1 class="nerf_affiliation_v2">Hebrew University</h1></div>
-						  <div class="w-col w-col-2"><h1 class="nerf_affiliation_v2">ETH Zurich</h1></div>
-						  <div class="w-col w-col-2"><h1 class="nerf_affiliation_v2">Tel-Aviv University</h1></div>
-						  <div class="w-col w-col-2"><h1 class="nerf_affiliation_v2">Peking University</h1></div>
-						</div> -->
-						  <!-- <div class="div-block-10"><div class="nerf_equal_v2"><span class="text-span_nerf">*</span><span class="text-span_nerf_star">*</span>Denotes Equal Contribution</div></div> -->
-						  <!-- <img src="./images/teaser.png" alt=""/> -->
-
-						<div class="link_column_nerf_v2 w-row">
-							<div class="w-col w-col-4 w-col-small-4 w-col-tiny-4">
-							  <a href="https://www.ecva.net/papers/eccv_2022/papers_ECCV/papers/136670605.pdf" target="_blank" class="link-block w-inline-block">
-								<img src="https://uploads-ssl.webflow.com/51e0d73d83d06baa7a00000f/5cab99df4998decfbf9e218e_paper-01.png" alt="paper" class="paper_img image-8 github_icon_nerf_v2"/></a>
-							<!-- <img src="https://uploads-ssl.webflow.com/51e0d73d83d06baa7a00000f/5cab99df4998decfbf9e218e_paper-01.png" alt="paper" srcset="https://uploads-ssl.webflow.com/51e0d73d83d06baa7a00000f/5cab99df4998decfbf9e218e_paper-01-p-500.png 500w, https://uploads-ssl.webflow.com/51e0d73d83d06baa7a00000f/5cab99df4998decfbf9e218e_paper-01.png 672w" sizes="(max-width: 479px) 12vw, (max-width: 767px) 7vw, (max-width: 991px) 41.84375px, 56.6875px" class="paper_img image-8_nerf"/></a> -->
-						    </div>
-							<div class="w-col w-col-4 w-col-small-4 w-col-tiny-4">
-								<a href="https://github.com/PantoMatrix/BEAT" target="_blank" class="link-block w-inline-block">
-								<img src="https://uploads-ssl.webflow.com/51e0d73d83d06baa7a00000f/5cae3b53b42ebb3dd4175a82_68747470733a2f2f7777772e69636f6e66696e6465722e636f6d2f646174612f69636f6e732f6f637469636f6e732f313032342f6d61726b2d6769746875622d3235362e706e67.png" alt="paper" class="paper_img image-8 github_icon_nerf_v2"/></a>
-							</div>
-							<div class="column-2 w-col w-col-4 w-col-small-4 w-col-tiny-4"><a href="https://drive.google.com/drive/folders/1CVyJOp3G_A9l1N_CsKdHgXQfB4pXhG8c" target="_blank" class="link-block w-inline-block">
-							  <img src="https://uploads-ssl.webflow.com/51e0d73d83d06baa7a00000f/5e7136849ee3b0a0c6a95151_database.svg" alt="paper" class="paper_img image-8_nerf nerf_db_icon"/></a>
-							</div>
-					
-							<div class="column-2 w-col w-col-4 w-col-small-4 w-col-tiny-4"><a href="https://youtu.be/cXs5c_UxnvY" target="_blank" class="link-block w-inline-block">
-								<img src="./images/video.png" alt="paper" class="paper_img image-8_nerf nerf_db_icon"/></a>
-							</div>
-						</div>
-						<div class="paper_code_nerf w-row">
-							<div class="w-col w-col-4 w-col-small-4 w-col-tiny-4">
-								<div class="text-block-2"><strong class="bold-text-nerf_v2">Paper</strong></div>
-							</div>
-							<div class="w-col w-col-4 w-col-small-4 w-col-tiny-4"><div class="text-block-2">
-							<strong class="bold-text-nerf_v2">Code</strong></div>
-							</div>
-							<div class="w-col w-col-4 w-col-small-4 w-col-tiny-4">
-								<div class="text-block-2"><strong class="bold-text-nerf_v2">Dataset</strong></div>
-							</div>
-								  
-							<div class="w-col w-col-4 w-col-small-4 w-col-tiny-4">
-							<div class="text-block-2"><strong class="bold-text-nerf_v2">Full Video</strong></div>
-							</div>
-						</div>
-						</div></div>
-						<!-- <div data-anchor="slide1" class="section nerf_section">
-						<div class="w-container">
-							</div>
-						</div></div>	 -->
-						<!-- <div>
-							<span class="center">
-							  <div style="padding-top:56.17021276595745%" id="w-node-e5e45b1d55ac-81500a5f" class="w-embed-youtubevideo stega_movie youtube">
-							  <iframe src="https://www.youtube.com/embed/cXs5c_UxnvY?rel=1&amp;controls=1&amp;autoplay=0&amp;mute=0&amp;start=0" frameBorder="0" style="position:absolute;left:0;top:0;width:100%;height:100%;pointer-events:auto" allow="autoplay; encrypted-media" allowfullscreen=""></iframe>
-							
-						  </div> -->
-
-  
-
-			<section id="introduction_2" class="new_wrapper cta">
-				<div class="inner">
-					<header>
-						<h2>Adventages of BEAT</h2>
-						<!-- <ul class="actions">
-							<li><a href="https://drive.google.com/drive/folders/1CVyJOp3G_A9l1N_CsKdHgXQfB4pXhG8c?usp=sharing" class="button big">Download All</a></li>
-						</ul> -->
-					</header>
-					<!-- <p>We relased body, expression, auido recording, the annotations will be available on Oct. 1st after proofreadding.</p> -->
-				</div>
-			</section>
-			<!-- <section id="pad" class="padwrapper"></section> -->
-            
-
-
-		<!-- One -->
-			<section id="introduction" class="wrapper">
-				<div class="inner">
-					<ul class="features">
-						<li>
-							<h3 class="icon style3 solid fa-cube">2-type recording</h3>
-							<p>Each speaker read predefined text (50%) and chat with director (50%).</p>
-						</li>
-						<li>
-							<h3 class="icon style3 solid fa-cube">3-Class Semantic</h3>
-							<p>Annotatied detectic, iconic, metaphoic gestures in 3 intensity levels.</p>
-						</li>
-						<li>
-							<h3 class="icon style1 solid fa-chart-area">4-Modality Data</h3>
-							<p>120FPS mocap body gestures; 60FPS&52D (iphone ARkit) facial expression blendshape weights; 16KHZ audio; proofread text scripts.</p>
-						</li>
-						<li>
-							<h3 class="icon style3 solid fa-cube">4-language</h3>
-							<p>Speakers are talking with English-Native (34h), English-Fluent (26h), Chinese (12h), Spinish (2h) and Japanese (2h).</p>
-						</li>
-						<li>
-							<h3 class="icon style2 solid fa-chart-pie">8-Class Emotion </h3>
-							<p>Speakers will read the text in Neutral (51%), and Emotional (7%x7), i.e., Happiness, Anger, Sadness, Contempt, Surprise, Fear, Disgust.</p>
-						</li>
-					</ul>
-				</div>
-			</section>
-            
-			<!-- <section id="pad" class="padwrapper"></section> -->
-		<!-- Two -->
-			<section id="download" class="wrapper cta">
-				<div class="inner">
-					<header>
-						<h2>30 Speakers Recording </h2>
-						<ul class="actions">
-							<li><a href="https://drive.google.com/drive/folders/1CVyJOp3G_A9l1N_CsKdHgXQfB4pXhG8c?usp=sharing" class="button big">Download All</a></li>
-						</ul>
-					</header>
-					<p>We relased body, expression, audio recording, the annotations will be available on Oct. 1st after proofreadding.</p>
-				</div>
-			</section>
-            
-			<!-- <section id="pad" class="padwrapper"></section> -->
-		<!-- Three -->
-			<section id="example_videos" class="wrapper">
-				<div class="inner">
-					<header class="major">
-						<h2>Example Videos</h2>
-						<!-- <p>Sed magna in pharetra ultricies dolor sit amet consequat adipiscing lorem.</p> -->
-					</header>
-					<nav style=margin-bottom:0!important>
-						<div class="nav nav-tabs justify-content-center nav-fill mb-3" id=nav-tab role=tablist>
-							<a class="nav-link px-3 active" id=nav-home-tab data-toggle=tab href=#nav-netural role=tab aria-controls=nav-home aria-selected=true>netural</a>
-							<a class="nav-link px-3" id=nav-profile-tab data-toggle=tab href=#nav-happiness role=tab aria-controls=nav-profile aria-selected=false>happiness</a>
-							<a class="nav-link px-3" id=nav-contact-tab data-toggle=tab href=#nav-anger role=tab aria-controls=nav-contact aria-selected=false>anger</a>
-							<a class="nav-link px-3" id=nav-contact-tab data-toggle=tab href=#nav-sadness role=tab aria-controls=nav-profile aria-selected=false>sadness</a>
-							<a class="nav-link px-3" id=nav-profile-tab data-toggle=tab href=#nav-contempt role=tab aria-controls=nav-profile aria-selected=false>contempt</a>
-							<a class="nav-link px-3" id=nav-contact-tab data-toggle=tab href=#nav-surprise role=tab aria-controls=nav-contact aria-selected=false>surprise</a>
-							<a class="nav-link px-3" id=nav-profile-tab data-toggle=tab href=#nav-fear role=tab aria-controls=nav-profile aria-selected=false>fear</a>
-							<a class="nav-link px-3" id=nav-contact-tab data-toggle=tab href=#nav-disgust role=tab aria-controls=nav-contact aria-selected=false>disgust</a>
-						</div>
-					</nav>
-					<div class=tab-content id=nav-tabContent1>
-					<div class="tab-pane fade show active" id=nav-netural role=tabpanel aria-labelledby=nav-home-tab>
-					<span class="posts">
-						<section class="post">
-							<a class="vid">
-							<iframe src="https://www.youtube.com/embed/AR3P-pv8GzI?rel=1&amp;controls=1&amp;autoplay=0&amp;mute=0&amp;start=0" style="left:0;top:0;width:384px;height:216px;pointer-events:auto" frameBorder="0" allow="autoplay; encrypted-media"></iframe>
-							</a>
-							<div class="content center_block">
-								<!-- <h3>Ultriasdsad agdfdsgf dslorem</h3> -->
-								<!-- <p>Ayana (speaker 21) African female</p> -->
-								<a href="#" class="button">Ayana (speaker 21): African Female, Actor</a>
-							</div>
-						</section>
-						<section class="post">
-							<a class="vid">
-								<iframe src="https://www.youtube.com/embed/dqsbWBRDk5Y?rel=1&amp;controls=1&amp;autoplay=0&amp;mute=0&amp;start=0" style="left:0;top:0;width:384px;height:216px;pointer-events:auto" frameBorder="0" allow="autoplay; encrypted-media"></iframe>
-								</a>
-								<div class="content">
-									<!-- <h3>Ultriasdsad agdfdsgf dslorem</h3> -->
-									<!-- <p>Ayana (speaker 21) African female</p> -->
-								<a href="#" class="button">Solomon (speaker 3): African male, Not Actor</a>
-							</div>
-						</section>
-						<section class="post", >
-							<a class="vid">
-							<iframe src="https://www.youtube.com/embed/gHDE9HC0NhA?rel=1&amp;controls=1&amp;autoplay=0&amp;mute=0&amp;start=0" style="left:0;top:0;width:384px;height:216px;pointer-events:auto" frameBorder="0" allow="autoplay; encrypted-media"></iframe>
-							</a>
-							<div class="content">
-								<!-- <h3>Ultriasdsad agdfdsgf dslorem</h3> -->
-								<!-- <p>yingqing (speaker 27) Asian female</p> -->
-								<a href="#" class="button">Yingqing (speaker 27): Asian Female, Not Actor</a>
-							</div>
-						</section>
-						<section class="post">
-							<div class="vid">
-							<iframe src="https://www.youtube.com/embed/GBkWYgbFFxQ?rel=1&amp;controls=1&amp;autoplay=0&amp;mute=0&amp;start=0" style="left:0;top:0;width:384px;height:216px;pointer-events:auto" frameBorder="0" allow="autoplay; encrypted-media"></iframe>
-							</div>
-							<div class="content">
-								<!-- <h3>Imperdiet egestas</h3> -->
-								<!-- <p>lawrence (speaker 4) Asian male</p> -->
-								<a href="#" class="button">Lawrence (speaker 4) Asian Male, Actor</a>
-							
-							</div>
-						</section>
-						<section class="post">
-							<a class="vid">
-							<iframe src="https://www.youtube.com/embed/GBkWYgbFFxQ?rel=1&amp;controls=1&amp;autoplay=0&amp;mute=0&amp;start=0" style="left:0;top:0;width:384px;height:216px;pointer-events:auto" frameBorder="0" allow="autoplay; encrypted-media"></iframe>
-							</a>
-							<div class="content">
-								<!-- <h3>Ultriasdsad agdfdsgf dslorem</h3> -->
-								<!-- <p>kieks (speaker 10) Caucasian female</p> -->
-								<a href="#" class="button">Kieks (speaker 10) Caucasian female, Not Actor</a>
-							</div>
-						</section>
-						<section class="post">
-							<div class="vid">
-							<iframe src="https://www.youtube.com/embed/gHDE9HC0NhA?rel=1&amp;controls=1&amp;autoplay=0&amp;mute=0&amp;start=0" style="left:0;top:0;width:384px;height:216px;pointer-events:auto" frameBorder="0" allow="autoplay; encrypted-media"></iframe>
-							</div>
-							<div class="content">
-								<!-- <h3>Imperdiet egestas</h3> -->
-								<!-- <p>scott (speaker 2) Caucasian male</p> -->
-								<a href="#" class="button">Scott (speaker 2): Caucasian male, Actor</a>
-							</div>
-						</section>
-					</span>
-					</div>
-
-					<div class="tab-pane fade" id=nav-happiness role=tabpanel aria-labelledby=nav-profile-tab>
-						<span class="posts">
-							<section class="post">
-								<a class="vid">
-								<iframe src="https://www.youtube.com/embed/GBkWYgbFFxQ?rel=1&amp;controls=1&amp;autoplay=0&amp;mute=0&amp;start=0" style="left:0;top:0;width:384px;height:216px;pointer-events:auto" frameBorder="0" allow="autoplay; encrypted-media"></iframe>
-								</a>
-								<div class="content">
-									<!-- <h3>Ultriasdsad agdfdsgf dslorem</h3> -->
-									<!-- <p>Ayana (speaker 21) African female</p> -->
-									<a href="#" class="button">Ayana (speaker 21): African Female, Actor</a>
-								</div>
-							</section>
-							<section class="post">
-								<div class="vid">
-								<iframe src="https://www.youtube.com/embed/gHDE9HC0NhA?rel=1&amp;controls=1&amp;autoplay=0&amp;mute=0&amp;start=0" style="left:0;top:0;width:384px;height:216px;pointer-events:auto" frameBorder="0" allow="autoplay; encrypted-media"></iframe>
-								</div>
-								<div class="content">
-									<!-- <h3>A egestas</h3> -->
-									<!-- <p>Solomon (speaker 3) African male</p> -->
-									<a href="#" class="button">Solomon (speaker 3): African male, Not Actor</a>
-								</div>
-							</section>
-							<section class="post", >
-								<a class="vid">
-								<iframe src="https://www.youtube.com/embed/42KIdeNq324?rel=1&amp;controls=1&amp;autoplay=0&amp;mute=0&amp;start=0" style="left:0;top:0;width:384px;height:216px;pointer-events:auto" frameBorder="0" allow="autoplay; encrypted-media"></iframe>
-								</a>
-								<div class="content">
-									<!-- <h3>Ultriasdsad agdfdsgf dslorem</h3> -->
-									<!-- <p>yingqing (speaker 27) Asian female</p> -->
-									<a href="#" class="button">Yingqing (speaker 27): Asian Female, Not Actor</a>
-								</div>
-							</section>
-							<section class="post">
-								<div class="vid">
-								<iframe src="https://www.youtube.com/embed/8E5wXewCaxs?rel=1&amp;controls=1&amp;autoplay=0&amp;mute=0&amp;start=0" style="left:0;top:0;width:384px;height:216px;pointer-events:auto" frameBorder="0" allow="autoplay; encrypted-media"></iframe>
-								</div>
-								<div class="content">
-									<!-- <h3>Imperdiet egestas</h3> -->
-									<!-- <p>lawrence (speaker 4) Asian male</p> -->
-									<a href="#" class="button">Lawrence (speaker 4) Asian Male, Actor</a>
-								
-								</div>
-							</section>
-							<section class="post">
-								<a class="vid">
-								<iframe src="https://www.youtube.com/embed/8E5wXewCaxs?rel=1&amp;controls=1&amp;autoplay=0&amp;mute=0&amp;start=0" style="left:0;top:0;width:384px;height:216px;pointer-events:auto" frameBorder="0" allow="autoplay; encrypted-media"></iframe>
-								</a>
-								<div class="content">
-									<!-- <h3>Ultriasdsad agdfdsgf dslorem</h3> -->
-									<!-- <p>kieks (speaker 10) Caucasian female</p> -->
-									<a href="#" class="button">Kieks (speaker 10) Caucasian female, Not Actor</a>
-								</div>
-							</section>
-							<section class="post">
-								<div class="vid">
-								<iframe src="https://www.youtube.com/embed/gHDE9HC0NhA?rel=1&amp;controls=1&amp;autoplay=0&amp;mute=0&amp;start=0" style="left:0;top:0;width:384px;height:216px;pointer-events:auto" frameBorder="0" allow="autoplay; encrypted-media"></iframe>
-								</div>
-								<div class="content">
-									<!-- <h3>Imperdiet egestas</h3> -->
-									<!-- <p>scott (speaker 2) Caucasian male</p> -->
-									<a href="#" class="button">Scott (speaker 2): Caucasian male, Actor</a>
-								</div>
-							</section>
-						</span>
-					</div>
-
-					<div class="tab-pane fade" id=nav-anger role=tabpanel aria-labelledby=nav-contact-tab>
-						<span class="posts">
-							<section class="post">
-								<a class="vid">
-								<iframe src="https://www.youtube.com/embed/GBkWYgbFFxQ?rel=1&amp;controls=1&amp;autoplay=0&amp;mute=0&amp;start=0" style="left:0;top:0;width:384px;height:216px;pointer-events:auto" frameBorder="0" allow="autoplay; encrypted-media"></iframe>
-								</a>
-								<div class="content">
-									<!-- <h3>Ultriasdsad agdfdsgf dslorem</h3> -->
-									<!-- <p>Ayana (speaker 21) African female</p> -->
-									<a href="#" class="button">Ayana (speaker 21): African Female, Actor</a>
-								</div>
-							</section>
-							<section class="post">
-								<div class="vid">
-								<iframe src="https://www.youtube.com/embed/gHDE9HC0NhA?rel=1&amp;controls=1&amp;autoplay=0&amp;mute=0&amp;start=0" style="left:0;top:0;width:384px;height:216px;pointer-events:auto" frameBorder="0" allow="autoplay; encrypted-media"></iframe>
-								</div>
-								<div class="content">
-									<!-- <h3>A egestas</h3> -->
-									<!-- <p>Solomon (speaker 3) African male</p> -->
-									<a href="#" class="button">Solomon (speaker 3): African male, Not Actor</a>
-								</div>
-							</section>
-							<section class="post", >
-								<a class="vid">
-								<iframe src="https://www.youtube.com/embed/tZNafODM954?rel=1&amp;controls=1&amp;autoplay=0&amp;mute=0&amp;start=0" style="left:0;top:0;width:384px;height:216px;pointer-events:auto" frameBorder="0" allow="autoplay; encrypted-media"></iframe>
-								</a>
-								<div class="content">
-									<!-- <h3>Ultriasdsad agdfdsgf dslorem</h3> -->
-									<!-- <p>yingqing (speaker 27) Asian female</p> -->
-									<a href="#" class="button">Yingqing (speaker 27): Asian Female, Not Actor</a>
-								</div>
-							</section>
-							<section class="post">
-								<div class="vid">
-								<iframe src="https://www.youtube.com/embed/_it3HuRisY8?rel=1&amp;controls=1&amp;autoplay=0&amp;mute=0&amp;start=0" style="left:0;top:0;width:384px;height:216px;pointer-events:auto" frameBorder="0" allow="autoplay; encrypted-media"></iframe>
-								</div>
-								<div class="content">
-									<!-- <h3>Imperdiet egestas</h3> -->
-									<!-- <p>lawrence (speaker 4) Asian male</p> -->
-									<a href="#" class="button">Lawrence (speaker 4) Asian Male, Actor</a>
-								
-								</div>
-							</section>
-							<section class="post">
-								<a class="vid">
-								<iframe src="https://www.youtube.com/embed/_it3HuRisY8?rel=1&amp;controls=1&amp;autoplay=0&amp;mute=0&amp;start=0" style="left:0;top:0;width:384px;height:216px;pointer-events:auto" frameBorder="0" allow="autoplay; encrypted-media"></iframe>
-								</a>
-								<div class="content">
-									<!-- <h3>Ultriasdsad agdfdsgf dslorem</h3> -->
-									<!-- <p>kieks (speaker 10) Caucasian female</p> -->
-									<a href="#" class="button">Kieks (speaker 10) Caucasian female, Not Actor</a>
-								</div>
-							</section>
-							<section class="post">
-								<div class="vid">
-								<iframe src="https://www.youtube.com/embed/gHDE9HC0NhA?rel=1&amp;controls=1&amp;autoplay=0&amp;mute=0&amp;start=0" style="left:0;top:0;width:384px;height:216px;pointer-events:auto" frameBorder="0" allow="autoplay; encrypted-media"></iframe>
-								</div>
-								<div class="content">
-									<!-- <h3>Imperdiet egestas</h3> -->
-									<!-- <p>scott (speaker 2) Caucasian male</p> -->
-									<a href="#" class="button">Scott (speaker 2): Caucasian male, Actor</a>
-								</div>
-							</section>
-						</span>
-					</div>
-
-					<div class="tab-pane fade" id=nav-sadness role=tabpanel aria-labelledby=nav-contact-tab>
-						<span class="posts">
-							<section class="post">
-								<a class="vid">
-								<iframe src="https://www.youtube.com/embed/GBkWYgbFFxQ?rel=1&amp;controls=1&amp;autoplay=0&amp;mute=0&amp;start=0" style="left:0;top:0;width:384px;height:216px;pointer-events:auto" frameBorder="0" allow="autoplay; encrypted-media"></iframe>
-								</a>
-								<div class="content">
-									<!-- <h3>Ultriasdsad agdfdsgf dslorem</h3> -->
-									<!-- <p>Ayana (speaker 21) African female</p> -->
-									<a href="#" class="button">Ayana (speaker 21): African Female, Actor</a>
-								</div>
-							</section>
-							<section class="post">
-								<div class="vid">
-								<iframe src="https://www.youtube.com/embed/gHDE9HC0NhA?rel=1&amp;controls=1&amp;autoplay=0&amp;mute=0&amp;start=0" style="left:0;top:0;width:384px;height:216px;pointer-events:auto" frameBorder="0" allow="autoplay; encrypted-media"></iframe>
-								</div>
-								<div class="content">
-									<!-- <h3>A egestas</h3> -->
-									<!-- <p>Solomon (speaker 3) African male</p> -->
-									<a href="#" class="button">Solomon (speaker 3): African male, Not Actor</a>
-								</div>
-							</section>
-							<section class="post", >
-								<a class="vid">
-								<iframe src="https://www.youtube.com/embed/vLw_r4pXmLo?rel=1&amp;controls=1&amp;autoplay=0&amp;mute=0&amp;start=0" style="left:0;top:0;width:384px;height:216px;pointer-events:auto" frameBorder="0" allow="autoplay; encrypted-media"></iframe>
-								</a>
-								<div class="content">
-									<!-- <h3>Ultriasdsad agdfdsgf dslorem</h3> -->
-									<!-- <p>yingqing (speaker 27) Asian female</p> -->
-									<a href="#" class="button">Yingqing (speaker 27): Asian Female, Not Actor</a>
-								</div>
-							</section>
-							<section class="post">
-								<div class="vid">
-								<iframe src="https://www.youtube.com/embed/GBkWYgbFFxQ?rel=1&amp;controls=1&amp;autoplay=0&amp;mute=0&amp;start=0" style="left:0;top:0;width:384px;height:216px;pointer-events:auto" frameBorder="0" allow="autoplay; encrypted-media"></iframe>
-								</div>
-								<div class="content">
-									<!-- <h3>Imperdiet egestas</h3> -->
-									<!-- <p>lawrence (speaker 4) Asian male</p> -->
-									<a href="#" class="button">Lawrence (speaker 4) Asian Male, Actor</a>
-								
-								</div>
-							</section>
-							<section class="post">
-								<a class="vid">
-								<iframe src="https://www.youtube.com/embed/KdC4YsaxWkQ?rel=1&amp;controls=1&amp;autoplay=0&amp;mute=0&amp;start=0" style="left:0;top:0;width:384px;height:216px;pointer-events:auto" frameBorder="0" allow="autoplay; encrypted-media"></iframe>
-								</a>
-								<div class="content">
-									<!-- <h3>Ultriasdsad agdfdsgf dslorem</h3> -->
-									<!-- <p>kieks (speaker 10) Caucasian female</p> -->
-									<a href="#" class="button">Kieks (speaker 10) Caucasian female, Not Actor</a>
-								</div>
-							</section>
-							<section class="post">
-								<div class="vid">
-								<iframe src="https://www.youtube.com/embed/gHDE9HC0NhA?rel=1&amp;controls=1&amp;autoplay=0&amp;mute=0&amp;start=0" style="left:0;top:0;width:384px;height:216px;pointer-events:auto" frameBorder="0" allow="autoplay; encrypted-media"></iframe>
-								</div>
-								<div class="content">
-									<!-- <h3>Imperdiet egestas</h3> -->
-									<!-- <p>scott (speaker 2) Caucasian male</p> -->
-									<a href="#" class="button">Scott (speaker 2): Caucasian male, Actor</a>
-								</div>
-							</section>
-						</span>
-						</div>
-
-						<div class="tab-pane fade" id=nav-contempt role=tabpanel aria-labelledby=nav-contact-tab>
-							<span class="posts">
-								<section class="post">
-									<a class="vid">
-									<iframe src="https://www.youtube.com/embed/GBkWYgbFFxQ?rel=1&amp;controls=1&amp;autoplay=0&amp;mute=0&amp;start=0" style="left:0;top:0;width:384px;height:216px;pointer-events:auto" frameBorder="0" allow="autoplay; encrypted-media"></iframe>
-									</a>
-									<div class="content">
-										<!-- <h3>Ultriasdsad agdfdsgf dslorem</h3> -->
-										<!-- <p>Ayana (speaker 21) African female</p> -->
-										<a href="#" class="button">Ayana (speaker 21): African Female, Actor</a>
-									</div>
-								</section>
-								<section class="post">
-									<div class="vid">
-									<iframe src="https://www.youtube.com/embed/gHDE9HC0NhA?rel=1&amp;controls=1&amp;autoplay=0&amp;mute=0&amp;start=0" style="left:0;top:0;width:384px;height:216px;pointer-events:auto" frameBorder="0" allow="autoplay; encrypted-media"></iframe>
-									</div>
-									<div class="content">
-										<!-- <h3>A egestas</h3> -->
-										<!-- <p>Solomon (speaker 3) African male</p> -->
-										<a href="#" class="button">Solomon (speaker 3): African male, Not Actor</a>
-									</div>
-								</section>
-								<section class="post", >
-									<a class="vid">
-									<iframe src="https://www.youtube.com/embed/5quB2-2Cenk?rel=1&amp;controls=1&amp;autoplay=0&amp;mute=0&amp;start=0" style="left:0;top:0;width:384px;height:216px;pointer-events:auto" frameBorder="0" allow="autoplay; encrypted-media"></iframe>
-									</a>
-									<div class="content">
-										<!-- <h3>Ultriasdsad agdfdsgf dslorem</h3> -->
-										<!-- <p>yingqing (speaker 27) Asian female</p> -->
-										<a href="#" class="button">Yingqing (speaker 27): Asian Female, Not Actor</a>
-									</div>
-								</section>
-								<section class="post">
-									<div class="vid">
-									<iframe src="https://www.youtube.com/embed/GBkWYgbFFxQ?rel=1&amp;controls=1&amp;autoplay=0&amp;mute=0&amp;start=0" style="left:0;top:0;width:384px;height:216px;pointer-events:auto" frameBorder="0" allow="autoplay; encrypted-media"></iframe>
-									</div>
-									<div class="content">
-										<!-- <h3>Imperdiet egestas</h3> -->
-										<!-- <p>lawrence (speaker 4) Asian male</p> -->
-										<a href="#" class="button">Lawrence (speaker 4) Asian Male, Actor</a>
-									
-									</div>
-								</section>
-								<section class="post">
-									<a class="vid">
-									<iframe src="https://www.youtube.com/embed/gyZxCTKo74I?rel=1&amp;controls=1&amp;autoplay=0&amp;mute=0&amp;start=0" style="left:0;top:0;width:384px;height:216px;pointer-events:auto" frameBorder="0" allow="autoplay; encrypted-media"></iframe>
-									</a>
-									<div class="content">
-										<!-- <h3>Ultriasdsad agdfdsgf dslorem</h3> -->
-										<!-- <p>kieks (speaker 10) Caucasian female</p> -->
-										<a href="#" class="button">Kieks (speaker 10) Caucasian female, Not Actor</a>
-									</div>
-								</section>
-								<section class="post">
-									<div class="vid">
-									<iframe src="https://www.youtube.com/embed/gHDE9HC0NhA?rel=1&amp;controls=1&amp;autoplay=0&amp;mute=0&amp;start=0" style="left:0;top:0;width:384px;height:216px;pointer-events:auto" frameBorder="0" allow="autoplay; encrypted-media"></iframe>
-									</div>
-									<div class="content">
-										<!-- <h3>Imperdiet egestas</h3> -->
-										<!-- <p>scott (speaker 2) Caucasian male</p> -->
-										<a href="#" class="button">Scott (speaker 2): Caucasian male, Actor</a>
-									</div>
-								</section>
-							</span>
-							</div>
-
-							<div class="tab-pane fade" id=nav-surprise role=tabpanel aria-labelledby=nav-contact-tab>
-								<span class="posts">
-									<section class="post">
-										<a class="vid">
-										<iframe src="https://www.youtube.com/embed/GBkWYgbFFxQ?rel=1&amp;controls=1&amp;autoplay=0&amp;mute=0&amp;start=0" style="left:0;top:0;width:384px;height:216px;pointer-events:auto" frameBorder="0" allow="autoplay; encrypted-media"></iframe>
-										</a>
-										<div class="content">
-											<!-- <h3>Ultriasdsad agdfdsgf dslorem</h3> -->
-											<!-- <p>Ayana (speaker 21) African female</p> -->
-											<a href="#" class="button">Ayana (speaker 21): African Female, Actor</a>
-										</div>
-									</section>
-									<section class="post">
-										<div class="vid">
-										<iframe src="https://www.youtube.com/embed/gHDE9HC0NhA?rel=1&amp;controls=1&amp;autoplay=0&amp;mute=0&amp;start=0" style="left:0;top:0;width:384px;height:216px;pointer-events:auto" frameBorder="0" allow="autoplay; encrypted-media"></iframe>
-										</div>
-										<div class="content">
-											<!-- <h3>A egestas</h3> -->
-											<!-- <p>Solomon (speaker 3) African male</p> -->
-											<a href="#" class="button">Solomon (speaker 3): African male, Not Actor</a>
-										</div>
-									</section>
-									<section class="post", >
-										<a class="vid">
-										<iframe src="https://www.youtube.com/embed/Gacxq0RcHnE?rel=1&amp;controls=1&amp;autoplay=0&amp;mute=0&amp;start=0" style="left:0;top:0;width:384px;height:216px;pointer-events:auto" frameBorder="0" allow="autoplay; encrypted-media"></iframe>
-										</a>
-										<div class="content">
-											<!-- <h3>Ultriasdsad agdfdsgf dslorem</h3> -->
-											<!-- <p>yingqing (speaker 27) Asian female</p> -->
-											<a href="#" class="button">Yingqing (speaker 27): Asian Female, Not Actor</a>
-										</div>
-									</section>
-									<section class="post">
-										<div class="vid">
-										<iframe src="https://www.youtube.com/embed/GBkWYgbFFxQ?rel=1&amp;controls=1&amp;autoplay=0&amp;mute=0&amp;start=0" style="left:0;top:0;width:384px;height:216px;pointer-events:auto" frameBorder="0" allow="autoplay; encrypted-media"></iframe>
-										</div>
-										<div class="content">
-											<!-- <h3>Imperdiet egestas</h3> -->
-											<!-- <p>lawrence (speaker 4) Asian male</p> -->
-											<a href="#" class="button">Lawrence (speaker 4) Asian Male, Actor</a>
-										
-										</div>
-									</section>
-									<section class="post">
-										<a class="vid">
-										<iframe src="https://www.youtube.com/embed/2Q05iWvVD1g?rel=1&amp;controls=1&amp;autoplay=0&amp;mute=0&amp;start=0" style="left:0;top:0;width:384px;height:216px;pointer-events:auto" frameBorder="0" allow="autoplay; encrypted-media"></iframe>
-										</a>
-										<div class="content">
-											<!-- <h3>Ultriasdsad agdfdsgf dslorem</h3> -->
-											<!-- <p>kieks (speaker 10) Caucasian female</p> -->
-											<a href="#" class="button">Kieks (speaker 10) Caucasian female, Not Actor</a>
-										</div>
-									</section>
-									<section class="post">
-										<div class="vid">
-										<iframe src="https://www.youtube.com/embed/gHDE9HC0NhA?rel=1&amp;controls=1&amp;autoplay=0&amp;mute=0&amp;start=0" style="left:0;top:0;width:384px;height:216px;pointer-events:auto" frameBorder="0" allow="autoplay; encrypted-media"></iframe>
-										</div>
-										<div class="content">
-											<!-- <h3>Imperdiet egestas</h3> -->
-											<!-- <p>scott (speaker 2) Caucasian male</p> -->
-											<a href="#" class="button">Scott (speaker 2): Caucasian male, Actor</a>
-										</div>
-									</section>
-								</span>
-								</div>
-
-								<div class="tab-pane fade" id=nav-fear role=tabpanel aria-labelledby=nav-contact-tab>
-									<span class="posts">
-										<section class="post">
-											<a class="vid">
-											<iframe src="https://www.youtube.com/embed/GBkWYgbFFxQ?rel=1&amp;controls=1&amp;autoplay=0&amp;mute=0&amp;start=0" style="left:0;top:0;width:384px;height:216px;pointer-events:auto" frameBorder="0" allow="autoplay; encrypted-media"></iframe>
-											</a>
-											<div class="content">
-												<!-- <h3>Ultriasdsad agdfdsgf dslorem</h3> -->
-												<!-- <p>Ayana (speaker 21) African female</p> -->
-												<a href="#" class="button">Ayana (speaker 21): African Female, Actor</a>
-											</div>
-										</section>
-										<section class="post">
-											<div class="vid">
-											<iframe src="https://www.youtube.com/embed/gHDE9HC0NhA?rel=1&amp;controls=1&amp;autoplay=0&amp;mute=0&amp;start=0" style="left:0;top:0;width:384px;height:216px;pointer-events:auto" frameBorder="0" allow="autoplay; encrypted-media"></iframe>
-											</div>
-											<div class="content">
-												<!-- <h3>A egestas</h3> -->
-												<!-- <p>Solomon (speaker 3) African male</p> -->
-												<a href="#" class="button">Solomon (speaker 3): African male, Not Actor</a>
-											</div>
-										</section>
-										<section class="post", >
-											<a class="vid">
-											<iframe src="https://www.youtube.com/embed/AOvxy4u9eAI?rel=1&amp;controls=1&amp;autoplay=0&amp;mute=0&amp;start=0" style="left:0;top:0;width:384px;height:216px;pointer-events:auto" frameBorder="0" allow="autoplay; encrypted-media"></iframe>
-											</a>
-											<div class="content">
-												<!-- <h3>Ultriasdsad agdfdsgf dslorem</h3> -->
-												<!-- <p>yingqing (speaker 27) Asian female</p> -->
-												<a href="#" class="button">Yingqing (speaker 27): Asian Female, Not Actor</a>
-											</div>
-										</section>
-										<section class="post">
-											<div class="vid">
-											<iframe src="https://www.youtube.com/embed/GBkWYgbFFxQ?rel=1&amp;controls=1&amp;autoplay=0&amp;mute=0&amp;start=0" style="left:0;top:0;width:384px;height:216px;pointer-events:auto" frameBorder="0" allow="autoplay; encrypted-media"></iframe>
-											</div>
-											<div class="content">
-												<!-- <h3>Imperdiet egestas</h3> -->
-												<!-- <p>lawrence (speaker 4) Asian male</p> -->
-												<a href="#" class="button">Lawrence (speaker 4) Asian Male, Actor</a>
-											
-											</div>
-										</section>
-										<section class="post">
-											<a class="vid">
-											<iframe src="https://www.youtube.com/embed/TqcFiXTKktU?rel=1&amp;controls=1&amp;autoplay=0&amp;mute=0&amp;start=0" style="left:0;top:0;width:384px;height:216px;pointer-events:auto" frameBorder="0" allow="autoplay; encrypted-media"></iframe>
-											</a>
-											<div class="content">
-												<!-- <h3>Ultriasdsad agdfdsgf dslorem</h3> -->
-												<!-- <p>kieks (speaker 10) Caucasian female</p> -->
-												<a href="#" class="button">Kieks (speaker 10) Caucasian female, Not Actor</a>
-											</div>
-										</section>
-										<section class="post">
-											<div class="vid">
-											<iframe src="https://www.youtube.com/embed/gHDE9HC0NhA?rel=1&amp;controls=1&amp;autoplay=0&amp;mute=0&amp;start=0" style="left:0;top:0;width:384px;height:216px;pointer-events:auto" frameBorder="0" allow="autoplay; encrypted-media"></iframe>
-											</div>
-											<div class="content">
-												<!-- <h3>Imperdiet egestas</h3> -->
-												<!-- <p>scott (speaker 2) Caucasian male</p> -->
-												<a href="#" class="button">Scott (speaker 2): Caucasian male, Actor</a>
-											</div>
-										</section>
-									</span>
-									</div>
-
-									<div class="tab-pane fade" id=nav-disgust role=tabpanel aria-labelledby=nav-contact-tab>
-										<span class="posts">
-											<section class="post">
-												<a class="vid">
-												<iframe src="https://www.youtube.com/embed/GBkWYgbFFxQ?rel=1&amp;controls=1&amp;autoplay=0&amp;mute=0&amp;start=0" style="left:0;top:0;width:384px;height:216px;pointer-events:auto" frameBorder="0" allow="autoplay; encrypted-media"></iframe>
-												</a>
-												<div class="content">
-													<!-- <h3>Ultriasdsad agdfdsgf dslorem</h3> -->
-													<!-- <p>Ayana (spe
-aker 21) African female</p> -->
-													<a href="#" class="button">Ayana (speaker 21): African Female, Actor</a>
-												</div>
-											</section>
-											<section class="post">
-												<div class="vid">
-												<iframe src="https://www.youtube.com/embed/gHDE9HC0NhA?rel=1&amp;controls=1&amp;autoplay=0&amp;mute=0&amp;start=0" style="left:0;top:0;width:384px;height:216px;pointer-events:auto" frameBorder="0" allow="autoplay; encrypted-media"></iframe>
-												</div>
-												<div class="content">
-													<!-- <h3>A egestas</h3> -->
-													<!-- <p>Solomon (speaker 3) African male</p> -->
-													<a href="#" class="button">Solomon (speaker 3): African male, Not Actor</a>
-												</div>
-											</section>
-											<section class="post", >
-												<a class="vid">
-												<iframe src="https://www.youtube.com/embed/ZoMqH_GR4Ss?rel=1&amp;controls=1&amp;autoplay=0&amp;mute=0&amp;start=0" style="left:0;top:0;width:384px;height:216px;pointer-events:auto" frameBorder="0" allow="autoplay; encrypted-media"></iframe>
-												</a>
-												<div class="content">
-													<!-- <h3>Ultriasdsad agdfdsgf dslorem</h3> -->
-													<!-- <p>yingqing (speaker 27) Asian female</p> -->
-													<a href="#" class="button">Yingqing (speaker 27): Asian Female, Not Actor</a>
-												</div>
-											</section>
-											<section class="post">
-												<div class="vid">
-												<iframe src="https://www.youtube.com/embed/GBkWYgbFFxQ?rel=1&amp;controls=1&amp;autoplay=0&amp;mute=0&amp;start=0" style="left:0;top:0;width:384px;height:216px;pointer-events:auto" frameBorder="0" allow="autoplay; encrypted-media"></iframe>
-												</div>
-												<div class="content">
-													<!-- <h3>Imperdiet egestas</h3> -->
-													<!-- <p>lawrence (speaker 4) Asian male</p> -->
-													<a href="#" class="button">Lawrence (speaker 4) Asian Male, Actor</a>
-												
-												</div>
-											</section>
-											<section class="post">
-												<a class="vid">
-												<iframe src="https://www.youtube.com/embed/_vJMCDzbmdM?rel=1&amp;controls=1&amp;autoplay=0&amp;mute=0&amp;start=0" style="left:0;top:0;width:384px;height:216px;pointer-events:auto" frameBorder="0" allow="autoplay; encrypted-media"></iframe>
-												</a>
-												<div class="content">
-													<!-- <h3>Ultriasdsad agdfdsgf dslorem</h3> -->
-													<!-- <p>kieks (speaker 10) Caucasian female</p> -->
-													<a href="#" class="button">Kieks (speaker 10) Caucasian female, Not Actor</a>
-												</div>
-											</section>
-											<section class="post">
-												<div class="vid">
-												<iframe src="https://www.youtube.com/embed/gHDE9HC0NhA?rel=1&amp;controls=1&amp;autoplay=0&amp;mute=0&amp;start=0" style="left:0;top:0;width:384px;height:216px;pointer-events:auto" frameBorder="0" allow="autoplay; encrypted-media"></iframe>
-												</div>
-												<div class="content">
-													<!-- <h3>Imperdiet egestas</h3> -->
-													<!-- <p>scott (speaker 2) Caucasian male</p> -->
-													<a href="#" class="button">Scott (speaker 2): Caucasian male, Actor</a>
-												</div>
-											</section>
-										</span>
-										</div>
-				
-					</div>
-				</div>
-			</section>
-            
-
-			<section id="pad" class="padwrapper"></section>
-
-			<div class="white_section_nerf">
-				<div class="w-container">
-				<!-- <h2 class="grey-heading_nerf"></h2> -->
-				<div class="grey_container w-container">
-				  <div class="bibtex">
-				<pre><code>BibTeX
-				@inproceedings{
-				liu2021beat,
-				title = {BEAT: A Large-Scale Semantic and Emotional Multi-Modal Dataset for Conversational Gestures Synthesis},
-				author = {Liu, Haiyang and Zhu, Zihao and Iwamoto, Naoya and Peng, Yichen and Li, Zhengqing and Zhou, You and Bozkurt, Elif and Zheng, Bo},
-				booktitle = {European conference on computer vision}, year = {2022},}  
-				<!-- %booktitle = {European conference on computer vision}, -->
-				
-			   </code></pre>
-					</div>
-				  </div>
-				  </div>
-				</div>
-  
-
-		<!-- Footer -->
-			<footer id="footer">
-				<!-- <div class="content">
-					<div class="inner">
-						<section class="about">
-							<!-- <h3>Paper (ECCV2022)</h3>
-							<p>BEAT: A Large-Scale Semantic and Emotional Multi-Modal Dataset for Conversational Gestures Synthesis.</p>
-							<ul class="actions">
-								<li><a href="#" class="button">ArXiv Version</a></li>
-							</ul> -->
-						<!-- </section>
-						<ul class="icons bulleted">
-							<li class="icon solid fa-map-marker-alt">
-								<h3>Address</h3>
-								<p>Untitled Corp<br />
-								1234 Fictional Road<br />
-								Suite 5432<br />
-								Nashville, TN 00000</p>
-							</li>
-						</ul> -->
-						<!-- <ul class="icons bulleted">
-							<li class="icon solid fa-phone">
-								<h3>Phone</h3>
-								<p>(000) 000-0000</p>
-							</li>
-							<li class="icon solid fa-envelope">
-								<h3>Email</h3>
-								<p><a href="#">information@untitled.tld</a></p>
-							</li>
-						</ul> -->
-					<!-- </div>
-				</div> --> 
-				<p class="copyright">&copy; BEAT. 2022. All rights reserved.<br />
-				<!-- <a href="#">Terms of Use</a> | <a href="#">Privacy Policy</a> | <a href="#">Contact</a></p> -->
-			</footer>
-
-		<!-- Scripts -->
-			<script src="assets/js/jquery.min.js"></script>
-			<script src="assets/js/jquery.dropotron.min.js"></script>
-			<script src="assets/js/jquery.scrollex.min.js"></script>
-			<script src="assets/js/browser.min.js"></script>
-			<script src="assets/js/breakpoints.min.js"></script>
-			<script src="assets/js/util.js"></script>
-			<script src="assets/js/main.js"></script>
-	</body>
-</html>
+</DOCTYPE>

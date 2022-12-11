@@ -1,0 +1,131 @@
+body {
+    font-family: 'Roboto', sans-serif;
+	font-weight: 300;
+}
+h2, h3, h4, h5, h6, .form-control, small {
+	font-weight: 300;
+}
+p, .form-control, li {
+	font-size: 0.91em
+}
+#paper-title h3 small {
+	color: #777;
+	font-size: 0.7em
+}
+.container > .row > img.img-responsive,
+.container > .row > div > img.img-responsive {
+	padding: 1em 0
+}
+.row img.img-responsive {
+	width: 100%;
+    vertical-align: middle;
+}
+.row video {
+	width: 100%;
+    margin-left: auto;
+    margin-right: auto;
+}
+#authors .list-inline-item {
+	padding: 0.5em
+}
+.gif-label {
+	margin: 0.3em 0;
+	font-size: 0.8em;
+}
+.gif-label > div {
+	text-align: center;
+	padding: 0
+}
+#dynamic-teaser .gif-label {
+	margin: 0 -15px;
+}
+body > .container > .row > div {
+	padding: 0 2em
+}
+body > .container > .row > div.grey-container  {
+	background: #f2f2f2;
+	padding: 1.5em 2em
+}
+.row.eleven-col {
+	width: 109.0909090909%;
+	overflow: hidden
+}
+.row.ten-col {
+	width: 120%;
+	overflow: hidden
+}
+.row.eight-col {
+	width: 150%;
+	overflow: hidden
+}
+.io-arrow {
+	position: relative;
+	display:block;
+	text-align:center;
+}
+.io-arrow > svg {
+	position: absolute;
+	color: #555;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%)
+}
+
+#teaser-one .row > div > .row {
+	padding: 0 35px
+}
+#teaser-two > div > .row {
+	padding: 0 15px
+}
+
+#teaser-one .row > div,
+#teaser-two .row > div {
+	padding: 0
+}
+
+#dynamic-teaser {
+	position: relative;
+	width: 100%;
+}
+
+@media only screen and (max-width: 992px) {
+	#teaser-one .row > div > .row {
+		padding: 0 55px
+	}
+}
+@media only screen and (max-width: 768px) {
+	#teaser-one .row > div > .row {
+		padding: 0 75px
+	}
+}
+@media only screen and (max-width: 576px) {
+	#teaser-one .row > div > .row {
+		padding: 0 35px
+	}
+}
+
+.helper {
+    /* display: inline-block; */
+    /* height: 100%; */
+    vertical-align: middle;
+}
+
+.bottom-middle {
+	text-align: center;
+	position: absolute;
+	bottom: 0px;
+	right: 16px;
+	left: 50%;
+	font-size: 4px;
+	transform: translate(-50%, -50%);
+}
+.bibtex {
+	white-space: pre-wrap;
+	font-family: monospace;
+	line-height: 150%;
+	background: #f3f3f3;
+	padding: 10px;
+	display: inline-block;
+	border-radius: 4px;
+	width: 100%
+}
