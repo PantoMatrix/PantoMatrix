@@ -1,5 +1,6 @@
 # BEAT(CaMN) — Official PyTorch implementation 
 ## New
+- Ongoing (SMPL-X version data)
 - [Project Page](https://pantomatrix.github.io/BEAT/). [Download Dataset](https://drive.google.com/drive/folders/1CVyJOp3G_A9l1N_CsKdHgXQfB4pXhG8c). [Rendered Results](https://drive.google.com/drive/folders/1ghZ7_4LkCyM_IZxTElzAwPzGheLrBGBu)
 - This repository is as same as our anonymous [submission in 202203](https://github.com/beat2022dataset/beat)
 
