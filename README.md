@@ -1,7 +1,7 @@
 # BEAT(CaMN) — Official PyTorch implementation 
 ## New
 - [Project Page](https://pantomatrix.github.io/BEAT/). [Download Dataset](https://drive.google.com/drive/folders/1CVyJOp3G_A9l1N_CsKdHgXQfB4pXhG8c). [Rendered Results](https://drive.google.com/drive/folders/1ghZ7_4LkCyM_IZxTElzAwPzGheLrBGBu)
-- This repository is as same as our anonymous [submission in 202203](https://github.com/beat2022dataset/beat) which maintenance support is no longer available. We suggest to try our new supportted unified [framework](https://github.com/PantoMatrix/MotionStudio).  
+- This repository is as same as our anonymous [submission in 202203](https://github.com/beat2022dataset/beat)
 
 
 ## Contents
