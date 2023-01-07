@@ -5,7 +5,8 @@
 <h1 style="text-align: center;">
 BEAT: Body-Expression-Audio-Text Dataset 
 </h1>
-
+	
+[![PWC](https://img.shields.io/endpoint.svg?url=https://paperswithcode.com/badge/beat-a-large-scale-semantic-and-emotional/gesture-generation-on-beat)](https://paperswithcode.com/sota/gesture-generation-on-beat?p=beat-a-large-scale-semantic-and-emotional)
  
 # News 
 - **[Ongoing]** SMPL-X version data.
