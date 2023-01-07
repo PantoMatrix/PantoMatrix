@@ -7,6 +7,8 @@ BEAT: Body-Expression-Audio-Text Dataset
 </h1>
 	
 [![PWC](https://img.shields.io/endpoint.svg?url=https://paperswithcode.com/badge/beat-a-large-scale-semantic-and-emotional/gesture-generation-on-beat)](https://paperswithcode.com/sota/gesture-generation-on-beat?p=beat-a-large-scale-semantic-and-emotional)
+[![Hugging Face Spaces](https://img.shields.io/badge/%F0%9F%A4%97%20Hugging%20Face-Spaces-blue)](https://huggingface.co/H-Liu1997/BEAT/tree/main)
+[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)]()
  
 # News 
 - **[Ongoing]** SMPL-X version data.
