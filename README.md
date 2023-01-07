@@ -163,3 +163,14 @@ split_rule_english = {
 - remove modalities, e.g., remove facial expressions.
     - set `facial_rep: None` and `facial_f: 0` in `.yaml`
     - set `dataset: trinity` in `.yaml`
+
+## Citation
+BEAT is established for the following research project. Please consider cite our work if you use BEAT dataset.
+```bib
+@article{liu2022beat,
+  title   = {BEAT: A Large-Scale Semantic and Emotional Multi-Modal Dataset for Conversational Gestures Synthesis},
+  author  = {Haiyang Liu, Zihao Zhu, Naoya Iwamoto, Yichen Peng, Zhengqing Li, You Zhou, Elif Bozkurt, Bo Zheng},
+  journal = {European Conference on Computer Vision},
+  year    = {2022}
+}
+```
