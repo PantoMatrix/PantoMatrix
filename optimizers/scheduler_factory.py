@@ -25,12 +25,12 @@ def create_scheduler(args, optimizer, **kwargs):
     if args.lr_policy == 'cosine':
         lr_scheduler = CosineLRScheduler(
             optimizer,
-            t_initial=kwargs["total_steps"],
+            t_initial=num_epochs,
             t_mul=getattr(args, 'lr_cycle_mul', 1.),
-            lr_min=args.MIN_LR,
-            decay_rate=args.DECAY_RATE,
-            warmup_lr_init=args.WARMUP_LR,
-            warmup_t=args.WARMUP_EPOCHS,
+            lr_min=args.lr_min,
+            decay_rate=args.decay_rate,
+            warmup_lr_init=args.warmup_lr,
+            warmup_t=args.warmup_epochs,
             cycle_limit=getattr(args, 'lr_cycle_limit', 1),
             t_in_epochs=True,
             noise_range_t=noise_range,

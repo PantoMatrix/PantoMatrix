@@ -5,6 +5,7 @@ import torch
 import csv
 import pprint
 from loguru import logger
+from collections import OrderedDict
 
 def print_exp_info(args):
     logger.info(pprint.pformat(vars(args)))
@@ -75,7 +76,18 @@ def save_checkpoints(save_path, model, opt=None, epoch=None, lrs=None):
 
 def load_checkpoints(model, save_path, load_name='model'):
     states = torch.load(save_path)
-    model.load_state_dict(states['model_state'])
+    new_weights = OrderedDict()
+    flag=False
+    for k, v in states['model_state'].items():
+        if "module" not in k:
+            break
+        else:
+            new_weights[k[7:]]=v
+            flag=True
+    if flag: 
+        model.load_state_dict(new_weights)
+    else:
+        model.load_state_dict(states['model_state'])
     logger.info(f"load self-pretrained checkpoints for {load_name}")
 
 

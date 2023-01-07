@@ -13,6 +13,7 @@ from termcolor import colored
 from loguru import logger
 from collections import defaultdict
 from torch.utils.data import Dataset
+import torch.distributed as dist
 import pyarrow
 from sklearn.preprocessing import normalize
 # import librosa 
@@ -24,18 +25,14 @@ from .build_vocab import Vocab
 class CustomDataset(Dataset):
     def __init__(self, args, loader_type, augmentation=None, kwargs=None, build_cache=True):
         self.loader_type = loader_type
+        self.rank = dist.get_rank()
         self.new_cache = args.new_cache
         self.pose_length = args.pose_length #34
         self.stride = args.stride #10
         self.pose_fps = args.pose_fps #15
         self.pose_dims = args.pose_dims # 141
-        self.mean_pose = np.load(args.root_path+args.mean_pose_path+f"{args.pose_rep}/mean.npy")
-        self.std_pose = np.load(args.root_path+args.std_pose_path+f"{args.pose_rep}/std.npy")
-        self.audio_norm = args.audio_norm
-        if self.audio_norm:
-            self.mean_audio = np.load(args.mean_audio_path+f"{args.audio_rep}/mean.npy")
-            self.std_audio = np.load(args.std_audio_path+f"{args.audio_rep}/std.npy")
-     
+
+        self.speaker_dims = args.speaker_dims
         self.loader_type = loader_type
         self.audio_rep = args.audio_rep
         self.pose_rep = args.pose_rep
@@ -44,35 +41,57 @@ class CustomDataset(Dataset):
         self.emo_rep = args.emo_rep
         self.sem_rep = args.sem_rep
         self.audio_fps = args.audio_fps
-        self.speaker_id = args.speaker_id
+        self.id_rep = args.speaker_id
         
         self.disable_filtering = args.disable_filtering
         self.clean_first_seconds = args.clean_first_seconds
         self.clean_final_seconds = args.clean_final_seconds
         
+        self.ori_stride = self.stride
+        self.ori_length = self.pose_length
+        self.alignment = [0,0] # for beat
+        
         if loader_type == "train":
             self.data_dir = args.root_path + args.train_data_path
+            self.multi_length_training = args.multi_length_training
         elif loader_type == "val":
             self.data_dir = args.root_path + args.val_data_path
+            self.multi_length_training = args.multi_length_training 
         else:
             self.data_dir = args.root_path + args.test_data_path
+            self.multi_length_training = [1.0]
+      
+        self.max_length = int(self.pose_length * self.multi_length_training[-1])
         
-        if self.word_rep is not "None":
-            with open("../../datasets/beat/vocab.pkl", 'rb') as f:
+        if self.word_rep is not None:
+            with open(f"{args.root_path}{args.train_data_path[:-6]}vocab.pkl", 'rb') as f:
                 self.lang_model = pickle.load(f)
-        if build_cache:
-            self.build_cache()
-            
+        preloaded_dir = self.data_dir + f"{self.pose_rep}_cache"
         
-     
+        self.mean_pose = np.load(args.root_path+args.mean_pose_path+f"{args.pose_rep}/bvh_mean.npy")
+        self.std_pose = np.load(args.root_path+args.mean_pose_path+f"{args.pose_rep}/bvh_std.npy")
+        self.audio_norm = args.audio_norm
+        self.facial_norm = args.facial_norm
+        if self.audio_norm:
+            self.mean_audio = np.load(args.root_path+args.mean_pose_path+f"{args.audio_rep}/npy_mean.npy")
+            self.std_audio = np.load(args.root_path+args.mean_pose_path+f"{args.audio_rep}/npy_std.npy")
+        if self.facial_norm:
+            self.mean_facial = np.load(args.root_path+args.mean_pose_path+f"{args.facial_rep}/json_mean.npy")
+            self.std_facial = np.load(args.root_path+args.mean_pose_path+f"{args.facial_rep}/json_std.npy")
             
-    def build_cache(self):
+        if build_cache and self.rank == 0:
+            self.build_cache(preloaded_dir)
+        self.lmdb_env = lmdb.open(preloaded_dir, readonly=True, lock=False)
+        with self.lmdb_env.begin() as txn:
+            self.n_samples = txn.stat()["entries"]    
+
+            
+    def build_cache(self, preloaded_dir):
         logger.info(f"Audio bit rate: {self.audio_fps}")
         logger.info("Reading data '{}'...".format(self.data_dir))
-        preloaded_dir = self.data_dir + f"{self.pose_rep}_cache"
+        
         # pose_length_extended = int(round(self.pose_length))
         logger.info("Creating the dataset cache...")
-
         if self.new_cache:
             if os.path.exists(preloaded_dir):
                 shutil.rmtree(preloaded_dir)
@@ -89,119 +108,91 @@ class CustomDataset(Dataset):
                 preloaded_dir, self.disable_filtering, 
                 self.clean_first_seconds, self.clean_final_seconds,
                 is_test=False)
-
-        self.lmdb_env = lmdb.open(preloaded_dir, readonly=True, lock=False)
-        with self.lmdb_env.begin() as txn:
-            self.n_samples = txn.stat()["entries"]
         
     
     def __len__(self):
-        #print("in_dataset:", self.n_samples)
         return self.n_samples
 
     def cache_generation(self, out_lmdb_dir, disable_filtering, clean_first_seconds,  clean_final_seconds, is_test=False):
         self.n_out_samples = 0
-        audio_files = sorted(glob.glob(os.path.join(self.data_dir, f"{self.audio_rep}",) + "/*.wav"), key=str,)
-        pose_files = sorted(glob.glob(os.path.join(self.data_dir, f"{self.pose_rep}") + "/*.bvh"), key=str,)
-        # print(audio_files, pose_files)
-        if self.facial_rep != "None":
-            facial_files = sorted(glob.glob(os.path.join(self.data_dir, f"{self.facial_rep}") + "/*.json"),key=str,)
-        else: 
-            facial_files = []
-            
-        if self.word_rep != "None":
-            word_files = sorted(glob.glob(os.path.join(self.data_dir, f"{self.word_rep}") + "/*.TextGrid"),key=str,)
-        else: 
-            word_files = []
-            
-        if self.emo_rep != "None":
-            emo_files = sorted(glob.glob(os.path.join(self.data_dir, f"{self.emo_rep}") + "/*.txt"),key=str,)
-        else: 
-            emo_files = []
-            
-        if self.sem_rep != "None":
-            sem_files = sorted(glob.glob(os.path.join(self.data_dir, f"{self.sem_rep}") + "/*.txt"),key=str,)
-        else: 
-            sem_files = []
-            
+        pose_files = sorted(glob.glob(os.path.join(self.data_dir, f"{self.pose_rep}") + "/*.bvh"), key=str,)  
         # create db for samples
-        map_size = int(1024 * 1024 * 2048 * (self.audio_fps/16000)**3 * 4)  # in 1024 MB
+        map_size = int(1024 * 1024 * 2048 * (self.audio_fps/16000)**3 * 4) * (len(pose_files)/30*(self.pose_fps/15)) * len(self.multi_length_training) * self.multi_length_training[-1] * 2 # in 1024 MB
         dst_lmdb_env = lmdb.open(out_lmdb_dir, map_size=map_size)
         n_filtered_out = defaultdict(int)
-        counter_audio = -1
-        for audio_file in audio_files:
+    
+        for pose_file in pose_files:
+            pose_each_file = []
             audio_each_file = []
-            pose_each_file = [] 
             facial_each_file = []
             word_each_file = []
-            vid_each_file = []
             emo_each_file = []
             sem_each_file = []
+            vid_each_file = []
             
-            id_audio = audio_file[-11:-4] #000_000 
-            exist = False
-            for pose_file in range(len(pose_files)):
-                id_pose = pose_files[pose_file][-11:-4]
-                if id_audio == id_pose:
-                    logger.info(colored(f"# ---- Building cache for Audio {id_audio} and Pose {id_pose} ---- #", "blue"))
-                    id_pose = pose_file
-                    exist = True
-                    counter_audio += 1
-                    break
-            if not exist: continue
-            
-            if self.speaker_id:
-                vid_each_file.append(int(id_audio[:3]))
-            
-            # the librosa cannot use on the cloud sever
-            # audio_data, _ = librosa.load(audio_file, sr=None)
-            if self.audio_rep == "melspec":
-                audio_each_file = np.load(f"{audio_file[:-4]}_melspec_128_64.npy").transpose(1,0)
-                self.audio_fps = 32
-            elif self.audio_rep == "disentangled":
-                audio_each_file = np.load(f"{audio_file[:-4]}_disentangled_v1.npy").transpose(1,0)
-            else:
-                sr, audio_each_file = scipy.io.wavfile.read(audio_file) # np array
-                audio_each_file = audio_each_file[::sr//16000]
-                
-            if self.audio_norm:
-                audio_each_file = (audio_each_file - self.mean_audio) / self.std_audio
-                
-            with open(pose_files[id_pose], "r") as pose_data:
+            id_pose = pose_file.split("/")[-1][:-4] #1_wayne_0_1_1
+            logger.info(colored(f"# ---- Building cache for Pose   {id_pose} ---- #", "blue"))
+            with open(pose_file, "r") as pose_data:
                 for j, line in enumerate(pose_data.readlines()):
                     data = np.fromstring(line, dtype=float, sep=" ") # 1*27 e.g., 27 rotation 
                     pose_each_file.append(data)
             pose_each_file = np.array(pose_each_file) # n frames * 27
-        
-            
-            if len(facial_files) != 0:
-                for facial_file in range(len(facial_files)):
-                    id_facial = facial_files[facial_file][-12:-5]
-                    if id_audio == id_facial:
-                        logger.info(f"# ---- Building cache for Audio {id_audio} and Facial {id_facial} ---- #")
-                        id_facial = facial_file
-                        break
-                with open(facial_files[id_facial], 'r') as facial_data_file:
-                    facial_data = json.load(facial_data_file)
-                    facial_factor = math.ceil(1/((facial_data['frames'][20]['time'] - facial_data['frames'][10]['time'])/10))//self.pose_fps
-                    #print(facial_data['frames'][20]['time'] - facial_data['frames'][10]['time']) 
-                    for j, frame_data in enumerate(facial_data['frames']):
-                        # 60FPS to 15FPS
-                        if j % facial_factor == 0:
-                            facial_each_file.append(frame_data['weights']) 
-                facial_each_file = np.array(facial_each_file)
+
+            if self.audio_rep is not None:
+                logger.info(f"# ---- Building cache for Audio  {id_pose} and Pose {id_pose} ---- #")
+                audio_file = pose_file.replace(self.pose_rep, self.audio_rep).replace("bvh", "npy")
+                try:
+                    # the librosa cannot use on the cloud sever
+#                     audio_data, _ = librosa.load(audio_file, sr=None)
+#                     if self.audio_rep == "melspec":
+#                         audio_each_file = np.load(f"{audio_file[:-4]}_melspec_128_64.npy").transpose(1,0)
+#                         self.audio_fps = 32
+#                     elif self.audio_rep == "disentangled":
+#                         audio_each_file = np.load(f"{audio_file[:-4]}_disentangled_v1.npy").transpose(1,0)
+#                     else:
+#                         sr, audio_each_file = scipy.io.wavfile.read(audio_file) # np array
+#                     audio_each_file = audio_each_file[::sr//16000]
+                    audio_each_file = np.load(audio_file)
+                except:
+                    logger.warning(f"# ---- file not found for Audio {id_pose}, skip all files with the same id ---- #")
+                    continue
+                if self.audio_norm: 
+                    audio_each_file = (audio_each_file - self.mean_audio) / self.std_audio
+                    
+            if self.facial_rep is not None:
+                logger.info(f"# ---- Building cache for Facial {id_pose} and Pose {id_pose} ---- #")
+                facial_file = pose_file.replace(self.pose_rep, self.facial_rep).replace("bvh", "json")
+                try:
+                    with open(facial_file, 'r') as facial_data_file:
+                        facial_data = json.load(facial_data_file)
+                        for j, frame_data in enumerate(facial_data['frames']):
+                            if self.facial_norm:
+                                facial_each_file.append((frame_data['weights']-self.mean_facial) / self.std_facial)
+                            else:
+                                facial_each_file.append(frame_data['weights'])
+                    facial_each_file = np.array(facial_each_file)
+                except:
+                    logger.warning(f"# ---- file not found for Facial {id_pose}, skip all files with the same id ---- #")
+                    continue
+                    
+            if id_pose.split("_")[-1] == "b":
+                time_offset = 30 if int(id_pose.split("_")[-3]) % 2 == 0 else 300
+                logger.warning(time_offset)
+            else:
+                time_offset = 0
                 
-            if len(word_files) != 0:
-                for word_file in range(len(word_files)):
-                    id_word = word_files[word_file][-16:-9]
-                    if id_audio == id_word:
-                        logger.info(f"# ---- Building cache for Audio {id_audio} and Word {id_word} ---- #")
-                        id_word = word_file
-                        break
-                tgrid = tg.TextGrid.fromFile(word_files[id_word])
+            if self.word_rep is not None:
+                logger.info(f"# ---- Building cache for Word   {id_pose} and Pose {id_pose} ---- #")
+                word_file = pose_file.replace(self.pose_rep, self.word_rep).replace("bvh", "TextGrid")
+                try:
+                    tgrid = tg.TextGrid.fromFile(word_file)
+                except:
+                    logger.warning(f"# ---- file not found for Word {id_pose}, skip all files with the same id ---- #")
+                    continue
+                # the length of text file are reduce to the length of motion file, for x_x_a or x_x_b
                 for i in range(pose_each_file.shape[0]):
                     found_flag = False
-                    current_time = i/self.pose_fps
+                    current_time = i/self.pose_fps + time_offset
                     for word in tgrid[0]:
                         word_n, word_s, word_e = word.mark, word.minTime, word.maxTime
                         if word_s<=current_time and current_time<=word_e:
@@ -214,24 +205,23 @@ class CustomDataset(Dataset):
                             break
                         else: continue   
                     if not found_flag: word_each_file.append(self.lang_model.UNK_token)
+                # list of index
                 word_each_file = np.array(word_each_file)
-                #print(word_each_file)    
                     
-            
-            if len(emo_files) != 0:
-                for emo_file in range(len(emo_files)):
-                    id_emo = emo_files[emo_file][-11:-4]
-                    if id_audio == id_emo:
-                        logger.info(f"# ---- Building cache for Audio {id_audio} and Emo {id_emo} ---- #")
-                        id_emo = emo_file
-                        break
-                emo_all = pd.read_csv(emo_files[id_emo], 
-                    sep='\t', 
-                    names=["name", "x", "start_time", "start", "end_time", "end", "duration_time", "duration", "score"])
+            if self.emo_rep is not None:
+                logger.info(f"# ---- Building cache for Emo    {id_pose} and Pose {id_pose} ---- #")
+                emo_file = pose_file.replace(self.pose_rep, self.emo_rep).replace("bvh", "csv")
+                try:    
+                    emo_all = pd.read_csv(emo_file, 
+                        sep=',', 
+                        names=["name", "start_time", "end_time", "duration", "score"])
+                except:
+                    logger.warning(f"# ---- file not found for Emo {id_pose}, skip all files with the same id ---- #")
+                    continue
                 for i in range(pose_each_file.shape[0]):
                     found_flag = False
-                    for j, (start, end, score) in enumerate(zip(emo_all['start'],emo_all['end'], emo_all['score'])):
-                        current_time = i/self.pose_fps
+                    for j, (start, end, score) in enumerate(zip(emo_all['start_time'],emo_all['end_time'], emo_all['score'])):
+                        current_time = i/self.pose_fps + time_offset
                         if start<=current_time and current_time<=end: 
                             emo_each_file.append(score)
                             found_flag=True
@@ -241,20 +231,21 @@ class CustomDataset(Dataset):
                 emo_each_file = np.array(emo_each_file)
                 #print(emo_each_file)
                 
-            if len(sem_files) != 0:
-                for sem_file in range(len(sem_files)):
-                    id_sem = sem_files[sem_file][-11:-4]
-                    if id_audio == id_sem:
-                        logger.info(f"# ---- Building cache for Audio {id_audio} and Sem {id_sem} ---- #")
-                        id_sem = sem_file
-                        break
-                sem_all = pd.read_csv(sem_files[id_sem], 
-                    sep='\t', 
-                    names=["name", "x", "start_time", "start", "end_time", "end", "duration_time", "duration", "score"])
+            if self.sem_rep is not None:
+                logger.info(f"# ---- Building cache for Sem    {id_pose} and Pose {id_pose} ---- #")
+                sem_file = pose_file.replace(self.pose_rep, self.sem_rep).replace("bvh", "txt")
+                try:
+                    sem_all = pd.read_csv(sem_file, 
+                        sep='\t', 
+                        names=["name", "start_time", "end_time", "duration", "score", "keywords"])
+                except:
+                    logger.warning(f"# ---- file not found for Sem {id_pose}, skip all files with the same id ---- #")
+                    continue
+                # we adopt motion-level semantic score here. 
                 for i in range(pose_each_file.shape[0]):
                     found_flag = False
-                    for j, (start, end, score) in enumerate(zip(sem_all['start'],sem_all['end'], sem_all['score'])):
-                        current_time = i/self.pose_fps
+                    for j, (start, end, score) in enumerate(zip(sem_all['start_time'],sem_all['end_time'], sem_all['score'])):
+                        current_time = i/self.pose_fps + time_offset
                         if start<=current_time and current_time<=end: 
                             sem_each_file.append(score)
                             found_flag=True
@@ -264,6 +255,9 @@ class CustomDataset(Dataset):
                 sem_each_file = np.array(sem_each_file)
                 #print(sem_each_file)
                 
+            if self.id_rep is not None:
+                vid_each_file.append(int(id_pose.split("_")[0])-1)
+            
             filtered_result = self._sample_from_clip(
                 dst_lmdb_env,
                 audio_each_file, pose_each_file, facial_each_file, word_each_file,
@@ -273,8 +267,6 @@ class CustomDataset(Dataset):
             for type in filtered_result.keys():
                 n_filtered_out[type] += filtered_result[type]
                                 
-            
-        # print stats
         with dst_lmdb_env.begin() as txn:
             logger.info(colored(f"no. of samples: {txn.stat()['entries']}", "cyan"))
             n_total_filtered = 0
@@ -295,193 +287,134 @@ class CustomDataset(Dataset):
         for data cleaning, we ignore the data for first and final n s
         for test, we return all data 
         """
-        #logger.info(f"alignment: {alignment}")
-        audio_start = 0 #int(alignment[0] * self.audio_fps)
-        pose_start = 0 #int(alignment[1] * self.pose_fps)
-#         print(audio_each_file)
-#         print(pose_each_file)
-        logger.info(f"before: {audio_each_file.shape} {pose_each_file.shape}")
-        audio_each_file = audio_each_file[pose_start:]
+        audio_start = int(self.alignment[0] * self.audio_fps)
+        pose_start = int(self.alignment[1] * self.pose_fps)
+        #logger.info(f"before: {audio_each_file.shape} {pose_each_file.shape}")
+        audio_each_file = audio_each_file[audio_start:]
         pose_each_file = pose_each_file[pose_start:]
-        logger.info(f"after: {audio_each_file.shape} {pose_each_file.shape}")
+        #logger.info(f"after alignment: {audio_each_file.shape} {pose_each_file.shape}")
+        
         round_seconds_skeleton = pose_each_file.shape[0] // self.pose_fps  # assume 1500 frames / 15 fps = 100 s
-        round_seconds_audio = len(audio_each_file) // self.audio_fps # assume 16,000,00 / 16,000 = 100 s
-        if facial_each_file != []:
-            round_seconds_facial = facial_each_file.shape[0] // self.pose_fps
-            logger.info(f"audio: {round_seconds_skeleton}s, pose: {round_seconds_audio}s, facial: {round_seconds_facial}s")
-            round_seconds_skeleton = min(round_seconds_audio, round_seconds_skeleton, round_seconds_facial)
-            max_round = max(round_seconds_audio, round_seconds_skeleton, round_seconds_facial)
-            if round_seconds_skeleton != max_round: 
-                logger.warning(f"reduce to {round_seconds_skeleton}s, ignore {max_round-round_seconds_skeleton}s")  
-        else:
-            logger.info(f"audio: {round_seconds_skeleton}s, pose: {round_seconds_audio}s")
-            round_seconds_skeleton = min(round_seconds_audio, round_seconds_skeleton)
-            max_round = max(round_seconds_audio, round_seconds_skeleton)
-            if round_seconds_skeleton != max_round: 
-                logger.warning(f"reduce to {round_seconds_skeleton}s, ignore {max_round-round_seconds_skeleton}s")
+        if audio_each_file != []:
+            round_seconds_audio = len(audio_each_file) // self.audio_fps # assume 16,000,00 / 16,000 = 100 s
+            if facial_each_file != []:
+                round_seconds_facial = facial_each_file.shape[0] // self.pose_fps
+                logger.info(f"audio: {round_seconds_skeleton}s, pose: {round_seconds_audio}s, facial: {round_seconds_facial}s")
+                round_seconds_skeleton = min(round_seconds_audio, round_seconds_skeleton, round_seconds_facial)
+                max_round = max(round_seconds_audio, round_seconds_skeleton, round_seconds_facial)
+                if round_seconds_skeleton != max_round: 
+                    logger.warning(f"reduce to {round_seconds_skeleton}s, ignore {max_round-round_seconds_skeleton}s")  
+            else:
+                logger.info(f"audio: {round_seconds_skeleton}s, pose: {round_seconds_audio}s")
+                round_seconds_skeleton = min(round_seconds_audio, round_seconds_skeleton)
+                max_round = max(round_seconds_audio, round_seconds_skeleton)
+                if round_seconds_skeleton != max_round: 
+                    logger.warning(f"reduce to {round_seconds_skeleton}s, ignore {max_round-round_seconds_skeleton}s")
         
         clip_s_t, clip_e_t = clean_first_seconds, round_seconds_skeleton - clean_final_seconds # assume [10, 90]s
         clip_s_f_audio, clip_e_f_audio = self.audio_fps * clip_s_t, clip_e_t * self.audio_fps # [160,000,90*160,000]
         clip_s_f_pose, clip_e_f_pose = clip_s_t * self.pose_fps, clip_e_t * self.pose_fps # [150,90*15]
 
-        if is_test:# stride = length for test
-            self.pose_length = clip_e_f_pose - clip_s_f_pose
-            self.stride = self.pose_length
-        audio_short_length = math.floor(self.pose_length / self.pose_fps * self.audio_fps)
-        num_subdivision = math.floor((clip_e_f_pose - clip_s_f_pose - self.pose_length) / self.stride) + 1
-        """
-        for audio sr = 16000, fps = 15, pose_length = 34, 
-        audio short length = 36266.7 -> 36266
-        this error is fine.
-        """
-        logger.info(f"audio from frame {clip_s_f_audio} to {clip_e_f_audio}, length {audio_short_length}")
-        logger.info(f"pose from frame {clip_s_f_pose} to {clip_e_f_pose}, length {self.pose_length}")
-        logger.info(f"{num_subdivision} clips is expected with stride {self.stride}") 
-
-        n_filtered_out = defaultdict(int)
-        sample_pose_list = []
-        sample_audio_list = []
-        sample_facial_list = []
-        sample_word_list = []
-        sample_vid_list = []
-        sample_emo_list = []
-        sample_sem_list = []
-        
-        for i in range(num_subdivision): # cut into around 2s chip, (self npose)
-            start_idx = clip_s_f_pose + i * self.stride
-            fin_idx = start_idx + self.pose_length # 34
-            audio_start = clip_s_f_audio + math.floor(i * self.stride * self.audio_fps / self.pose_fps)
-            audio_end = audio_start + audio_short_length
-            # print(start_idx, fin_idx, audio_start, audio_end)
-            sample_pose = pose_each_file[start_idx:fin_idx]
-            # print(sample_pose.shape)
- 
-            if audio_end > clip_e_f_audio:  # correct size mismatch between poses and audio
-                n_padding = audio_end - clip_e_f_audio
-                logger.warning(f"padding audio for length {n_padding}")
-                padded_data = np.pad(audio_each_file, (0, n_padding), mode="symmetric")
-                sample_audio = padded_data[audio_start:audio_end]
+        for ratio in self.multi_length_training:
+            if is_test:# stride = length for test
+                self.pose_length = clip_e_f_pose - clip_s_f_pose
+                self.stride = self.pose_length
+                self.max_length = self.pose_length
             else:
-                sample_audio = audio_each_file[audio_start:audio_end]
-
+                self.stride = int(ratio*self.ori_stride)
+                self.pose_length = int(self.ori_length*ratio)
+                
+            num_subdivision = math.floor((clip_e_f_pose - clip_s_f_pose - self.pose_length) / self.stride) + 1
+            logger.info(f"pose from frame {clip_s_f_pose} to {clip_e_f_pose}, length {self.pose_length}")
+            logger.info(f"{num_subdivision} clips is expected with stride {self.stride}")
             
-            if facial_each_file != []: 
-                sample_facial = facial_each_file[start_idx:fin_idx]
-                # print(sample_facial.shape)
+            if audio_each_file != []:
+                audio_short_length = math.floor(self.pose_length / self.pose_fps * self.audio_fps)
+                """
+                for audio sr = 16000, fps = 15, pose_length = 34, 
+                audio short length = 36266.7 -> 36266
+                this error is fine.
+                """
+                logger.info(f"audio from frame {clip_s_f_audio} to {clip_e_f_audio}, length {audio_short_length}")
+             
+            n_filtered_out = defaultdict(int)
+            sample_pose_list = []
+            sample_audio_list = []
+            sample_facial_list = []
+            sample_word_list = []
+            sample_emo_list = []
+            sample_sem_list = []
+            sample_vid_list = []
+           
+            for i in range(num_subdivision): # cut into around 2s chip, (self npose)
+                start_idx = clip_s_f_pose + i * self.stride
+                fin_idx = start_idx + self.pose_length # 34
+                sample_pose = pose_each_file[start_idx:fin_idx]
                 # print(sample_pose.shape)
-                if sample_pose.shape[0] != sample_facial.shape[0]:
-                    logger.warning(f"skip {sample_pose.shape}, {sample_facial.shape}")
+                if audio_each_file != []:
+                    audio_start = clip_s_f_audio + math.floor(i * self.stride * self.audio_fps / self.pose_fps)
+                    audio_end = audio_start + audio_short_length
+                    sample_audio = audio_each_file[audio_start:audio_end]
+                elif self.audio_rep is not None:
+                    logger.warning("audio file is incorrect")
                     continue
-            else: 
-                sample_facial = np.array([-1])
-                
-            sample_vid = np.array(vid_each_file) if vid_each_file != [] else np.array([-1])
-            
-            start_time = start_idx/self.pose_fps
-            end_time = fin_idx/self.pose_fps
-            sample_word = []
-            if word_each_file != []:
-                sample_word = word_each_file[start_idx:fin_idx]
-            else: sample_word = np.array([-1])    
-            #print(sample_word)
-            
-            if emo_each_file != []:
-                sample_emo = emo_each_file[start_idx:fin_idx]
-                #print(sample_emo)
-            else:                   
-                sample_emo = np.array([-1])                      
- 
-            if sem_each_file != []:
-                sample_sem = sem_each_file[start_idx:fin_idx]
-                #print(sample_sem)
-            else:   
-                sample_sem = np.array([-1])
-            
-                                  
-            if sample_audio.any() != None:
-                # filtering motion skeleton data
-                sample_pose, filtering_message = MotionPreprocessor(sample_pose, self.mean_pose).get()
-                is_correct_motion = (sample_pose != [])
-                if is_correct_motion or disable_filtering:
-                    sample_pose_list.append(sample_pose)
-                    sample_audio_list.append(sample_audio)
-                    sample_facial_list.append(sample_facial)
-                    sample_word_list.append(sample_word)
-                    sample_vid_list.append(sample_vid)
-                    sample_emo_list.append(sample_emo)
-                    sample_sem_list.append(sample_sem)
                 else:
-                    n_filtered_out[filtering_message] += 1
+                    sample_audio = np.array([-1])
                 
-        if len(sample_pose_list) > 0:
-            with dst_lmdb_env.begin(write=True) as txn:
-               
-                for pose, audio, facial, word, vid, emo, sem in zip(sample_pose_list,
-                                                    sample_audio_list,
-                                                    sample_facial_list,
-                                                    sample_word_list,
-                                                    sample_vid_list,
-                                                    sample_emo_list,
-                                                    sample_sem_list, 
-                                                    ):
-                    normalized_pose = self.normalize_pose(pose, self.mean_pose, self.std_pose)
-                      
-                    # save
-                    k = "{:005}".format(self.n_out_samples).encode("ascii")
-                    v = [normalized_pose, audio, facial, word, vid, emo, sem]
-                    # print(v)
-                    v = pyarrow.serialize(v).to_buffer()
-                    txn.put(k, v)
-                    self.n_out_samples += 1
-        return n_filtered_out
+                sample_facial = facial_each_file[start_idx:fin_idx] if facial_each_file != [] else np.array([-1])
+                sample_word = word_each_file[start_idx:fin_idx] if word_each_file != [] else np.array([-1])
+                sample_emo = emo_each_file[start_idx:fin_idx] if emo_each_file != [] else np.array([-1])
+                sample_sem = sem_each_file[start_idx:fin_idx] if sem_each_file != [] else np.array([-1])
+                sample_vid = np.array(vid_each_file) if vid_each_file != [] else np.array([-1])
+                
+                if sample_pose.any() != None:
+                    # filtering motion skeleton data
+                    sample_pose, filtering_message = MotionPreprocessor(sample_pose, self.mean_pose).get()
+                    is_correct_motion = (sample_pose != [])
+                    if is_correct_motion or disable_filtering:
+                        sample_pose_list.append(sample_pose)
+                        sample_audio_list.append(sample_audio)
+                        sample_facial_list.append(sample_facial)
+                        sample_word_list.append(sample_word)
+                        sample_vid_list.append(sample_vid)
+                        sample_emo_list.append(sample_emo)
+                        sample_sem_list.append(sample_sem)
+                    else:
+                        n_filtered_out[filtering_message] += 1
 
+            if len(sample_pose_list) > 0:
+                with dst_lmdb_env.begin(write=True) as txn:
+                    for pose, audio, facial, word, vid, emo, sem in zip(sample_pose_list,
+                                                        sample_audio_list,
+                                                        sample_facial_list,
+                                                        sample_word_list,
+                                                        sample_vid_list,
+                                                        sample_emo_list,
+                                                        sample_sem_list,
+                                                        ):
+                        normalized_pose = self.normalize_pose(pose, self.mean_pose, self.std_pose)
+                        k = "{:005}".format(self.n_out_samples).encode("ascii")
+                        v = [normalized_pose, audio, facial, word, emo, sem, vid]
+                        v = pyarrow.serialize(v).to_buffer()
+                        txn.put(k, v)
+                        self.n_out_samples += 1
+        return n_filtered_out
 
     @staticmethod
     def normalize_pose(dir_vec, mean_pose, std_pose=None):
         return (dir_vec - mean_pose) / std_pose 
-
-    @staticmethod
-    def unnormalize_data(normalized_data, data_mean, data_std, dimensions_to_ignore):
-        """
-        this method is from https://github.com/asheshjain399/RNNexp/blob/srnn/structural_rnn/CRFProblems/H3.6m/generateMotionData.py#L12
-        """
-        T = normalized_data.shape[0]
-        D = data_mean.shape[0]
-
-        origData = np.zeros((T, D), dtype=np.float32)
-        dimensions_to_use = []
-        for i in range(D):
-            if i in dimensions_to_ignore:
-                continue
-            dimensions_to_use.append(i)
-        dimensions_to_use = np.array(dimensions_to_use)
-
-        origData[:, dimensions_to_use] = normalized_data
-
-        # potentially inefficient, but only done once per experiment
-        stdMat = data_std.reshape((1, D))
-        stdMat = np.repeat(stdMat, T, axis=0)
-        meanMat = data_mean.reshape((1, D))
-        meanMat = np.repeat(meanMat, T, axis=0)
-        origData = np.multiply(origData, stdMat) + meanMat
-
-        return origData
-   
     
     def __getitem__(self, idx):
         with self.lmdb_env.begin(write=False) as txn:
             key = "{:005}".format(idx).encode("ascii")
             sample = txn.get(key)
             sample = pyarrow.deserialize(sample)
-            
-            tar_pose, in_audio, in_facial, in_word, vid, emo, sem = sample
+            tar_pose, in_audio, in_facial, in_word, emo, sem, vid = sample
             vid = torch.from_numpy(vid).int()
-            
             emo = torch.from_numpy(emo).int()
             sem = torch.from_numpy(sem).float() 
             in_audio = torch.from_numpy(in_audio).float() 
             in_word = torch.from_numpy(in_word).int()  
-        
             if self.loader_type == "test":
                 tar_pose = torch.from_numpy(tar_pose).float()
                 in_facial = torch.from_numpy(in_facial).float()
@@ -489,7 +422,7 @@ class CustomDataset(Dataset):
             else:
                 tar_pose = torch.from_numpy(tar_pose).reshape((tar_pose.shape[0], -1)).float()
                 in_facial = torch.from_numpy(in_facial).reshape((in_facial.shape[0], -1)).float()
-            return tar_pose, in_audio, in_facial, in_word, vid, emo, sem
+            return {"pose":tar_pose, "audio":in_audio, "facial":in_facial, "word":in_word, "id":vid, "emo":emo, "sem":sem}
 
          
 class MotionPreprocessor:

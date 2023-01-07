@@ -1,11 +1,13 @@
+# Copyright (c) HuaWei, Inc. and its affiliates.
+# liu.haiyang@huawei.com
+# base on https://github.com/ai4r/Gesture-Generation-from-Trimodal-Context/blob/master/
+
 import os
 import pickle
 import math
 import shutil
 import numpy as np
 import lmdb as lmdb
-import textgrid as tg
-import pandas as pd
 import torch
 import glob
 import json
@@ -15,11 +17,9 @@ from collections import defaultdict
 from torch.utils.data import Dataset
 import pyarrow
 from sklearn.preprocessing import normalize
-# import librosa 
+# import librosa (can not work on huawei cloud)
 import scipy.io.wavfile
 from scipy import signal
-from .build_vocab import Vocab
-
 
 class CustomDataset(Dataset):
     def __init__(self, args, loader_type, augmentation=None, kwargs=None, build_cache=True):
@@ -40,15 +40,37 @@ class CustomDataset(Dataset):
         self.audio_rep = args.audio_rep
         self.pose_rep = args.pose_rep
         self.facial_rep = args.facial_rep
-        self.word_rep = args.word_rep
-        self.emo_rep = args.emo_rep
-        self.sem_rep = args.sem_rep
         self.audio_fps = args.audio_fps
         self.speaker_id = args.speaker_id
         
         self.disable_filtering = args.disable_filtering
         self.clean_first_seconds = args.clean_first_seconds
         self.clean_final_seconds = args.clean_final_seconds
+        
+        self.alignment_list = {  
+            "01": [5.5, 4.81],
+            "02": [5.18, 4.5],
+            "04": [5.42, 4.7],
+            "05": [4.6, 3.95],
+            "07": [6.6, 6.57],
+            "08": [4.83, 4.84],
+            "10": [3.11, 3.09],
+            "11": [3.17, 3.18],
+            "12": [2.78, 2.8],
+            "13": [2.56, 2.5],
+            "14": [16.11, 16.175],
+            "15": [13.25, 13.25],
+            "16": [11.92, 11.95],
+            "17": [12.74, 12.758],
+            "18": [12.23, 12.217],
+            "19": [12.3, 12.3],
+            "21": [11.3, 11.258],
+            "22": [16.26, 16.3],
+            "23": [14.9, 14.94],
+            "25": [11.64, 11.68],
+            "26": [14.23, 14.25],
+            "27": [12.2, 12.18],
+            "30": [16.36, 16.37],}
         
         if loader_type == "train":
             self.data_dir = args.root_path + args.train_data_path
@@ -57,14 +79,8 @@ class CustomDataset(Dataset):
         else:
             self.data_dir = args.root_path + args.test_data_path
         
-        if self.word_rep is not "None":
-            with open("../../datasets/beat/vocab.pkl", 'rb') as f:
-                self.lang_model = pickle.load(f)
         if build_cache:
             self.build_cache()
-            
-        
-     
             
     def build_cache(self):
         logger.info(f"Audio bit rate: {self.audio_fps}")
@@ -108,22 +124,6 @@ class CustomDataset(Dataset):
             facial_files = sorted(glob.glob(os.path.join(self.data_dir, f"{self.facial_rep}") + "/*.json"),key=str,)
         else: 
             facial_files = []
-            
-        if self.word_rep != "None":
-            word_files = sorted(glob.glob(os.path.join(self.data_dir, f"{self.word_rep}") + "/*.TextGrid"),key=str,)
-        else: 
-            word_files = []
-            
-        if self.emo_rep != "None":
-            emo_files = sorted(glob.glob(os.path.join(self.data_dir, f"{self.emo_rep}") + "/*.txt"),key=str,)
-        else: 
-            emo_files = []
-            
-        if self.sem_rep != "None":
-            sem_files = sorted(glob.glob(os.path.join(self.data_dir, f"{self.sem_rep}") + "/*.txt"),key=str,)
-        else: 
-            sem_files = []
-            
         # create db for samples
         map_size = int(1024 * 1024 * 2048 * (self.audio_fps/16000)**3 * 4)  # in 1024 MB
         dst_lmdb_env = lmdb.open(out_lmdb_dir, map_size=map_size)
@@ -133,15 +133,12 @@ class CustomDataset(Dataset):
             audio_each_file = []
             pose_each_file = [] 
             facial_each_file = []
-            word_each_file = []
+            #spec_each_file = []
             vid_each_file = []
-            emo_each_file = []
-            sem_each_file = []
-            
-            id_audio = audio_file[-11:-4] #000_000 
+            id_audio = audio_file[-6:-4]
             exist = False
             for pose_file in range(len(pose_files)):
-                id_pose = pose_files[pose_file][-11:-4]
+                id_pose = pose_files[pose_file][-10:-8]
                 if id_audio == id_pose:
                     logger.info(colored(f"# ---- Building cache for Audio {id_audio} and Pose {id_pose} ---- #", "blue"))
                     id_pose = pose_file
@@ -150,9 +147,6 @@ class CustomDataset(Dataset):
                     break
             if not exist: continue
             
-            if self.speaker_id:
-                vid_each_file.append(int(id_audio[:3]))
-            
             # the librosa cannot use on the cloud sever
             # audio_data, _ = librosa.load(audio_file, sr=None)
             if self.audio_rep == "melspec":
@@ -160,20 +154,19 @@ class CustomDataset(Dataset):
                 self.audio_fps = 32
             elif self.audio_rep == "disentangled":
                 audio_each_file = np.load(f"{audio_file[:-4]}_disentangled_v1.npy").transpose(1,0)
-            else:
-                sr, audio_each_file = scipy.io.wavfile.read(audio_file) # np array
-                audio_each_file = audio_each_file[::sr//16000]
+            elif "wave" in self.audio_rep:
+                _ , audio_each_file = scipy.io.wavfile.read(audio_file) # np array
+            else: pass
                 
             if self.audio_norm:
                 audio_each_file = (audio_each_file - self.mean_audio) / self.std_audio
                 
             with open(pose_files[id_pose], "r") as pose_data:
                 for j, line in enumerate(pose_data.readlines()):
-                    data = np.fromstring(line, dtype=float, sep=" ") # 1*27 e.g., 27 rotation 
-                    pose_each_file.append(data)
+                        data = np.fromstring(line, dtype=float, sep=" ") # 1*27 e.g., 27 rotation 
+                        pose_each_file.append(data)
             pose_each_file = np.array(pose_each_file) # n frames * 27
-        
-            
+
             if len(facial_files) != 0:
                 for facial_file in range(len(facial_files)):
                     id_facial = facial_files[facial_file][-12:-5]
@@ -183,96 +176,23 @@ class CustomDataset(Dataset):
                         break
                 with open(facial_files[id_facial], 'r') as facial_data_file:
                     facial_data = json.load(facial_data_file)
-                    facial_factor = math.ceil(1/((facial_data['frames'][20]['time'] - facial_data['frames'][10]['time'])/10))//self.pose_fps
-                    #print(facial_data['frames'][20]['time'] - facial_data['frames'][10]['time']) 
                     for j, frame_data in enumerate(facial_data['frames']):
                         # 60FPS to 15FPS
-                        if j % facial_factor == 0:
+                        if j % 4 == 0:
                             facial_each_file.append(frame_data['weights']) 
                 facial_each_file = np.array(facial_each_file)
                 
-            if len(word_files) != 0:
-                for word_file in range(len(word_files)):
-                    id_word = word_files[word_file][-16:-9]
-                    if id_audio == id_word:
-                        logger.info(f"# ---- Building cache for Audio {id_audio} and Word {id_word} ---- #")
-                        id_word = word_file
-                        break
-                tgrid = tg.TextGrid.fromFile(word_files[id_word])
-                for i in range(pose_each_file.shape[0]):
-                    found_flag = False
-                    current_time = i/self.pose_fps
-                    for word in tgrid[0]:
-                        word_n, word_s, word_e = word.mark, word.minTime, word.maxTime
-                        if word_s<=current_time and current_time<=word_e:
-                            if word_n == " ":
-                                #TODO now don't have eos and sos token
-                                word_each_file.append(self.lang_model.PAD_token)
-                            else:    
-                                word_each_file.append(self.lang_model.get_word_index(word_n))
-                            found_flag = True
-                            break
-                        else: continue   
-                    if not found_flag: word_each_file.append(self.lang_model.UNK_token)
-                word_each_file = np.array(word_each_file)
-                #print(word_each_file)    
-                    
+            if self.speaker_id:
+                vid_each_file = int(pose_files[id_pose][-11:-8]) # 0, 1, 2, 3 
             
-            if len(emo_files) != 0:
-                for emo_file in range(len(emo_files)):
-                    id_emo = emo_files[emo_file][-11:-4]
-                    if id_audio == id_emo:
-                        logger.info(f"# ---- Building cache for Audio {id_audio} and Emo {id_emo} ---- #")
-                        id_emo = emo_file
-                        break
-                emo_all = pd.read_csv(emo_files[id_emo], 
-                    sep='\t', 
-                    names=["name", "x", "start_time", "start", "end_time", "end", "duration_time", "duration", "score"])
-                for i in range(pose_each_file.shape[0]):
-                    found_flag = False
-                    for j, (start, end, score) in enumerate(zip(emo_all['start'],emo_all['end'], emo_all['score'])):
-                        current_time = i/self.pose_fps
-                        if start<=current_time and current_time<=end: 
-                            emo_each_file.append(score)
-                            found_flag=True
-                            break
-                        else: continue 
-                    if not found_flag: emo_each_file.append(0)
-                emo_each_file = np.array(emo_each_file)
-                #print(emo_each_file)
-                
-            if len(sem_files) != 0:
-                for sem_file in range(len(sem_files)):
-                    id_sem = sem_files[sem_file][-11:-4]
-                    if id_audio == id_sem:
-                        logger.info(f"# ---- Building cache for Audio {id_audio} and Sem {id_sem} ---- #")
-                        id_sem = sem_file
-                        break
-                sem_all = pd.read_csv(sem_files[id_sem], 
-                    sep='\t', 
-                    names=["name", "x", "start_time", "start", "end_time", "end", "duration_time", "duration", "score"])
-                for i in range(pose_each_file.shape[0]):
-                    found_flag = False
-                    for j, (start, end, score) in enumerate(zip(sem_all['start'],sem_all['end'], sem_all['score'])):
-                        current_time = i/self.pose_fps
-                        if start<=current_time and current_time<=end: 
-                            sem_each_file.append(score)
-                            found_flag=True
-                            break
-                        else: continue 
-                    if not found_flag: sem_each_file.append(0.)
-                sem_each_file = np.array(sem_each_file)
-                #print(sem_each_file)
-                
             filtered_result = self._sample_from_clip(
                 dst_lmdb_env,
-                audio_each_file, pose_each_file, facial_each_file, word_each_file,
-                vid_each_file, emo_each_file, sem_each_file,
+                audio_each_file, pose_each_file, facial_each_file, vid_each_file,
                 disable_filtering, clean_first_seconds, clean_final_seconds, is_test,
+                self.alignment_list[f"{audio_file[-6:-4]}"]
                 ) 
             for type in filtered_result.keys():
                 n_filtered_out[type] += filtered_result[type]
-                                
             
         # print stats
         with dst_lmdb_env.begin() as txn:
@@ -287,19 +207,16 @@ class CustomDataset(Dataset):
         dst_lmdb_env.close()
     
     def _sample_from_clip(
-        self, dst_lmdb_env, audio_each_file, pose_each_file, facial_each_file, word_each_file,
-        vid_each_file, emo_each_file, sem_each_file,
-        disable_filtering, clean_first_seconds, clean_final_seconds, is_test,
+        self, dst_lmdb_env, audio_each_file, pose_each_file, facial_each_file, vid_each_file,
+        disable_filtering, clean_first_seconds, clean_final_seconds, is_test, alignment
         ):
         """
         for data cleaning, we ignore the data for first and final n s
         for test, we return all data 
         """
-        #logger.info(f"alignment: {alignment}")
-        audio_start = 0 #int(alignment[0] * self.audio_fps)
-        pose_start = 0 #int(alignment[1] * self.pose_fps)
-#         print(audio_each_file)
-#         print(pose_each_file)
+        logger.info(f"alignment: {alignment}")
+        audio_start = int(alignment[0] * self.audio_fps)
+        pose_start = int(alignment[1] * self.pose_fps)
         logger.info(f"before: {audio_each_file.shape} {pose_each_file.shape}")
         audio_each_file = audio_each_file[pose_start:]
         pose_each_file = pose_each_file[pose_start:]
@@ -342,10 +259,8 @@ class CustomDataset(Dataset):
         sample_pose_list = []
         sample_audio_list = []
         sample_facial_list = []
-        sample_word_list = []
+        #sample_spec_list = []
         sample_vid_list = []
-        sample_emo_list = []
-        sample_sem_list = []
         
         for i in range(num_subdivision): # cut into around 2s chip, (self npose)
             start_idx = clip_s_f_pose + i * self.stride
@@ -367,37 +282,14 @@ class CustomDataset(Dataset):
             
             if facial_each_file != []: 
                 sample_facial = facial_each_file[start_idx:fin_idx]
-                # print(sample_facial.shape)
-                # print(sample_pose.shape)
                 if sample_pose.shape[0] != sample_facial.shape[0]:
                     logger.warning(f"skip {sample_pose.shape}, {sample_facial.shape}")
                     continue
             else: 
                 sample_facial = np.array([-1])
-                
-            sample_vid = np.array(vid_each_file) if vid_each_file != [] else np.array([-1])
+             
+            vid_each_file = np.array([-1]) if vid_each_file == [] else np.array(vid_each_file)
             
-            start_time = start_idx/self.pose_fps
-            end_time = fin_idx/self.pose_fps
-            sample_word = []
-            if word_each_file != []:
-                sample_word = word_each_file[start_idx:fin_idx]
-            else: sample_word = np.array([-1])    
-            #print(sample_word)
-            
-            if emo_each_file != []:
-                sample_emo = emo_each_file[start_idx:fin_idx]
-                #print(sample_emo)
-            else:                   
-                sample_emo = np.array([-1])                      
- 
-            if sem_each_file != []:
-                sample_sem = sem_each_file[start_idx:fin_idx]
-                #print(sample_sem)
-            else:   
-                sample_sem = np.array([-1])
-            
-                                  
             if sample_audio.any() != None:
                 # filtering motion skeleton data
                 sample_pose, filtering_message = MotionPreprocessor(sample_pose, self.mean_pose).get()
@@ -406,29 +298,25 @@ class CustomDataset(Dataset):
                     sample_pose_list.append(sample_pose)
                     sample_audio_list.append(sample_audio)
                     sample_facial_list.append(sample_facial)
-                    sample_word_list.append(sample_word)
-                    sample_vid_list.append(sample_vid)
-                    sample_emo_list.append(sample_emo)
-                    sample_sem_list.append(sample_sem)
+                    #sample_spec_list.append(sample_spectrogram)
+                    sample_vid_list.append(vid_each_file)
                 else:
                     n_filtered_out[filtering_message] += 1
                 
         if len(sample_pose_list) > 0:
             with dst_lmdb_env.begin(write=True) as txn:
                
-                for pose, audio, facial, word, vid, emo, sem in zip(sample_pose_list,
+                for pose, audio, facial, vid, in zip(sample_pose_list,
                                                     sample_audio_list,
                                                     sample_facial_list,
-                                                    sample_word_list,
+                                                    #sample_spec_list,
                                                     sample_vid_list,
-                                                    sample_emo_list,
-                                                    sample_sem_list, 
                                                     ):
                     normalized_pose = self.normalize_pose(pose, self.mean_pose, self.std_pose)
                       
                     # save
                     k = "{:005}".format(self.n_out_samples).encode("ascii")
-                    v = [normalized_pose, audio, facial, word, vid, emo, sem]
+                    v = [normalized_pose, audio, facial, vid]
                     # print(v)
                     v = pyarrow.serialize(v).to_buffer()
                     txn.put(k, v)
@@ -466,30 +354,27 @@ class CustomDataset(Dataset):
         origData = np.multiply(origData, stdMat) + meanMat
 
         return origData
-   
-    
+
     def __getitem__(self, idx):
         with self.lmdb_env.begin(write=False) as txn:
             key = "{:005}".format(idx).encode("ascii")
             sample = txn.get(key)
             sample = pyarrow.deserialize(sample)
             
-            tar_pose, in_audio, in_facial, in_word, vid, emo, sem = sample
-            vid = torch.from_numpy(vid).int()
-            
-            emo = torch.from_numpy(emo).int()
-            sem = torch.from_numpy(sem).float() 
-            in_audio = torch.from_numpy(in_audio).float() 
-            in_word = torch.from_numpy(in_word).int()  
-        
+            tar_pose, in_audio, in_facial, vid = sample
             if self.loader_type == "test":
                 tar_pose = torch.from_numpy(tar_pose).float()
+                #in_spectrogram = torch.from_numpy(in_spectrogram).float() # pre_pose here
+                in_audio = torch.from_numpy(in_audio).float()
                 in_facial = torch.from_numpy(in_facial).float()
-                            
-            else:
-                tar_pose = torch.from_numpy(tar_pose).reshape((tar_pose.shape[0], -1)).float()
-                in_facial = torch.from_numpy(in_facial).reshape((in_facial.shape[0], -1)).float()
-            return tar_pose, in_audio, in_facial, in_word, vid, emo, sem
+                vid = torch.from_numpy(vid).float()
+                return tar_pose, in_audio, in_facial, vid
+
+            tar_pose = torch.from_numpy(tar_pose).reshape((tar_pose.shape[0], -1)).float()
+            in_facial = torch.from_numpy(in_facial).reshape((in_facial.shape[0], -1)).float()
+            #in_spectrogram = torch.from_numpy(in_spectrogram).float()
+            in_audio =  torch.from_numpy(in_audio).float() 
+            return tar_pose, in_audio, in_facial, vid
 
          
 class MotionPreprocessor:

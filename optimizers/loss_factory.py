@@ -17,12 +17,13 @@ class BCE_Loss(nn.Module):
 
 
 class HuberLoss(nn.Module):
-    def __init__(self, beta=0.1):
+    def __init__(self, beta=0.1, reduction="mean"):
         super(HuberLoss, self).__init__()
         self.beta = beta
+        self.reduction = reduction
     
     def forward(self, outputs, targets):
-        final_loss = F.smooth_l1_loss(outputs / self.beta, targets / self.beta) * self.beta
+        final_loss = F.smooth_l1_loss(outputs / self.beta, targets / self.beta, reduction=self.reduction) * self.beta
         return final_loss
     
 
@@ -64,14 +65,8 @@ LOSS_FUNC_LUT = {
 
 
 def get_loss_func(loss_name, **kwargs):    
-    try:
-        loss_func_class = LOSS_FUNC_LUT.get(loss_name)   
-    except:
-        kwargs['logger'].error("loss tpye error, {} not exist".format(loss_name))
-    if 'scaling' in kwargs:
-        loss_func = loss_func_class(kwargs['scaling'])
-    else:
-        loss_func = loss_func_class()
+    loss_func_class = LOSS_FUNC_LUT.get(loss_name)   
+    loss_func = loss_func_class(**kwargs)   
     return loss_func
 
 

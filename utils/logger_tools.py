@@ -1,63 +1,9 @@
-# logger based on YOLOX
 import os
 import inspect
 import sys
 import yaml
-#import json
-
+import wandb
 from loguru import logger
-
-
-def get_caller_name(depth=0):
-    """
-    Args:
-        depth (int): Depth of caller conext, use 0 for caller depth. Default value: 0.
-
-    Returns:
-        str: module name of the caller
-    """
-    # the following logic is a little bit faster than inspect.stack() logic
-    frame = inspect.currentframe().f_back
-    for _ in range(depth):
-        frame = frame.f_back
-
-    return frame.f_globals["__name__"]
-
-
-class StreamToLoguru:
-    """
-    stream object that redirects writes to a logger instance.
-    """
-
-    def __init__(self, level="INFO", caller_names=("apex", "pycocotools")):
-        """
-        Args:
-            level(str): log level string of loguru. Default value: "INFO".
-            caller_names(tuple): caller names of redirected module.
-                Default value: (apex, pycocotools).
-        """
-        self.level = level
-        self.linebuf = ""
-        self.caller_names = caller_names
-
-    def write(self, buf):
-        full_name = get_caller_name(depth=1)
-        module_name = full_name.rsplit(".", maxsplit=-1)[0]
-        if module_name in self.caller_names:
-            for line in buf.rstrip().splitlines():
-                # use caller level log
-                logger.opt(depth=2).log(self.level, line.rstrip())
-        else:
-            sys.__stdout__.write(buf)
-
-    def flush(self):
-        pass
-
-
-def redirect_sys_output(log_level="INFO"):
-    redirect_logger = StreamToLoguru(log_level)
-    sys.stderr = redirect_logger
-    sys.stdout = redirect_logger
 
 
 def setup_logger(save_dir, distributed_rank=0, filename="log.txt", mode="a"):
@@ -72,7 +18,7 @@ def setup_logger(save_dir, distributed_rank=0, filename="log.txt", mode="a"):
         logger instance.
     """
     loguru_format = (
-        "<green>{time: MM-DD HH:mm:ss}</green> | "
+        "<blue>{time: MM-DD HH:mm:ss}</blue> | "
         #"<level>{level: <8}</level> | "
         #"<cyan>{name}</cyan>:<cyan>{line}</cyan> - <level>{message}</level>"
         "<level>{message}</level>"
@@ -90,29 +36,32 @@ def setup_logger(save_dir, distributed_rank=0, filename="log.txt", mode="a"):
             level="INFO",
             enqueue=True,
         )
-        logger.add(save_file)
+        logger.add(save_file,
+            format=loguru_format,       
+                  )
 
-    # redirect stdout/stderr to loguru
-    redirect_sys_output("INFO")
 
-
-def set_args_and_logger(args):
-    #from .config import dump_cfg
+def set_args_and_logger(args, rank):
     """
     set logger file and print args
     """
-    args_name = args.root_path + args.out_root_path + args.name +"/"+ args.name +".yaml"
-    #args_name = args.out_root_path + args.name +"/"+ args.name +".json"
-    if not os.path.exists(args.root_path + args.out_root_path + args.name):
-        os.mkdir(args.root_path + args.out_root_path + args.name)
+    args_name_dir = args.root_path+args.out_root_path + "custom/" + args.name + args.notes + "/"
+    if not os.path.exists(args_name_dir): os.makedirs(args_name_dir)
+    args_name = args_name_dir + "/" + args.name +".yaml"
+    
+    os.environ["WANDB_API_KEY"] = '91fe156c60374c4eb00dd6a990017b0371e32737'
+    os.environ["WANDB_MODE"] = "offline"
+    
+    if rank == 0:
+        wandb.init(project=args.project, entity="liu1997", dir=args.root_path+args.out_root_path, name=args.name[12:]+ args.notes)
+        wandb.config.update(args)
+
     if os.path.exists(args_name):
         s_add = 10
         logger.warning(f"Already exist args, add {s_add} to ran_seed to continue training")
         args.random_seed += s_add
     else:
-        #dump_cfg(args_name, args)
         with open(args_name, "w+") as f:
             yaml.dump(args.__dict__, f) #bug for load list
             #json.dump(args.__dict__, f)
-    setup_logger(args.root_path + args.out_root_path + args.name, filename=f"{args.name}.txt")
-    
+    setup_logger(args_name_dir, rank, filename=f"{args.name}.txt")

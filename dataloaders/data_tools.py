@@ -12,9 +12,6 @@ from .pymo.viz_tools import *
 from .pymo.preprocessing import *
 
 
-
-
-# pose version fpsxx_trinity/japanese_joints(_xxx)
 joints_list = {
     "trinity_joints":{
         'Hips':         [6,6],
@@ -308,6 +305,7 @@ joints_list = {
         'LFootF':       [3,222],
         'LToeBase':     [3,225],
         'LToeBaseEnd':  [3,228],},
+    
     "spine_neck_141":{
         'Spine':       3 ,
         'Neck':        3 ,
@@ -360,9 +358,6 @@ joints_list = {
 
 
 class FIDCalculator(object):
-    '''
-    todo
-    '''
     def __init__(self):
         self.gt_rot = None # pandas dataframe for n frames * joints * 6
         self.gt_pos = None # n frames * (joints + 13) * 3
@@ -551,18 +546,26 @@ class FIDCalculator(object):
              
 
 def result2target_vis(pose_version, res_bvhlist, save_path, demo_name, verbose=True):
-    ori_list = joints_list[pose_version[6:-4]] if "trinity" in pose_version else joints_list["beat_joints"]
-    target_list = joints_list[pose_version[6:]] if "trinity" in pose_version else joints_list["spine_neck_141"]#joints_list[pose_version]
-    file_content_length = 336 if "trinity" in pose_version else 431#366
+    if "trinity" in pose_version:
+        ori_list = joints_list[pose_version[6:-4]] 
+        target_list = joints_list[pose_version[6:]] 
+        file_content_length = 336 
+    elif "beat" in pose_version or "spine_neck_141" in pose_version:
+        ori_list = joints_list["beat_joints"]
+        target_list = joints_list["spine_neck_141"]
+        file_content_length = 431
+    else:
+        pass
     
-    
-    bvh_files_dirs = sorted(glob.glob(f'{res_bvhlist}*.bvh'))
+    bvh_files_dirs = sorted(glob.glob(f'{res_bvhlist}*.bvh'), key=str)
     counter = 0
     if not os.path.exists(save_path):
         os.makedirs(save_path)
-    for bvh_file_dir in bvh_files_dirs:
-        wirte_file =  open(os.path.join(save_path, f'res_{bvh_file_dir[-11:]}'),'w+')
-        with open(demo_name,'r') as pose_data_pre:
+    for i, bvh_file_dir in enumerate(bvh_files_dirs):
+        short_name = bvh_file_dir.split("/")[-1][11:]
+        #print(short_name)
+        wirte_file =  open(os.path.join(save_path, f'res_{short_name}'),'w+')
+        with open(f"{demo_name}{short_name}",'r') as pose_data_pre:
             pose_data_pre_file = pose_data_pre.readlines()
             for j, line in enumerate(pose_data_pre_file[0:file_content_length]):
                     wirte_file.write(line)
@@ -570,18 +573,18 @@ def result2target_vis(pose_version, res_bvhlist, save_path, demo_name, verbose=T
             offset_data = np.fromstring(offset_data, dtype=float, sep=' ')
         wirte_file.close()
 
-        wirte_file = open(os.path.join(save_path, f'res_{bvh_file_dir[-11:]}'),'r')
+        wirte_file = open(os.path.join(save_path, f'res_{short_name}'),'r')
         ori_lines = wirte_file.readlines()
         with open(bvh_file_dir, 'r') as pose_data:
             pose_data_file = pose_data.readlines()
         ori_lines[file_content_length-2] = 'Frames: ' + str(len(pose_data_file)-1) + '\n'
         wirte_file.close() 
 
-        wirte_file = open(os.path.join(save_path, f'res_{bvh_file_dir[-11:]}'),'w+')
+        wirte_file = open(os.path.join(save_path, f'res_{short_name}'),'w+')
         wirte_file.writelines(i for i in ori_lines[:file_content_length])    
         wirte_file.close() 
 
-        with open(os.path.join(save_path, f'res_{bvh_file_dir[-11:]}'),'a+') as wirte_file: 
+        with open(os.path.join(save_path, f'res_{short_name}'),'a+') as wirte_file: 
             with open(bvh_file_dir, 'r') as pose_data:
                 data_each_file = []
                 pose_data_file = pose_data.readlines()
@@ -592,6 +595,7 @@ def result2target_vis(pose_version, res_bvhlist, save_path, demo_name, verbose=T
                         data = np.fromstring(line, dtype=float, sep=' ')
                         data_rotation = offset_data.copy()   
                         for iii, (k, v) in enumerate(target_list.items()): # here is 147 rotations by 3
+                            #print(data_rotation[ori_list[k][1]-v:ori_list[k][1]], data[iii*3:iii*3+3])
                             data_rotation[ori_list[k][1]-v:ori_list[k][1]] = data[iii*3:iii*3+3]
                         data_each_file.append(data_rotation)
         

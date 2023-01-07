@@ -84,86 +84,62 @@ class Vocab:
         for word, id in self.word2index.items():
             vec = word_model.get_word_vector(word)
             weights[id] = vec
-
         self.word_embedding_weights = weights
-
-    def __get_embedding_weight(self, pretrained_path, embedding_dim=300):
-        """ function modified from http://ronny.rest/blog/post_2017_08_04_glove/ """
-        print("Loading word embedding '{}'...".format(pretrained_path))
-        cache_path = os.path.splitext(pretrained_path)[0] + '_cache.pkl'
-        weights = None
-
-        # use cached file if it exists
-        if os.path.exists(cache_path):  #
-            with open(cache_path, 'rb') as f:
-                print('  using cached result from {}'.format(cache_path))
-                weights = pickle.load(f)
-                if weights.shape != (self.n_words, embedding_dim):
-                    logging.warning('  failed to load word embedding weights. reinitializing...')
-                    weights = None
-
-        if weights is None:
-            # initialize embeddings to random values for special and OOV words
-            init_sd = 1 / np.sqrt(embedding_dim)
-            weights = np.random.normal(0, scale=init_sd, size=[self.n_words, embedding_dim])
-            weights = weights.astype(np.float32)
-
-            with open(pretrained_path, encoding="utf-8", mode="r") as textFile:
-                num_embedded_words = 0
-                for line_raw in textFile:
-                    # extract the word, and embeddings vector
-                    line = line_raw.split()
-                    try:
-                        word, vector = (line[0], np.array(line[1:], dtype=np.float32))
-                        # if word == 'love':  # debugging
-                        #     print(word, vector)
-
-                        # if it is in our vocab, then update the corresponding weights
-                        id = self.word2index.get(word, None)
-                        if id is not None:
-                            weights[id] = vector
-                            num_embedded_words += 1
-                    except ValueError:
-                        print('  parsing error at {}...'.format(line_raw[:50]))
-                        continue
-                print('  {} / {} word vectors are found in the embedding'.format(num_embedded_words, len(self.word2index)))
-
-                with open(cache_path, 'wb') as f:
-                    pickle.dump(weights, f)
-
-        return weights
-
 
 def build_vocab(name, data_path, cache_path, word_vec_path=None, feat_dim=None):
     print('  building a language model...')
-    #if not os.path.exists(cache_path):
     lang_model = Vocab(name)
     print('    indexing words from {}'.format(data_path))
-    index_words(lang_model, data_path)
+    index_words_from_textgrid(lang_model, data_path)
 
     if word_vec_path is not None:
         lang_model.load_word_vectors(word_vec_path, feat_dim)
+    else:
+        print('    loaded from {}'.format(cache_path))
+        with open(cache_path, 'rb') as f:
+            lang_model = pickle.load(f)
+        if word_vec_path is None:
+            lang_model.word_embedding_weights = None
+        elif lang_model.word_embedding_weights.shape[0] != lang_model.n_words:
+            logging.warning('    failed to load word embedding weights. check this')
+            assert False
 
     with open(cache_path, 'wb') as f:
         pickle.dump(lang_model, f)
 
+    return lang_model
 
 def index_words(lang_model, data_path):
-    #import re
+    #index words form text
     with open(data_path, "r") as f:
         for line in f.readlines():
             line = line.replace(",", " ")
             line = line.replace(".", " ")
             line = line.replace("?", " ")
             line = line.replace("!", " ")
-#             print(line)
-#             break
             for word in line.split(): 
-                #print(word)
                 lang_model.index_word(word)
     print('    indexed %d words' % lang_model.n_words)
 
+def index_words_from_textgrid(lang_model, data_path):
+    import textgrid as tg 
+    trainvaltest=os.listdir(data_path)
+    for loadtype in trainvaltest:
+        if "." in loadtype: continue #ignore .ipynb_checkpoints
+        texts = os.listdir(data_path+loadtype+"/text/")
+        for textfile in texts:
+            tgrid = tg.TextGrid.fromFile(data_path+loadtype+"/text/"+textfile)
+            for word in tgrid[0]:
+                word_n, word_s, word_e = word.mark, word.minTime, word.maxTime
+                word_n = word_n.replace(",", " ")
+                word_n = word_n.replace(".", " ")
+                word_n = word_n.replace("?", " ")
+                word_n = word_n.replace("!", " ")
+                #print(word_n)
+                lang_model.index_word(word_n)
+    print('    indexed %d words' % lang_model.n_words)    
     
 if __name__ == "__main__":
-    build_vocab("beat_words", "./beat_words.txt", "../../../datasets/beat/vocab.pkl")
+    #11195 for all, 5793 for 4 speakers
+    build_vocab("beat_english_15_141", "/home/ma-user/work/datasets/beat_cache/beat_english_15_141/", "/home/ma-user/work/datasets/beat_cache/beat_english_15_141/vocab.pkl", "/home/ma-user/work/datasets/cc.en.300.bin", 300)
     

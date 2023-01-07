@@ -8,6 +8,7 @@ Based on: https://gist.github.com/johnfredcee/2007503
 
 '''
 import re
+from unicodedata import name
 import numpy as np
 from .data import Joint, MocapData
 
@@ -67,7 +68,7 @@ class BVHParser():
         self.current_token = 0
         self.framerate = 0.0
         self.root_name = ''
-
+        
         self.scanner = BVHScanner()
         
         self.data = MocapData()
@@ -75,10 +76,15 @@ class BVHParser():
 
     def parse(self, filename, start=0, stop=-1):
         self.reset()
+        self.correct_row_num = 0
+        with open(filename, 'r') as f:
+            for line in f.readlines():
+                self.correct_row_num += 1
 
         with open(filename, 'r') as bvh_file:
             raw_contents = bvh_file.read()
         tokens, remainder = self.scanner.scan(raw_contents)
+        
         self._parse_hierarchy(tokens)
         self.current_token = self.current_token + 1
         self._parse_motion(tokens, start, stop)
@@ -227,7 +233,7 @@ class BVHParser():
         frame_count = int(bvh[self.current_token][1])
         
         if stop<0 or stop>frame_count:
-            stop = frame_count
+            stop = min(frame_count, self.correct_row_num-431)
             
         assert(start>=0)
         assert(start<stop)
@@ -249,8 +255,11 @@ class BVHParser():
         self._motions = [()] * (stop-start)
         idx=0
         for i in range(stop):
+            #print(i)
             channel_values = []
+            
             for channel in self._motion_channels:
+                #print(channel)
                 channel_values.append((channel[0], channel[1], float(bvh[self.current_token][1])))
                 self.current_token = self.current_token + 1
 
@@ -258,3 +267,8 @@ class BVHParser():
                 self._motions[idx] = (frame_time, channel_values)
                 frame_time = frame_time + frame_rate
                 idx+=1
+
+
+if __name__ == "__main__":
+    p = BVHParser()
+    data = [p.parse("../../../datasets/beat_full/2/2_scott_0_1_1.bvh")]
