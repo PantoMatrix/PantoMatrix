@@ -6,9 +6,6 @@
 BEAT: Body-Expression-Audio-Text Dataset 
 </h1>
 
---------------------------------------------------------------------------------
-
-
  
 # News 
 - **[Ongoing]** SMPL-X version data.
