@@ -31,7 +31,7 @@ BEAT: Body-Expression-Audio-Text Dataset
 | [Seq2Seq](https://arxiv.org/abs/1810.12541)            | ICRA'19           | text                | 261.3         | 0.173         | 0.729          | -        |
 | [Speech2Gestures](https://arxiv.org/abs/1906.04160)    | CVPR'19           | audio               | 256.7         | 0.092         | 0.751          | -        |
 | [Audio2Gestures](https://ieeexplore.ieee.org/document/9710107)     | ICCV'21           | audio               | 223.8         | 0.097         | 0.766          | -        |
-| [MultiContext](https://arxiv.org/abs/2009.02119)       | SIGGRAPH ASIA'20  | audio, text         | 176.2 (177.8*)| 0.195 (0.223) | 0.776 (0.751)  | [link](https://drive.google.com/file/d/1j3zNf1FyAL4qR4Y5JhqVlULBghKSlCAi/view?usp=share_link) |
+| [MultiContext](https://arxiv.org/abs/2009.02119)       | SIGGRAPH ASIA'20  | audio, text         | 176.2 (177.2*)| 0.195 (0.227) | 0.776 (0.751)  | [link](https://drive.google.com/file/d/1j3zNf1FyAL4qR4Y5JhqVlULBghKSlCAi/view?usp=share_link) |
 | [CaMN](https://arxiv.org/abs/2203.05297)               | ECCV'22           | audio, text, facial | 123.7 (122.8) | 0.239 (0.240) | 0.783 (0.782)  | [link](https://drive.google.com/file/d/1Q7v_e3K_cgR93a70hlen7KAf2K94NU7j/view?usp=share_link) |
 
 *Checkpoints results trained from this repo. are denoted in parentheses. Results in paper are from codes: [seq2seq](https://github.com/youngwoo-yoon/Co-Speech_Gesture_Generation), [s2g](https://github.com/amirbar/speech2gesture), [a2g](https://github.com/JingLi513/Audio2Gestures), [mutli](https://github.com/ai4r/Gesture-Generation-from-Trimodal-Context), [camn](https://github.com/beat2022dataset/beat). 
