@@ -49,7 +49,6 @@ def set_args_and_logger(args, rank):
     if not os.path.exists(args_name_dir): os.makedirs(args_name_dir)
     args_name = args_name_dir + "/" + args.name +".yaml"
     
-    os.environ["WANDB_API_KEY"] = '91fe156c60374c4eb00dd6a990017b0371e32737'
     os.environ["WANDB_MODE"] = "offline"
     
     if rank == 0:
