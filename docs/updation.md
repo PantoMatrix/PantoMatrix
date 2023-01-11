@@ -21,7 +21,7 @@
 
 # Full News List 
 - **[Ongoing]** SMPL-X version data.
-- **[2023/01]** [English data v0.2.1](https://drive.google.com/file/d/14BT2nKQyiMRlyxSL7LNDgoFpu0HLVJft/view?usp=share_link) are available. Fix the orientation issue. See [updation](./docs/updation.md) for details.
+- **[2023/01]** [English data v0.2.1](https://drive.google.com/file/d/1Akf0WgAwuH2fvlWbvNpif4XRqXlpznh9/view?usp=share_link) are available. Fix the orientation issue. See [updation](./docs/updation.md) for details.
 - **[2023/01]** Provide checkpoints (#14, #16), scripts for rendering (#17), preprocessing (#18).  
 - **[2022/12]** Provide English data v0.2.0 in Zip files (#10).
 - **[2022/10]** [Project page](https://pantomatrix.github.io/BEAT/) and [rendered videos](https://drive.google.com/drive/folders/1ghZ7_4LkCyM_IZxTElzAwPzGheLrBGBu) are available.
