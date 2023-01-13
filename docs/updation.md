@@ -9,7 +9,7 @@
 - updated correct data for `4_lawrence_0_75_75` and  `4_lawrence_0_76_76`. 
 - updated the missing textgrid for `7_sophie_1_3_3`, `7_sophie_1_4_4`, `7_sophie_1_9_9`, `7_sophie_1_10_10`.
 
-### v0.2.0 (English, beat_rawdata_english and beat_annotation_english)
+### v0.2.0 (English: beat_rawdata_english and beat_annotation_english)
 - updated emotional and semantic annotation for English data
 - cut sequences by 1 min for speech sections, 10 mins for conversation sections. 
 
