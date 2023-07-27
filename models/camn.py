@@ -210,7 +210,7 @@ class PoseGenerator(nn.Module):
             self.speaker_embedding =   nn.Sequential(
                 nn.Embedding(self.speaker_dims, self.speaker_f),
                 nn.Linear(self.speaker_f, self.speaker_f), 
-                nn.LeakyReLU(True)
+                nn.LeakyReLU(0.1, True)
             )
 
             
@@ -242,7 +242,7 @@ class PoseGenerator(nn.Module):
                           bidirectional=True, dropout=args.dropout_prob)
         self.out = nn.Sequential(
             nn.Linear(self.hidden_size, self.hidden_size//2),
-            nn.LeakyReLU(True),
+            nn.LeakyReLU(0.1, True),
             nn.Linear(self.hidden_size//2, 27)
         )
         
@@ -250,7 +250,7 @@ class PoseGenerator(nn.Module):
                           bidirectional=True, dropout=args.dropout_prob)
         self.out_hands = nn.Sequential(
             nn.Linear(self.hidden_size, self.hidden_size//2),
-            nn.LeakyReLU(True),
+            nn.LeakyReLU(0.1, True),
             nn.Linear(self.hidden_size//2, 141-27)
         )
 
@@ -319,16 +319,16 @@ class CaMN(PoseGenerator):
         self.facial_fusion_dim = self.audio_fusion_dim + self.facial_f
         self.audio_fusion = nn.Sequential(
             nn.Linear(self.audio_fusion_dim, self.hidden_size//2),
-            nn.LeakyReLU(True),
+            nn.LeakyReLU(0.1, True),
             nn.Linear(self.hidden_size//2, self.audio_f),
-            nn.LeakyReLU(True),
+            nn.LeakyReLU(0.1, True),
         )
         
         self.facial_fusion = nn.Sequential(
             nn.Linear(self.facial_fusion_dim, self.hidden_size//2),
-            nn.LeakyReLU(True),
+            nn.LeakyReLU(0.1, True),
             nn.Linear(self.hidden_size//2, self.facial_f),
-            nn.LeakyReLU(True),
+            nn.LeakyReLU(0.1, True),
         )
         
     def forward(self, pre_seq, in_audio=None, in_facial=None, in_text=None, in_id=None, in_emo=None):
@@ -412,10 +412,10 @@ class ConvDiscriminator(nn.Module):
         self.pre_conv = nn.Sequential(
             nn.Conv1d(self.input_size, 16, 3),
             nn.BatchNorm1d(16),
-            nn.LeakyReLU(True),
+            nn.LeakyReLU(0.1, True),
             nn.Conv1d(16, 8, 3),
             nn.BatchNorm1d(8),
-            nn.LeakyReLU(True),
+            nn.LeakyReLU(0.1, True),
             nn.Conv1d(8, 8, 3),
         )
 
