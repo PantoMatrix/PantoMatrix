@@ -1,4 +1,4 @@
-PantoMatrix: Co-Speech Talking Head and Gestures Generation
+PantoMatrix: Talking Head and Gestures Generation
 ============
 
 # News 
