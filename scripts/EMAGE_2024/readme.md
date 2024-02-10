@@ -65,31 +65,31 @@ git clone https://huggingface.co/datasets/H-Liu1997/BEATX
 ### Training of EMAGE
 
 ```shell
-python python scripts/EMAGE_2024/train.py --config ./scripts/EMAGE_2024/configs/emage.yaml 
+python scripts/EMAGE_2024/train.py --config ./scripts/EMAGE_2024/configs/emage.yaml 
 ```
 
 ### Training of VQVAE
 
 ```shell
-python python scripts/EMAGE_2024/train.py --config ./scripts/EMAGE_2024/configs/cnn_vqvae_face_30.yaml 
+python scripts/EMAGE_2024/train.py --config ./scripts/EMAGE_2024/configs/cnn_vqvae_face_30.yaml 
 ```
 ```shell
-python python scripts/EMAGE_2024/train.py --config ./scripts/EMAGE_2024/configs/cnn_vqvae_hands_30.yaml 
+python scripts/EMAGE_2024/train.py --config ./scripts/EMAGE_2024/configs/cnn_vqvae_hands_30.yaml 
 ```
 ```shell
-python python scripts/EMAGE_2024/train.py --config ./scripts/EMAGE_2024/configs/cnn_vqvae_lower_30.yaml 
+python scripts/EMAGE_2024/train.py --config ./scripts/EMAGE_2024/configs/cnn_vqvae_lower_30.yaml 
 ```
 ```shell
-python python scripts/EMAGE_2024/train.py --config ./scripts/EMAGE_2024/configs/cnn_vqvae_lower_foot_30.yaml 
+python scripts/EMAGE_2024/train.py --config ./scripts/EMAGE_2024/configs/cnn_vqvae_lower_foot_30.yaml 
 ```
 ```shell
-python python scripts/EMAGE_2024/train.py --config ./scripts/EMAGE_2024/configs/cnn_vqvae_upper_30.yaml 
+python scripts/EMAGE_2024/train.py --config ./scripts/EMAGE_2024/configs/cnn_vqvae_upper_30.yaml 
 ```
 
 ### Other baselines, e.g., CaMN
 
 ```shell
-python python scripts/EMAGE_2024/train.py --config ./scripts/EMAGE_2024/configs/camn.yaml 
+python scripts/EMAGE_2024/train.py --config ./scripts/EMAGE_2024/configs/camn.yaml 
 ```
 
 # 🎨 Gradio Demo
