@@ -57,21 +57,21 @@ class CustomTrainer(train.BaseTrainer):
         self.args.vae_test_dim = 106
         self.vq_model_face = getattr(vq_model_module, "VQVAEConvZero")(self.args).to(self.rank)
         # print(self.vq_model_face)
-        other_tools.load_checkpoints(self.vq_model_face, "/home/s24273/datasets/hub/pretrained_vq/last_790_face_v2.bin", args.e_name)
+        other_tools.load_checkpoints(self.vq_model_face, self.args.data_path_1 +  "pretrained_vq/last_790_face_v2.bin", args.e_name)
         self.args.vae_test_dim = 78
         self.vq_model_upper = getattr(vq_model_module, "VQVAEConvZero")(self.args).to(self.rank)
-        other_tools.load_checkpoints(self.vq_model_upper, "/home/s24273/datasets/hub/pretrained_vq/upper_vertex_1layer_710.bin", args.e_name)
+        other_tools.load_checkpoints(self.vq_model_upper, self.args.data_path_1 +  "pretrained_vq/upper_vertex_1layer_710.bin", args.e_name)
         self.args.vae_test_dim = 180
         self.vq_model_hands = getattr(vq_model_module, "VQVAEConvZero")(self.args).to(self.rank)
-        other_tools.load_checkpoints(self.vq_model_hands, "/home/s24273/datasets/hub/pretrained_vq/hands_vertex_1layer_710.bin", args.e_name)
+        other_tools.load_checkpoints(self.vq_model_hands, self.args.data_path_1 +  "pretrained_vq/hands_vertex_1layer_710.bin", args.e_name)
         self.args.vae_test_dim = 61
         self.args.vae_layer = 4
         self.vq_model_lower = getattr(vq_model_module, "VQVAEConvZero")(self.args).to(self.rank)
-        other_tools.load_checkpoints(self.vq_model_lower, "/home/s24273/datasets/hub/pretrained_vq/lower_foot_600.bin", args.e_name)
+        other_tools.load_checkpoints(self.vq_model_lower, self.args.data_path_1 +  "pretrained_vq/lower_foot_600.bin", args.e_name)
         self.args.vae_test_dim = 61
         self.args.vae_layer = 4
         self.global_motion = getattr(vq_model_module, "VAEConvZero")(self.args).to(self.rank)
-        other_tools.load_checkpoints(self.global_motion, "/home/s24273/datasets/hub/pretrained_vq/last_1700_foot.bin", args.e_name)
+        other_tools.load_checkpoints(self.global_motion, self.args.data_path_1 +  "pretrained_vq/last_1700_foot.bin", args.e_name)
         self.args.vae_test_dim = 330
         self.args.vae_layer = 4
         self.args.vae_length = 240
