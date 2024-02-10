@@ -1,19 +1,12 @@
-import torch
-import torch.nn as nn
-import os
+import copy
 import math
 import pickle
 import numpy as np
-import torch.nn.functional as F
-from torch.nn.utils import weight_norm
-from .utils.build_vocab import Vocab
-from torch.nn import TransformerEncoder, TransformerEncoderLayer
-from .utils.layer import BasicBlock, TextEncoderTCN
-from .utils.wav2vec import Wav2Vec2Model
-from .utils.layer import ResBlock, init_weight
-from loguru import logger
+import torch
+import torch.nn as nn
+from .utils.layer import BasicBlock
 from .motion_encoder import * 
-import copy
+
 
 class WavEncoder(nn.Module):
     def __init__(self, out_dim, audio_in=1):
@@ -50,7 +43,7 @@ class MLP(nn.Module):
 
 
 class PeriodicPositionalEncoding(nn.Module):
-    def __init__(self, d_model, dropout=0.1, period=15, max_seq_len=60): # 12s
+    def __init__(self, d_model, dropout=0.1, period=15, max_seq_len=60): 
         super(PeriodicPositionalEncoding, self).__init__()
         self.dropout = nn.Dropout(p=dropout)
         pe = torch.zeros(period, d_model)
@@ -206,7 +199,7 @@ class MAGE_Transformer(nn.Module):
         motion_refined_embeddings = self.motion_self_encoder(motion_embeddings) 
         
         # audio to gesture cross-modal attention
-        if in_word is not None:
+        if use_word:
             a2g_motion = self.audio_feature2motion(fusion_body)
             motion_refined_embeddings_in = motion_refined_embeddings + speaker_embedding_body
             motion_refined_embeddings_in = self.position_embeddings(motion_refined_embeddings)

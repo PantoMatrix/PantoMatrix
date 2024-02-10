@@ -16,6 +16,28 @@ from scipy.spatial.transform import Rotation as R
 from scipy.spatial.transform import Slerp
 import cv2
 
+def write_wav_names_to_csv(folder_path, csv_path):
+    """
+    Traverse a folder and write the base names of all .wav files to a CSV file.
+
+    :param folder_path: Path to the folder to traverse.
+    :param csv_path: Path to the CSV file to write.
+    """
+    # Open the CSV file for writing
+    with open(csv_path, mode='w', newline='') as file:
+        writer = csv.writer(file)
+        # Write the header
+        writer.writerow(['id', 'type'])
+
+        # Walk through the folder
+        for root, dirs, files in os.walk(folder_path):
+            for file in files:
+                # Check if the file ends with .wav
+                if file.endswith('.wav'):
+                    # Extract the base name without the extension
+                    base_name = os.path.splitext(file)[0]
+                    # Write the base name and type to the CSV
+                    writer.writerow([base_name, 'test'])
 
 def resize_motion_sequence_tensor(sequence, target_frames):
     """
@@ -456,6 +478,10 @@ def process_frame(i, vertices_all, vertices1_all, faces, output_dir, use_matplot
     import matplotlib.pyplot as plt
     import trimesh
     import pyvirtualdisplay as Display
+    
+    uniform_color = [200, 200, 200, 255]  
+   
+
 
     vertices = vertices_all[i]
     vertices1 = vertices1_all[i]
@@ -480,6 +506,7 @@ def process_frame(i, vertices_all, vertices1_all, faces, output_dir, use_matplot
         ax.set_box_aspect((1,1,1))
     else:
         mesh = trimesh.Trimesh(vertices, faces)
+        mesh.visual.vertex_colors = uniform_color
         scene = mesh.scene()
         scene.camera.fov = camera_params['fov']
         scene.camera.resolution = camera_params['resolution']
@@ -506,6 +533,7 @@ def process_frame(i, vertices_all, vertices1_all, faces, output_dir, use_matplot
         plt.close(fig)
     else:
         mesh1 = trimesh.Trimesh(vertices1, faces)
+        mesh1.visual.vertex_colors = uniform_color
         scene1 = mesh1.scene()
         scene1.camera.fov = camera_params1['fov']
         scene1.camera.resolution = camera_params1['resolution']
@@ -524,8 +552,11 @@ def generate_images(frames, vertices_all, vertices1_all, faces, output_dir, use_
     num_cores = multiprocessing.cpu_count()  # This will get the number of cores on your machine.
     mesh = trimesh.Trimesh(vertices_all[0], faces)
     scene = mesh.scene()
+    fov = scene.camera.fov.copy()
+    fov[0] = 80.0
+    fov[1] = 60.0
     camera_params = {
-        'fov': scene.camera.fov,
+        'fov': fov,
         'resolution': scene.camera.resolution,
         'focal': scene.camera.focal,
         'z_near': scene.camera.z_near,
@@ -535,7 +566,7 @@ def generate_images(frames, vertices_all, vertices1_all, faces, output_dir, use_
     mesh1 = trimesh.Trimesh(vertices1_all[0], faces)
     scene1 = mesh1.scene()
     camera_params1 = {
-        'fov': scene1.camera.fov,
+        'fov': fov,
         'resolution': scene1.camera.resolution,
         'focal': scene1.camera.focal,
         'z_near': scene1.camera.z_near,
@@ -544,6 +575,9 @@ def generate_images(frames, vertices_all, vertices1_all, faces, output_dir, use_
     }
     # Use a Pool to manage the processes
     # print(num_cores)
+    # for i in range(frames):
+    #     process_frame(i, vertices_all, vertices1_all, faces, output_dir, use_matplotlib, filenames, camera_params, camera_params1)
+
     progress = multiprocessing.Value('i', 0)
     lock = multiprocessing.Lock()
     with multiprocessing.Pool(num_cores) as pool:

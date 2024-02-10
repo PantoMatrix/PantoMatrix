@@ -25,9 +25,6 @@ from dataloaders.data_tools import joints_list
 import librosa
 
 class CustomTrainer(train.BaseTrainer):
-    '''
-    Multi-Modal AutoEncoder
-    '''
     def __init__(self, args):
         super().__init__(args)
         self.args = args
@@ -60,21 +57,21 @@ class CustomTrainer(train.BaseTrainer):
         self.args.vae_test_dim = 106
         self.vq_model_face = getattr(vq_model_module, "VQVAEConvZero")(self.args).to(self.rank)
         # print(self.vq_model_face)
-        other_tools.load_checkpoints(self.vq_model_face, ".datasets/hub/pretrained_vq/face_vertex_1layer_790.bin", args.e_name)
+        other_tools.load_checkpoints(self.vq_model_face, "/home/s24273/datasets/hub/pretrained_vq/last_790_face_v2.bin", args.e_name)
         self.args.vae_test_dim = 78
         self.vq_model_upper = getattr(vq_model_module, "VQVAEConvZero")(self.args).to(self.rank)
-        other_tools.load_checkpoints(self.vq_model_upper, ".datasets/hub/pretrained_vq/upper_vertex_1layer_710.bin", args.e_name)
+        other_tools.load_checkpoints(self.vq_model_upper, "/home/s24273/datasets/hub/pretrained_vq/upper_vertex_1layer_710.bin", args.e_name)
         self.args.vae_test_dim = 180
         self.vq_model_hands = getattr(vq_model_module, "VQVAEConvZero")(self.args).to(self.rank)
-        other_tools.load_checkpoints(self.vq_model_hands, ".datasets/hub/pretrained_vq/hands_vertex_1layer_710.bin", args.e_name)
+        other_tools.load_checkpoints(self.vq_model_hands, "/home/s24273/datasets/hub/pretrained_vq/hands_vertex_1layer_710.bin", args.e_name)
         self.args.vae_test_dim = 61
         self.args.vae_layer = 4
         self.vq_model_lower = getattr(vq_model_module, "VQVAEConvZero")(self.args).to(self.rank)
-        other_tools.load_checkpoints(self.vq_model_lower, ".datasets/hub/pretrained_vq/lower_foot_600.bin", args.e_name)
+        other_tools.load_checkpoints(self.vq_model_lower, "/home/s24273/datasets/hub/pretrained_vq/lower_foot_600.bin", args.e_name)
         self.args.vae_test_dim = 61
         self.args.vae_layer = 4
         self.global_motion = getattr(vq_model_module, "VAEConvZero")(self.args).to(self.rank)
-        other_tools.load_checkpoints(self.global_motion, ".datasets/hub/pretrained_vq/last_1700_foot.bin", args.e_name)
+        other_tools.load_checkpoints(self.global_motion, "/home/s24273/datasets/hub/pretrained_vq/last_1700_foot.bin", args.e_name)
         self.args.vae_test_dim = 330
         self.args.vae_layer = 4
         self.args.vae_length = 240
@@ -827,3 +824,84 @@ class CustomTrainer(train.BaseTrainer):
         end_time = time.time() - start_time
         logger.info(f"total inference time: {int(end_time)} s for {int(total_length/self.args.pose_fps)} s motion")
 
+
+    def test_demo(self, epoch):
+        '''
+        input audio and text, output motion
+        do not calculate loss and metric
+        save video
+        '''
+        results_save_path = self.checkpoint_path + f"/{epoch}/"
+        if os.path.exists(results_save_path): 
+            return 0
+        os.makedirs(results_save_path)
+        start_time = time.time()
+        total_length = 0
+        test_seq_list = self.test_data.selected_file
+        align = 0 
+        latent_out = []
+        latent_ori = []
+        l2_all = 0 
+        lvel = 0
+        self.model.eval()
+        self.smplx.eval()
+        # self.eval_copy.eval()
+        with torch.no_grad():
+            for its, batch_data in enumerate(self.test_loader):
+                loaded_data = self._load_data(batch_data)    
+                net_out = self._g_test(loaded_data)
+                tar_pose = net_out['tar_pose']
+                rec_pose = net_out['rec_pose']
+                tar_exps = net_out['tar_exps']
+                tar_beta = net_out['tar_beta']
+                rec_trans = net_out['rec_trans']
+                tar_trans = net_out['tar_trans']
+                rec_exps = net_out['rec_exps']
+                # print(rec_pose.shape, tar_pose.shape)
+                bs, n, j = tar_pose.shape[0], tar_pose.shape[1], self.joints
+
+                # interpolate to 30fps  
+                if (30/self.args.pose_fps) != 1:
+                    assert 30%self.args.pose_fps == 0
+                    n *= int(30/self.args.pose_fps)
+                    tar_pose = torch.nn.functional.interpolate(tar_pose.permute(0, 2, 1), scale_factor=30/self.args.pose_fps, mode='linear').permute(0,2,1)
+                    rec_pose = torch.nn.functional.interpolate(rec_pose.permute(0, 2, 1), scale_factor=30/self.args.pose_fps, mode='linear').permute(0,2,1)
+                
+                # print(rec_pose.shape, tar_pose.shape)
+                rec_pose = rc.rotation_6d_to_matrix(rec_pose.reshape(bs*n, j, 6))
+                rec_pose = rc.matrix_to_axis_angle(rec_pose).reshape(bs*n, j*3)
+
+                tar_pose = rc.rotation_6d_to_matrix(tar_pose.reshape(bs*n, j, 6))
+                tar_pose = rc.matrix_to_axis_angle(tar_pose).reshape(bs*n, j*3)
+                        
+                tar_pose_np = tar_pose.detach().cpu().numpy()
+                rec_pose_np = rec_pose.detach().cpu().numpy()
+                rec_trans_np = rec_trans.detach().cpu().numpy().reshape(bs*n, 3)
+                rec_exp_np = rec_exps.detach().cpu().numpy().reshape(bs*n, 100) 
+                tar_exp_np = tar_exps.detach().cpu().numpy().reshape(bs*n, 100)
+                tar_trans_np = tar_trans.detach().cpu().numpy().reshape(bs*n, 3)
+
+                gt_npz = np.load(self.args.data_path+self.args.pose_rep +"/"+test_seq_list.iloc[its]['id']+".npz", allow_pickle=True)
+                np.savez(results_save_path+"gt_"+test_seq_list.iloc[its]['id']+'.npz',
+                    betas=gt_npz["betas"],
+                    poses=tar_pose_np,
+                    expressions=tar_exp_np,
+                    trans=tar_trans_np,
+                    model='smplx2020',
+                    gender='neutral',
+                    mocap_frame_rate = 30 ,
+                )
+                np.savez(results_save_path+"res_"+test_seq_list.iloc[its]['id']+'.npz',
+                    betas=gt_npz["betas"],
+                    poses=rec_pose_np,
+                    expressions=rec_exp_np,
+                    trans=rec_trans_np,
+                    model='smplx2020',
+                    gender='neutral',
+                    mocap_frame_rate = 30,
+                )
+                total_length += n
+
+        data_tools.result2target_vis(self.args.pose_version, results_save_path, results_save_path, self.test_demo, False)
+        end_time = time.time() - start_time
+        logger.info(f"total inference time: {int(end_time)} s for {int(total_length/self.args.pose_fps)} s motion")

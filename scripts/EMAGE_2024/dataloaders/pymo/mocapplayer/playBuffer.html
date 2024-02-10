@@ -1,0 +1,418 @@
+<!DOCTYPE html>
+<!-- GrooveNet Player - V 0.3
+By Omid Alemi
+ -->
+<html lang="en">
+
+<head>
+    <title>BVH Player</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+    <style>
+        body {
+            margin:0;
+            overflow: hidden;
+        }
+
+        #metaoverlay {
+            width: 600px;
+            height: 150px;
+            background-color: rgba(10,10,10,0.5);
+            position: fixed;
+            bottom: 30px;
+            margin: 0 auto;
+            left: 20px;
+            display: none;
+            border-radius: 10px;
+        }
+
+        #labels {
+            font-family: sans-serif;
+            width: 300px;
+            height: 50%;
+            color: #e1e1e1;
+            line-height: 1.5;
+            /* border: 1px solid #f1f1f1; */
+            display: flex;
+            margin: 20px;
+            padding: 10px;
+        }
+        .bar {
+            fill: rgba(80, 180, 240, 0.99);
+        }
+
+        svg {
+            /* border: 1px solid red; */
+        }
+    </style>
+    <link rel="stylesheet" href="styles/pace.css"></link>
+
+    <script src="https://d3js.org/d3.v4.min.js"></script>
+
+    <script src="libs/pace.min.js"></script>
+    <script src="libs/math.min.js"></script>
+    <script src="libs/jquery.min.js"></script>
+    <script src="libs/threejs/three.min.js"></script>
+    <script src="libs/threejs/OrbitControls.js"></script>
+    <script src="libs/papaparse.min.js"></script>
+
+    <script src="libs/mocapjs.js"></script>
+    <script src="js/skeletonFactory.js"></script>
+</head>
+
+<body>
+    <div id="metaoverlay">
+        <div id="labels"></div>
+        <div id="labelsChart"></div>
+    </div>
+    
+    <script type="text/javascript">
+        var characters = [];
+        var playing = false;
+        var showMeta = false;
+        var metadata = [];
+        var chart = {};
+
+
+        $(document).on("keypress", function(e) {
+            if (e.charCode == 32)
+                playing = !playing;
+
+            characters.forEach(function(c) {
+                c.playing = playing;
+
+                if (playing)
+                    c.animStartTimeRef = Date.now();
+                else
+                    c.animOffset = c.animIndex;
+            });
+
+        });
+
+        $(window).on("resize", function(e) {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+
+           renderer.setSize(window.innerWidth, window.innerHeight);
+        });
+
+        var getUrlParameter = function getUrlParameter(sParam) {
+        var sPageURL = decodeURIComponent(window.location.search.substring(1)),
+            sURLVariables = sPageURL.split('&'),
+            sParameterName,
+            i;
+
+        for (i = 0; i < sURLVariables.length; i++) {
+            sParameterName = sURLVariables[i].split('=');            
+            if (sParameterName[0] === sParam) {
+                return sParameterName[1] === undefined ? true : sParameterName[1];
+            }
+        }
+    };
+    </script>
+
+    <script>
+        var scene, camera, renderer;
+        var geometry, material, mesh;
+        var played_count = 0;
+
+        function set_the_scene3() {
+			
+            // Add the light            
+			light = new THREE.PointLight(0xffffff, 0.9, 0);
+			light.position.set(0, 160, 40);
+			scene.add(light);
+
+			// Create a grid for the floor
+			var size = 200,
+				step = 20;
+
+            // Draw the plane
+			var planeGeometry = new THREE.PlaneGeometry(size * 2, size * 2);
+			var planeMaterial = new THREE.MeshPhongMaterial({
+				color: 0x444444,
+				emissive: 0x000000,
+				specular: 0x111111,
+				side: THREE.DoubleSide,
+				transparent: true,
+				opacity: 0.6
+			});
+			var plane = new THREE.Mesh(planeGeometry, planeMaterial);
+			plane.position.set(0, 0, 0);
+			plane.rotation.set(math.pi / 2, 0, 0);
+			scene.add(plane);
+
+            //Draw the lines
+			var lineGeometry = new THREE.Geometry();
+			var lineMaterial = new THREE.LineBasicMaterial({
+				color: 0x555555,
+				linewidth: 1.2
+			});
+			for (var i = -size; i <= size; i += step) {
+				lineGeometry.vertices.push(new THREE.Vector3(-size, -0.04, i));
+				lineGeometry.vertices.push(new THREE.Vector3(size, -0.04, i));
+				lineGeometry.vertices.push(new THREE.Vector3(i, -0.04, -size));
+				lineGeometry.vertices.push(new THREE.Vector3(i, -0.04, size));
+			}
+
+			var line = new THREE.LineSegments(lineGeometry, lineMaterial);
+			scene.add(line);
+		}
+
+        function add_basic_lights() {
+            // Add the light            
+			var light = new THREE.HemisphereLight(0xffffff, 0x000000, 0.9);            
+            scene.add(light);
+        }
+
+        function add_floor_theo() {
+            var textureLoader = new THREE.TextureLoader();
+
+            var texture = textureLoader.load('theo_floor1.jpg', function(tt) {    
+            });
+
+            texture.wrapS = THREE.RepeatWrapping;
+            texture.wrapT = THREE.RepeatWrapping;
+            texture.repeat = new THREE.Vector2(1,1.66);
+
+
+            var material = new THREE.MeshPhongMaterial({
+                color: 0xffffff,
+                specular: 0xffffff,
+                shininess: 100,
+                map: texture,
+
+            });
+            var geometry = new THREE.CubeGeometry(300, 300, 5);
+
+            var mesh = new THREE.Mesh(geometry, material);
+            mesh.position.y = -2;
+            mesh.rotation.x = -Math.PI / 2;
+            scene.add(mesh);
+        }
+
+        function add_floor_grid(){
+            // Create a grid for the floor
+			var size = 400,
+				step = 40;
+
+            // Draw the plane
+			var planeGeometry = new THREE.PlaneGeometry(size * 2, size * 2);
+			var planeMaterial = new THREE.MeshPhongMaterial({
+				color: 0x212121,
+				emissive: 0x333333,
+				specular: 0x222222,
+				side: THREE.DoubleSide,
+				transparent: true,
+				opacity: 0.3
+			});
+			var plane = new THREE.Mesh(planeGeometry, planeMaterial);
+			plane.position.set(0, 0, 0);
+			plane.rotation.set(math.pi / 2, 0, 0);
+			scene.add(plane);
+
+            //Draw the lines
+			var lineGeometry = new THREE.Geometry();
+			var lineMaterial = new THREE.LineBasicMaterial({
+				color: 0x333333,
+				linewidth: 1.2
+			});
+			for (var i = -size; i <= size; i += step) {
+				lineGeometry.vertices.push(new THREE.Vector3(-size, -0.04, i));
+				lineGeometry.vertices.push(new THREE.Vector3(size, -0.04, i));
+				lineGeometry.vertices.push(new THREE.Vector3(i, -0.04, -size));
+				lineGeometry.vertices.push(new THREE.Vector3(i, -0.04, size));
+			}
+
+			var line = new THREE.LineSegments(lineGeometry, lineMaterial);
+			scene.add(line);
+        }
+
+        function init(cz) {
+            scene = new THREE.Scene();
+            camera = new THREE.PerspectiveCamera(30, window.innerWidth / window.innerHeight, 1, 4000);
+            camera.position.set(0, 250, 0);
+            camera.position.z = cz;
+            scene.add(camera);
+
+            // set_the_scene3();
+        }
+
+        function loadBVHFile(bvhURL, cname, jm, bm, scale) {            
+            var c2 = new BVHCharacter(cname, jm, bm, makeJointGeometry_Dode, makeBoneGeometry_Cylinder2);
+            // c2.setOriginPosition(0, 0, 0);
+            c2.skelScale = scale;
+            c2.loadFromURL(bvhURL, function() {
+                scene.add(c2.skeleton);
+            });
+
+            characters.push(c2);
+        }
+
+        function loadPosFile(csvURL, cname, jm, bm, scale, fr) {            
+            var c2 = new C3DCharacter(cname, markermaterial, makeJointGeometry_Sphere1);
+            // c2.setOriginPosition(0, 0, 0);
+            c2.scale = scale;
+            c2.frameTime = fr;
+            c2.loadFromURL(csvURL, function() {});
+
+            characters.push(c2);
+        }
+
+        function loadPosBuffer(data, cname, jm, bm, scale, fr) {            
+            var c2 = new C3DCharacter(cname, bonematerial5, makeJointGeometry_SphereX(2.5));
+            // c2.setOriginPosition(0, 0, 0);
+            c2.scale = scale;
+            c2.frameTime = fr;
+            c2.loadFromBuffer(data, function() {});
+
+            characters.push(c2);
+        }
+
+        function initRenderer() {
+            renderer = new THREE.WebGLRenderer({
+                antialias: true
+            });
+            renderer.setSize(window.innerWidth, window.innerHeight);
+            //renderer.setSize(600, 500);
+            renderer.gammaInput = true;
+            renderer.gammaOutput = true;
+            renderer.setPixelRatio(window.devicePixelRatio);
+            renderer.setClearColor(0x222222, 1);
+            // renderer.setClearColor(0xffffff, 1);
+
+            
+            document.body.appendChild(renderer.domElement);
+
+           controls = new THREE.OrbitControls(camera, renderer.domElement);
+        }
+
+        function animate() {
+            // if (!playing)
+            //     return;
+
+            requestAnimationFrame(animate);
+
+            characters.forEach(function(c) {
+                // console.log(c.playing);
+                if (1 && c.ready) {
+                    if (c.playing) {
+                        c.animIndex = c.animOffset + Math.floor((Date.now() - c.animStartTimeRef) / c.frameTime / 1000);
+
+                        if (c.animIndex >= c.frameCount-1) {
+                            c.animOffset = 0;
+                            c.animStartTimeRef = Date.now();
+                            c.animIndex = 0;
+                            played_count++;
+                            // if (played_count> 1)
+                            //     c.playing = false;
+
+                        }
+                        c.animFrame(c.animIndex);
+                        
+                        if (showMeta) {
+                            var labeldata = '';
+                            for (var i=0; i<metadata[c.animIndex].length;i++) {
+                                var v = Math.round(metadata[c.animIndex][i]*100)/100;
+                                labeldata+= 'Label '+i+ ':   '+ v+'<br/>';
+                            }                            
+                            document.getElementById('labels').innerHTML = labeldata;
+
+                            updateChart(metadata[c.animIndex]); 
+                        }                        
+                    }
+                }
+            });
+    
+            renderer.render(scene, camera);
+        }
+
+        function makeLabelsChart() {
+            var metadataFrame = metadata[0];
+
+            chart.width = 200;
+            chart.height = 150;
+            
+            chart.svg = d3.select("#labelsChart")
+                        .append("svg")
+                        .attr("width", 200)
+                        .attr("height", 150);            
+            
+            chart.x = d3.scaleBand().rangeRound([0, chart.width]).padding(0.1),
+            chart.y = d3.scaleLinear().rangeRound([chart.height, 0]),
+            chart.h = d3.scaleLinear().rangeRound([0, chart.height/2]);;      
+
+            chart.x.domain([0, 1, 2, 3]);
+            chart.y.domain([-2, 2]);
+            chart.h.domain([0, 2]);
+
+            var g = chart.svg.append("g");                        
+            
+            g.append("line")
+                .attr('x1', 0)
+                .attr('x2', chart.width)
+                .attr('y1', chart.height/2)
+                .attr('y2', chart.height/2)
+                .attr('stroke', '#f1f1f1');
+
+            g.selectAll(".bar")
+                .data(metadataFrame)
+                .enter().append("rect")
+                .attr("class", "bar")
+                .attr("x", function(d, i) { return chart.x(i); })
+                .attr("y", function(d, i) { return chart.y(Math.max(0, d)); })
+                .attr("width", 20)
+                .attr("height", function(d) { return  chart.h(Math.abs(d)); });
+        }
+
+        function updateChart(metadataFrame) {
+            var g = chart.svg.select("g");                
+
+            g.selectAll(".bar")
+                .data(metadataFrame)                
+                .attr("class", "bar")
+                .attr("x", function(d, i) { return chart.x(i); })
+                .attr("y", function(d, i) { return chart.y(Math.max(0, d)); })
+                .attr("width", 20)
+                .attr("height", function(d) { return  chart.h(Math.abs(d)); });
+        }
+
+        function start(dataBuffer, metadata, cz, scale, frameTime) {        
+            if (cz === undefined)
+                cz = 550;
+            
+            if (scale === undefined)
+                scale = 1.0;
+            
+            if (frameTime === undefined)
+                frameTime = 1/120;
+            
+            init(cz);
+            add_basic_lights();
+            add_floor_grid();
+            initRenderer();
+            
+            if (metadata.length > 1  ) {
+                showMeta = true;
+                document.getElementById("metaoverlay").style.display="flex";
+                // console.log(metadata.length);
+                makeLabelsChart();
+            }
+
+            if (dataBuffer !==  undefined) {
+                console.log("Loading from internal bufffer");
+                // console.log(dataBuffer.length);
+                loadPosBuffer(dataBuffer, 'Fig', jointmaterial4, bm_a, scale, frameTime); 
+
+            }
+            
+            
+
+            animate();
+        }
+    </script>
+
+    <script src="data.js"></script>
+</body>
+
+</html>

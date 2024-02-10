@@ -1,0 +1,80 @@
+is_train: True
+ddp: False
+stat: ts
+training_speakers: [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30]
+root_path: /home/s24273/
+out_path: /home/s24273/outputs/audio2pose/
+cache_path: datasets/beat_cache/beat_smplx_en/
+project: mage_smplx
+data_path: /home/s24273/datasets/beat_v2.0.0/beat_english_v2.0.0/
+e_path:  weights/AESKConv_240_100.bin
+test_ckpt: weights/multi.bin
+data_path_1: /home/s24273/datasets/hub/
+#torch_hub_path: datasets/hub/
+additional_data: False
+dataset: beat_smplx2020
+new_cache: False
+ori_joints: beat_smplx_joints
+tar_joints: beat_smplx_full
+pose_rep: smplxflame_30
+pose_norm: False
+pose_fps: 30
+
+
+vae_test_len: 64
+vae_test_dim: 330
+vae_test_stride: 20
+vae_length: 240
+vae_layer: 2
+vae_grow: [1,2]
+variational: False
+
+pose_dims: 330
+pose_length: 64
+stride: 20
+facial_dims: 100
+word_index_num: 11195
+word_dims: 300
+batch_size: 32
+lr_base: 1e-4
+model: motion_representation
+g_name: VAESKConv
+#eval_model: motion_autoencoder
+#e_name: HalfEmbeddingNet
+trainer: ae
+decay_epochs: 950
+# audio_f: 256
+# a_pre_encoder: tcn_camn
+# a_encoder: lp
+# a_fix_pre: False
+
+# freeze_wordembed: False
+# word_f: 128
+# t_pre_encoder: fasttext
+# t_encoder: lp
+# t_fix_pre: False
+
+# motion_f: 256
+# m_pre_encoder: lp
+# m_encoder: lp
+# m_fix_pre: False
+
+# facial_f: 128
+# f_pre_encoder: lp
+# f_encoder: lp
+# f_fix_pre: False
+
+#m_decoder: lstm
+#decode_fusion: cat
+#n_layer: 2
+#hidden_size: 512
+rec_weight: 1
+rec_pos_weight: 10
+rec_ver_weight: 0
+# rec_fac_weight: 1
+#ita_weight: 0
+#iwa_weight: 0
+#fusion_mode: sum
+# grad_norm: 1
+epochs: 1000
+test_period: 100

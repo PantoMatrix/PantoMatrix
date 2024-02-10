@@ -32,5 +32,6 @@ tqdm==4.66.1
 transformers==4.35.2
 trimesh==3.23.5
 wandb==0.16.0
+pyglet<2
 smplx
 tensorboard
