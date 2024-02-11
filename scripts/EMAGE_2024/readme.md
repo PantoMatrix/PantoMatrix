@@ -14,6 +14,8 @@ We Recommend a python version `==3.8` and cuda version `==12.2`. Then build envi
 git clone https://github.com/PantoMatrix/PantoMatrix.git
 conda create -n emagepy38 python==3.8
 conda activate emagepy38
+# Prerequisite for rendering
+conda install -c conda-forge libstdcxx-ng
 # Install with pip:
 pip install -r ./scripts/EMAGE_2024/requirements.txt
 ```
