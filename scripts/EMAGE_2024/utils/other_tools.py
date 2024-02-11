@@ -472,16 +472,26 @@ def image_from_bytes(image_bytes):
     from io import BytesIO
     return mpimg.imread(BytesIO(image_bytes), format='PNG')
 
-def process_frame(i, vertices_all, vertices1_all, faces, output_dir, use_matplotlib, filenames, camera_params, camera_params1):
+def process_frame(i, vertices_all, vertices1_all, faces, output_dir, filenames):
     import matplotlib
     matplotlib.use('Agg')
     import matplotlib.pyplot as plt
     import trimesh
-    import pyvirtualdisplay as Display
+    import pyrender
     
-    uniform_color = [200, 200, 200, 255]  
-   
-
+    def deg_to_rad(degrees):
+        return degrees * np.pi / 180
+    
+    uniform_color = [220, 220, 220, 255]
+    resolution = (1000, 1000)
+    figsize = (10, 10)
+    
+    fig, axs = plt.subplots(
+        nrows=1, 
+        ncols=2, 
+        figsize=(figsize[0] * 2, figsize[1] * 1)
+    )
+    axs = axs.flatten()
 
     vertices = vertices_all[i]
     vertices1 = vertices1_all[i]
@@ -491,97 +501,88 @@ def process_frame(i, vertices_all, vertices1_all, faces, output_dir, use_matplot
         print('processed', i, 'frames')
     #time_s = time.time()
     #print(vertices.shape)
-    if use_matplotlib:
-        fig = plt.figure(figsize=(20, 10))
-        ax = fig.add_subplot(121, projection="3d")
-        fig.subplots_adjust(left=0, right=1, bottom=0, top=1)
-        #ax.view_init(elev=0, azim=90)
-        x = vertices[:, 0]
-        y = vertices[:, 1]
-        z = vertices[:, 2]
-        ax.scatter(x, y, z, s=0.5)
-        ax.set_xlim([-1.0, 1.0])
-        ax.set_ylim([-0.5, 1.5])#heigth
-        ax.set_zlim([-0, 2])#depth
-        ax.set_box_aspect((1,1,1))
-    else:
-        mesh = trimesh.Trimesh(vertices, faces)
-        mesh.visual.vertex_colors = uniform_color
-        scene = mesh.scene()
-        scene.camera.fov = camera_params['fov']
-        scene.camera.resolution = camera_params['resolution']
-        scene.camera.z_near = camera_params['z_near']
-        scene.camera.z_far = camera_params['z_far']
-        scene.graph[scene.camera.name] = camera_params['transform']
-        fig, ax =plt.subplots(1,2, figsize=(16, 6))
-        image = scene.save_image(resolution=[640, 480], visible=False)  
-        im0 = ax[0].imshow(image_from_bytes(image))
-        ax[0].axis('off')
+    angle_rad = deg_to_rad(-2)
+    pose_camera = np.array([
+        [1.0, 0.0, 0.0, 0.0],
+        [0.0, np.cos(angle_rad), -np.sin(angle_rad), 1.0],
+        [0.0, np.sin(angle_rad), np.cos(angle_rad), 5.0],
+        [0.0, 0.0, 0.0, 1.0]
+    ])
+    angle_rad = deg_to_rad(-30)
+    pose_light = np.array([
+        [1.0, 0.0, 0.0, 0.0],
+        [0.0, np.cos(angle_rad), -np.sin(angle_rad), 0.0],
+        [0.0, np.sin(angle_rad), np.cos(angle_rad), 3.0],
+        [0.0, 0.0, 0.0, 1.0]
+    ])
     
-    if use_matplotlib:
-        ax2 = fig.add_subplot(122, projection="3d")
-        ax2.set_box_aspect((1,1,1))
-        fig.subplots_adjust(left=0, right=1, bottom=0, top=1)
-        x1 = vertices1[:, 0]
-        y1 = vertices1[:, 1]
-        z1 = vertices1[:, 2]
-        ax2.scatter(x1, y1, z1, s=0.5)
-        ax2.set_xlim([-1.0, 1.0])
-        ax2.set_ylim([-0.5, 1.5])#heigth
-        ax2.set_zlim([-0, 2])
-        plt.savefig(filename, bbox_inches='tight')
-        plt.close(fig)
-    else:
-        mesh1 = trimesh.Trimesh(vertices1, faces)
-        mesh1.visual.vertex_colors = uniform_color
-        scene1 = mesh1.scene()
-        scene1.camera.fov = camera_params1['fov']
-        scene1.camera.resolution = camera_params1['resolution']
-        scene1.camera.z_near = camera_params1['z_near']
-        scene1.camera.z_far = camera_params1['z_far']
-        scene1.graph[scene1.camera.name] = camera_params1['transform']
-        image1 = scene1.save_image(resolution=[640, 480], visible=False)
-        im1 = ax[1].imshow(image_from_bytes(image1))
-        ax[1].axis('off')
-        plt.savefig(filename, bbox_inches='tight')
-        plt.close(fig)    
+    for vtx_idx, vtx in enumerate([vertices, vertices1]):
+        trimesh_mesh = trimesh.Trimesh(
+            vertices=vtx,
+            faces=faces,
+            vertex_colors=uniform_color
+        )
+        mesh = pyrender.Mesh.from_trimesh(
+            trimesh_mesh, smooth=True
+        )
+        scene = pyrender.Scene()
+        scene.add(mesh)
+        camera = pyrender.OrthographicCamera(xmag=1.0, ymag=1.0)
+        scene.add(camera, pose=pose_camera)
+        light = pyrender.DirectionalLight(color=[1.0, 1.0, 1.0], intensity=4.0)
+        scene.add(light, pose=pose_light)
+        renderer = pyrender.OffscreenRenderer(*resolution)
+        color, _ = renderer.render(scene)
+        axs[vtx_idx].imshow(color)
+        axs[vtx_idx].axis('off')
+        renderer.delete()
+            
+    plt.savefig(filename, bbox_inches='tight')
+    plt.close(fig)
 
-def generate_images(frames, vertices_all, vertices1_all, faces, output_dir, use_matplotlib, filenames):
+def generate_images(frames, vertices_all, vertices1_all, faces, output_dir, filenames):
     import multiprocessing
-    import trimesh
-    num_cores = multiprocessing.cpu_count()  # This will get the number of cores on your machine.
-    mesh = trimesh.Trimesh(vertices_all[0], faces)
-    scene = mesh.scene()
-    fov = scene.camera.fov.copy()
-    fov[0] = 80.0
-    fov[1] = 60.0
-    camera_params = {
-        'fov': fov,
-        'resolution': scene.camera.resolution,
-        'focal': scene.camera.focal,
-        'z_near': scene.camera.z_near,
-        "z_far": scene.camera.z_far,
-        'transform': scene.graph[scene.camera.name][0]
-    }
-    mesh1 = trimesh.Trimesh(vertices1_all[0], faces)
-    scene1 = mesh1.scene()
-    camera_params1 = {
-        'fov': fov,
-        'resolution': scene1.camera.resolution,
-        'focal': scene1.camera.focal,
-        'z_near': scene1.camera.z_near,
-        "z_far": scene1.camera.z_far,
-        'transform': scene1.graph[scene1.camera.name][0]
-    }
+    # import trimesh
+    num_cores = multiprocessing.cpu_count() - 1  # This will get the number of cores on your machine.
+    # mesh = trimesh.Trimesh(vertices_all[0], faces)
+    # scene = mesh.scene()
+    # fov = scene.camera.fov.copy()
+    # fov[0] = 80.0
+    # fov[1] = 60.0
+    # camera_params = {
+    #     'fov': fov,
+    #     'resolution': scene.camera.resolution,
+    #     'focal': scene.camera.focal,
+    #     'z_near': scene.camera.z_near,
+    #     "z_far": scene.camera.z_far,
+    #     'transform': scene.graph[scene.camera.name][0]
+    # }
+    # mesh1 = trimesh.Trimesh(vertices1_all[0], faces)
+    # scene1 = mesh1.scene()
+    # camera_params1 = {
+    #     'fov': fov,
+    #     'resolution': scene1.camera.resolution,
+    #     'focal': scene1.camera.focal,
+    #     'z_near': scene1.camera.z_near,
+    #     "z_far": scene1.camera.z_far,
+    #     'transform': scene1.graph[scene1.camera.name][0]
+    # }
     # Use a Pool to manage the processes
     # print(num_cores)
     # for i in range(frames):
     #     process_frame(i, vertices_all, vertices1_all, faces, output_dir, use_matplotlib, filenames, camera_params, camera_params1)
 
-    progress = multiprocessing.Value('i', 0)
-    lock = multiprocessing.Lock()
+    # progress = multiprocessing.Value('i', 0)
+    # lock = multiprocessing.Lock()
     with multiprocessing.Pool(num_cores) as pool:
-        pool.starmap(process_frame, [(i, vertices_all, vertices1_all, faces, output_dir, use_matplotlib, filenames, camera_params, camera_params1) for i in range(frames)])
+        # pool.starmap(process_frame, [(i, vertices_all, vertices1_all, faces, output_dir, use_matplotlib, filenames, camera_params, camera_params1) for i in range(frames)])
+        pool.starmap(
+            process_frame, 
+            [
+                (i, vertices_all, vertices1_all, faces, output_dir, filenames) 
+                for i in range(frames)
+            ]
+        )
 
 def render_one_sequence(
          res_npz_path,
@@ -619,13 +620,13 @@ def render_one_sequence(
     
     if not os.path.exists(output_dir): os.makedirs(output_dir)
     filenames = []
-    if not use_matplotlib:
-       import trimesh 
+    # if not use_matplotlib:
+    #    import trimesh 
        #import pyrender
-       from pyvirtualdisplay import Display
-       display = Display(visible=0, size=(640, 480))
-       display.start()
-       faces = np.load(f"{model_folder}/smplx/SMPLX_NEUTRAL_2020.npz", allow_pickle=True)["f"]     
+    from pyvirtualdisplay import Display
+    display = Display(visible=0, size=(1000, 1000))
+    display.start()
+    faces = np.load(f"{model_folder}/smplx/SMPLX_NEUTRAL_2020.npz", allow_pickle=True)["f"]     
     seconds = 1
     #data_npz["jaw_pose"].shape[0]
     n = data_np_body["poses"].shape[0]
@@ -658,7 +659,7 @@ def render_one_sequence(
         seconds = vertices_all.shape[0]//30
     # camera_settings = None    
     time_s = time.time()
-    generate_images(int(seconds*30), vertices_all, vertices1_all, faces, output_dir, use_matplotlib, filenames)
+    generate_images(int(seconds*30), vertices_all, vertices1_all, faces, output_dir, filenames)
     filenames = [f"{output_dir}frame_{i}.png" for i in range(int(seconds*30))]  
     # print(time.time()-time_s)
     # for i in tqdm(range(seconds*30)):
@@ -754,7 +755,7 @@ def render_one_sequence(
     #         plt.savefig(filename, bbox_inches='tight')
     #         plt.close(fig)
 
-    # display.stop()
+    display.stop()
     # print(filenames)
     images = [imageio.imread(filename) for filename in filenames]
     imageio.mimsave(f"{output_dir}raw_{res_npz_path.split('/')[-1][:-4]}.mp4", images, fps=30)

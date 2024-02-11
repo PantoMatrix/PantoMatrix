@@ -35,3 +35,4 @@ wandb==0.16.0
 pyglet<2
 smplx
 tensorboard
+pyrender
