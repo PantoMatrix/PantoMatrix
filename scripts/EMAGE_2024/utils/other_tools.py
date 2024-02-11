@@ -571,18 +571,32 @@ def generate_images(frames, vertices_all, vertices1_all, faces, output_dir, file
     # print(num_cores)
     # for i in range(frames):
     #     process_frame(i, vertices_all, vertices1_all, faces, output_dir, use_matplotlib, filenames, camera_params, camera_params1)
+    for i in range(frames):
+        process_frame(i, vertices_all, vertices1_all, faces, output_dir, filenames)
 
     # progress = multiprocessing.Value('i', 0)
     # lock = multiprocessing.Lock()
-    with multiprocessing.Pool(num_cores) as pool:
-        # pool.starmap(process_frame, [(i, vertices_all, vertices1_all, faces, output_dir, use_matplotlib, filenames, camera_params, camera_params1) for i in range(frames)])
-        pool.starmap(
-            process_frame, 
-            [
-                (i, vertices_all, vertices1_all, faces, output_dir, filenames) 
-                for i in range(frames)
-            ]
-        )
+    # with multiprocessing.Pool(num_cores) as pool:
+    #     # pool.starmap(process_frame, [(i, vertices_all, vertices1_all, faces, output_dir, use_matplotlib, filenames, camera_params, camera_params1) for i in range(frames)])
+    #     pool.starmap(
+    #         process_frame, 
+    #         [
+    #             (i, vertices_all, vertices1_all, faces, output_dir, filenames) 
+    #             for i in range(frames)
+    #         ]
+    #     )
+
+    # progress = multiprocessing.Value('i', 0)
+    # lock = multiprocessing.Lock()
+    # with multiprocessing.Pool(num_cores) as pool:
+    #     # pool.starmap(process_frame, [(i, vertices_all, vertices1_all, faces, output_dir, use_matplotlib, filenames, camera_params, camera_params1) for i in range(frames)])
+    #     pool.starmap(
+    #         process_frame, 
+    #         [
+    #             (i, vertices_all, vertices1_all, faces, output_dir, filenames) 
+    #             for i in range(frames)
+    #         ]
+    #     )
 
 def render_one_sequence(
          res_npz_path,
