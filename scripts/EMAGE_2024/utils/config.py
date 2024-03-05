@@ -25,7 +25,7 @@ def parse_args():
     4. hierarchical is not necessary
     """
     parser = configargparse.ArgParser()
-    parser.add("-c", "--config", required=True, is_config_file=True)
+    parser.add("-c", "--config", default='./configs/emage_test_hf.yaml', is_config_file=True)
     parser.add("--project", default="audio2pose", type=str) # wandb project name
     parser.add("--stat", default="ts", type=str)
     parser.add("--csv_name", default="a2g_0", type=str) # local device id

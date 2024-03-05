@@ -10,6 +10,8 @@ loguru==0.7.2
 matplotlib==3.7.3
 moviepy==1.0.3
 numpy
+gradio
+fasttext-wheel
 opencv_contrib_python==4.8.1.78
 opencv_python==4.8.1.78
 pandas==1.5.3
