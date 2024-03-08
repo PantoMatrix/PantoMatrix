@@ -562,8 +562,7 @@ def emage(smplx_path, audio_path, text_path):
     #os.environ['TRANSFORMERS_CACHE'] = args.data_path_1 + "hub/"
     if not sys.warnoptions:
         warnings.simplefilter("ignore")
-    #dist.init_process_group(backend="nccl", rank=rank, world_size=world_size) # linux
-    dist.init_process_group(backend="gloo", rank=rank, world_size=world_size) # windows
+    dist.init_process_group(backend="gloo", rank=rank, world_size=world_size)
 
     #logger_tools.set_args_and_logger(args, rank)
     other_tools_hf.set_random_seed(args)

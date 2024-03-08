@@ -96,4 +96,16 @@ python scripts/EMAGE_2024/train.py --config ./scripts/EMAGE_2024/configs/camn.ya
 
 # 🎨 Gradio Demo
 
-- Ongoing
+### Run the demo, then open the localhost link in browser.
+
+```shell
+python scripts/EMAGE_2024/demo.py
+```
+
+### First, upload SMPL-X npz file, audio, TextGrid files by following the steps above.
+
+<img src ="../assets/EMAGE_2024/bfrun.png" width="100%">
+
+### Then hit the submit, and output result will be rendered in output for 10 minutes.
+
+<img src ="../assets/EMAGE_2024/afrun.png" width="100%">
