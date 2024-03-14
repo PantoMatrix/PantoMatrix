@@ -36,6 +36,7 @@ Welcome contributors for speedup the training, better visualization etc. Feel fr
 
 ------------
 <!-- **CoRR 2024**<br /> -->
+**CVPR 2024**<br />
 **EMAGE: Towards Unified Holistic Co-Speech Gesture Generation via Expressive Masked Audio Gesture Modeling**<br >
 <sub>
 <a href="https://h-liu1997.github.io/">Haiyang Liu</a>\*,
