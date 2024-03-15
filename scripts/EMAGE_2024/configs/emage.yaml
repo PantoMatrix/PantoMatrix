@@ -4,11 +4,11 @@ stat: ts
 root_path: ./
 out_path: ./outputs/audio2pose/
 project: s2g
-data_path: ./BEATX/beat_english_v2.0.0/
+data_path: ./BEAT2/beat_english_v2.0.0/
 e_path:  weights/AESKConv_240_100.bin
 eval_model: motion_representation
 e_name: VAESKConv
-test_ckpt: weights/multi.bin
+test_ckpt: ./EMAGE/emage_240.bin
 data_path_1: ./EMAGE/
 vae_test_len: 32
 vae_test_dim: 330

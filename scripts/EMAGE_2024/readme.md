@@ -22,9 +22,11 @@ pip install 'git+https://github.com/facebookresearch/pytorch3d.git@stable'
 ```
 
 ## Download weights
-You may run the following command to download weights:
+You may run the following command to download weights in ```<your root>/PantoMatrix/```:
 
 ```shell
+sudo apt-get update
+sudo apt-get install git-lfs
 git lfs install
 git clone https://huggingface.co/H-Liu1997/EMAGE
 ```
@@ -48,7 +50,7 @@ These weights should be orgnized as follows:
 
 ## Inference
 
-Here is the cli command for running inference scripts:
+Here is the cli command for running inference scripts under the path ```<your root>/PantoMatrix/```, it will take around 1 min for generating motion, and 30 mins for rendering a video.
 
 ```shell
 python scripts/EMAGE_2024/test_demo.py --config ./scripts/EMAGE_2024/configs/emage_test.yaml
@@ -58,12 +60,30 @@ python scripts/EMAGE_2024/test_demo.py --config ./scripts/EMAGE_2024/configs/ema
 
 ### Data Preparation
 
-Download the unzip version BEATX via hugging face: 
+Download the unzip version BEAT2 via hugging face in path ```<your root>/PantoMatrix/```: 
 
 ```shell
 git lfs install
-git clone https://huggingface.co/datasets/H-Liu1997/BEATX
+git clone https://huggingface.co/datasets/H-Liu1997/BEAT2
 ```
+
+### Evaluation of Pretrianed Weights
+
+Once you downloaded full BEAT2 dataset, run:
+```shell
+python scripts/EMAGE_2024/test.py --config ./scripts/EMAGE_2024/configs/emage.yaml
+```
+
+<!-- You may get the results:
+```
+ 01-15 10:42:27 | l2 loss: 7.630602982715039e-08
+ 01-15 10:42:27 | lvel loss: 7.505888918822572e-05
+ 01-15 10:42:27 | fid score: 0.5514388420395155
+ 01-15 10:42:27 | align score: 0.772429069711832
+ 01-15 10:42:27 | l1div score: 13.0666241037962
+ 01-15 10:42:27 | total inference time: 40 s for 956 s motion
+``` -->
+
 
 ### Training of EMAGE
 
