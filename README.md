@@ -2,10 +2,24 @@ PantoMatrix: Talking Head and Gestures Generation
 ============
 
 
-# News 
-Quick Access: [How to setup EMAGE](https://github.com/PantoMatrix/PantoMatrix/blob/main/scripts/EMAGE_2024/readme.md), [Details of BEAT](https://github.com/PantoMatrix/PantoMatrix/blob/main/scripts/BEAT_2022/readme_beat.md). 🚀!
+# 🎨 Pin
+
+Local Gradio Demo is available!
+
+1. Run the demo, then open the localhost link in browser.
+
+```shell
+python scripts/EMAGE_2024/demo.py
+```
+
+2. Then hit the submit, and output result will be rendered in output for 10 minutes.
+
+<img src ="https://github.com/PantoMatrix/PantoMatrix/blob/main/assets/EMAGE_2024/afrun.png" width="100%">
+
+# News
 
 Welcome contributors for speedup the training, better visualization etc. Feel free to submit the pull requests! 
+- **[2024/02]** Quick Access: [How to setup EMAGE](https://github.com/PantoMatrix/PantoMatrix/blob/main/scripts/EMAGE_2024/readme.md), [Details of BEAT](https://github.com/PantoMatrix/PantoMatrix/blob/main/scripts/BEAT_2022/readme_beat.md). 🚀!
 - **[2024/02]** Thanks [@wubowen416](https://github.com/wubowen416) for the [scripts of automatic video visualization #83](https://github.com/PantoMatrix/PantoMatrix/issues/83) during inference!
 - **[2024/02]** Training and Inference [Scripts](https://github.com/PantoMatrix/PantoMatrix/blob/main/scripts/EMAGE_2024/readme.md) are available for [EMAGE](https://pantomatrix.github.io/EMAGE/).
 - **[2023/12]** [EMAGE](https://pantomatrix.github.io/EMAGE/) is available, including BEATX with both FLAME head and SMPLX body parameters.
@@ -22,6 +36,7 @@ Welcome contributors for speedup the training, better visualization etc. Feel fr
 
 ------------
 <!-- **CoRR 2024**<br /> -->
+**CVPR 2024**<br />
 **EMAGE: Towards Unified Holistic Co-Speech Gesture Generation via Expressive Masked Audio Gesture Modeling**<br >
 <sub>
 <a href="https://h-liu1997.github.io/">Haiyang Liu</a>\*,
