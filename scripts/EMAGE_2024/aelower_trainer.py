@@ -107,7 +107,7 @@ class CustomTrainer(train.BaseTrainer):
             rec_pose = tar_pose#net_out["rec_pose"][:, :, :j*6]
             rec_pose = rec_pose.reshape(bs, n, j, 6)
             rec_pose = rc.rotation_6d_to_matrix(rec_pose)#
-            # tar_pose = rc.rotation_6d_to_matrix(tar_pose.reshape(bs, n, j, 6))
+            tar_pose = rc.rotation_6d_to_matrix(tar_pose.reshape(bs, n, j, 6))
             # loss_rec = self.rec_loss(rec_pose, tar_pose) * self.args.rec_weight * self.args.rec_pos_weight
             # self.tracker.update_meter("rec", "train", loss_rec.item())
             # g_loss_final += loss_rec
@@ -149,6 +149,7 @@ class CustomTrainer(train.BaseTrainer):
 
              # vertices loss
             if self.args.rec_ver_weight > 0:
+                # print(tar_pose.shape, j)
                 tar_pose = rc.matrix_to_axis_angle(tar_pose).reshape(bs*n, j*3)
                 rec_pose = rc.matrix_to_axis_angle(rec_pose).reshape(bs*n, j*3)
                 rec_pose = self.inverse_selection_tensor(rec_pose, self.train_data.joint_mask, rec_pose.shape[0])
@@ -162,7 +163,7 @@ class CustomTrainer(train.BaseTrainer):
                     body_pose=rec_pose[:,3:21*3+3], 
                     left_hand_pose=rec_pose[:,25*3:40*3], 
                     right_hand_pose=rec_pose[:,40*3:55*3], 
-                    return_verts=False,
+                    return_verts=True,
                     return_joints=True,
                     leye_pose=tar_pose[:, 69:72], 
                     reye_pose=tar_pose[:, 72:75],
@@ -176,7 +177,7 @@ class CustomTrainer(train.BaseTrainer):
                     body_pose=tar_pose[:,3:21*3+3], 
                     left_hand_pose=tar_pose[:,25*3:40*3], 
                     right_hand_pose=tar_pose[:,40*3:55*3], 
-                    return_verts=False,
+                    return_verts=True,
                     return_joints=True,
                     leye_pose=tar_pose[:, 69:72], 
                     reye_pose=tar_pose[:, 72:75],
@@ -185,11 +186,17 @@ class CustomTrainer(train.BaseTrainer):
                 # print(joints_rec.shape)
                 joints_rec = joints_rec.reshape(bs, n, -1, 3)
                 vectices_loss = self.vectices_loss(vertices_rec['vertices'], vertices_tar['vertices'])
+                vertices_vel_loss = self.vectices_loss(
+                    vertices_rec['vertices'][:, 1:] - vertices_rec['vertices'][:, :-1],
+                    vertices_tar['vertices'][:, 1:] - vertices_tar['vertices'][:, :-1])
+                vertices_acc_loss = self.vectices_loss(
+                    vertices_rec['vertices'][:, 2:] + vertices_rec['vertices'][:, :-2] - 2 * vertices_rec['vertices'][:, 1:-1],
+                    vertices_tar['vertices'][:, 2:] + vertices_tar['vertices'][:, :-2] - 2 * vertices_tar['vertices'][:, 1:-1])
                 foot_idx = [7, 8, 10, 11]
                 model_contact = net_out["rec_pose"][:, :, j*6+3:j*6+7]
                 # find static indices consistent with model's own predictions
                 static_idx = model_contact > 0.95  # N x S x 4
-                print(model_contact,static_idx)
+                # print(model_contact,static_idx)
                 model_feet = joints_rec[:, :, foot_idx]  # foot positions (N, S, 4, 3)
                 model_foot_v = torch.zeros_like(model_feet)
                 model_foot_v[:, :-1] = (
