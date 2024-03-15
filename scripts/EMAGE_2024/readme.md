@@ -18,6 +18,7 @@ conda activate emagepy38
 conda install -c conda-forge libstdcxx-ng
 # Install with pip:
 pip install -r ./scripts/EMAGE_2024/requirements.txt
+pip install 'git+https://github.com/facebookresearch/pytorch3d.git@stable'
 ```
 
 ## Download weights

@@ -17,9 +17,8 @@ opencv_python==4.8.1.78
 pandas==1.5.3
 peakutils==1.3.4
 ptflops==0.7.1.2
-pyarrow==0.16.0
+pyarrow==4.0.0
 python_igraph==0.11.3
-pytorch3d
 pyvirtualdisplay==3.0
 PyYAML==6.0.1
 replicate==0.15.4

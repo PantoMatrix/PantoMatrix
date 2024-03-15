@@ -35,7 +35,7 @@ Welcome contributors for speedup the training, better visualization etc. Feel fr
 <a href="https://ps.is.mpg.de/person/black">Michael J. Black</a>\
 </sub>
 <sub>
-<sup>(*Joint First Authors)</sup>
+<sup>(*Equal Contribution)</sup>
 <sub>
 ------------
 <img src ="assets/EMAGE_2024/teaser.gif" width="100%">
