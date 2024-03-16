@@ -1,0 +1,101 @@
+is_train: True
+ddp: False
+stat: ts
+root_path: ./
+out_path: ./outputs/audio2pose/
+project: s2g
+data_path: ./EMAGE/test_sequences/
+e_path:  weights/AESKConv_240_100.bin
+eval_model: motion_representation
+e_name: VAESKConv
+test_ckpt: ./EMAGE/emage_240.bin
+data_path_1: ./EMAGE/
+vae_test_len: 32
+vae_test_dim: 330
+vae_test_stride: 20
+vae_length: 240
+vae_codebook_size: 256
+vae_layer: 4
+vae_grow: [1,1,2,1]
+variational: False
+
+# data config
+training_speakers: [2] #[1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30]
+additional_data: False
+cache_path: ./datasets/beat_cache/beat_smplx_en_emage_test/
+dataset: beat_testonly_colab
+new_cache: True
+
+# motion config
+ori_joints: beat_smplx_joints
+tar_joints: beat_smplx_full
+pose_rep: smplxflame_30
+pose_norm: False
+pose_fps: 30
+rot6d: True
+pre_frames: 4
+pose_dims: 330
+pose_length: 64
+stride: 20
+test_length: 64
+motion_f: 256
+m_pre_encoder: null
+m_encoder: null
+m_fix_pre: False
+
+# audio config
+audio_rep: onset+amplitude
+audio_sr: 16000
+audio_fps: 16000
+audio_norm: False
+audio_f: 256
+# a_pre_encoder: tcn_camn
+# a_encoder: none
+# a_fix_pre: False
+
+# text config
+word_rep: textgrid
+word_index_num: 11195
+word_dims: 300
+freeze_wordembed: False
+word_f: 256
+t_pre_encoder: fasttext
+t_encoder: null
+t_fix_pre: False
+
+# facial config
+facial_rep: smplxflame_30
+facial_dims: 100
+facial_norm: False
+facial_f: 0
+f_pre_encoder: null
+f_encoder: null
+f_fix_pre: False
+
+# speaker config
+id_rep: onehot
+speaker_f: 0
+
+# model config
+batch_size: 64
+# warmup_epochs: 1
+# warmup_lr: 1e-6
+lr_base: 5e-4
+model: emage
+g_name: MAGE_Transformer
+trainer: emage
+hidden_size: 768
+n_layer: 1
+ 
+rec_weight: 1
+grad_norm: 0.99
+epochs: 400
+test_period: 20
+ll: 3
+lf: 3
+lu: 3
+lh: 3
+cl: 1
+cf: 0
+cu: 1
+ch: 1
