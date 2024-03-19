@@ -117,6 +117,8 @@ python scripts/EMAGE_2024/train.py --config ./scripts/EMAGE_2024/configs/camn.ya
 
 # 🎨 Gradio Demo
 
+###  Finish the [environment setup](https://github.com/PantoMatrix/PantoMatrix/tree/main/scripts/EMAGE_2024#build-environtment) & [weight download](https://github.com/PantoMatrix/PantoMatrix/tree/main/scripts/EMAGE_2024#download-weights) steps.
+
 ### Run the demo, then open the localhost link in browser.
 
 ```shell
