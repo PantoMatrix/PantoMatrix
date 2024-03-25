@@ -2,6 +2,7 @@ import configargparse
 import time
 import json
 import yaml
+import os
 
 
 def str2bool(v):
@@ -246,6 +247,13 @@ def parse_args():
     parser.add("--ddp", default=False, type=str2bool)
     parser.add("--sparse", default=1, type=int)
     #parser.add("--world_size")
+    parser.add("--render_video_fps", default=30, type=int)
+    parser.add("--render_video_width", default=1920, type=int)
+    parser.add("--render_video_height", default=720, type=int)
+    cpu_cores = os.cpu_count() if os.cpu_count() is not None else 1
+    default_concurrent = max(1, cpu_cores // 2)
+    parser.add("--render_concurrent_num", default=default_concurrent, type=int)
+    parser.add("--render_tmp_img_filetype", default="bmp", type=str)
     
     # logging
     parser.add("--log_period", default=10, type=int)

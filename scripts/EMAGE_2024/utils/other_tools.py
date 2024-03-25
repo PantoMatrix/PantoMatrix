@@ -15,6 +15,8 @@ import hashlib
 from scipy.spatial.transform import Rotation as R
 from scipy.spatial.transform import Slerp
 import cv2
+import utils.media
+import utils.fast_render
 
 def write_wav_names_to_csv(folder_path, csv_path):
     """
@@ -637,9 +639,10 @@ def render_one_sequence(
     # if not use_matplotlib:
     #    import trimesh 
        #import pyrender
-    from pyvirtualdisplay import Display
-    display = Display(visible=0, size=(1000, 1000))
-    display.start()
+    #!!! I only have Windows, the following lines of comments are feasible, but have not been tested on other platforms.
+    #from pyvirtualdisplay import Display
+    #display = Display(visible=0, size=(500, 500))
+    #display.start()
     faces = np.load(f"{model_folder}/smplx/SMPLX_NEUTRAL_2020.npz", allow_pickle=True)["f"]     
     seconds = 1
     #data_npz["jaw_pose"].shape[0]
@@ -671,124 +674,23 @@ def render_one_sequence(
         seconds = 1
     else:
         seconds = vertices_all.shape[0]//30
-    # camera_settings = None    
-    time_s = time.time()
-    generate_images(int(seconds*30), vertices_all, vertices1_all, faces, output_dir, filenames)
-    filenames = [f"{output_dir}frame_{i}.png" for i in range(int(seconds*30))]  
-    # print(time.time()-time_s)
-    # for i in tqdm(range(seconds*30)):
-    #     vertices = vertices_all[i]
-    #     vertices1 = vertices1_all[i]
-    #     filename = f"{output_dir}frame_{i}.png"
-    #     filenames.append(filename)
-    #     #time_s = time.time()
-    #     #print(vertices.shape)
-    #     if use_matplotlib:
-    #         fig = plt.figure(figsize=(20, 10))
-    #         ax = fig.add_subplot(121, projection="3d")
-    #         fig.subplots_adjust(left=0, right=1, bottom=0, top=1)
-    #         #ax.view_init(elev=0, azim=90)
-    #         x = vertices[:, 0]
-    #         y = vertices[:, 1]
-    #         z = vertices[:, 2]
-    #         ax.scatter(x, y, z, s=0.5)
-    #         ax.set_xlim([-1.0, 1.0])
-    #         ax.set_ylim([-0.5, 1.5])#heigth
-    #         ax.set_zlim([-0, 2])#depth
-    #         ax.set_box_aspect((1,1,1))
-    #     else:
-    #         mesh = trimesh.Trimesh(vertices, faces)
-    #         if i == 0:
-    #             scene = mesh.scene()
-    #             camera_params = {
-    #                 'fov': scene.camera.fov,
-    #                 'resolution': scene.camera.resolution,
-    #                 'focal': scene.camera.focal,
-    #                 'z_near': scene.camera.z_near,
-    #                 "z_far": scene.camera.z_far,
-    #                 'transform': scene.graph[scene.camera.name][0]
-    #             }
-    #         else: 
-    #             scene = mesh.scene()
-    #             scene.camera.fov = camera_params['fov']
-    #             scene.camera.resolution = camera_params['resolution']
-    #             scene.camera.z_near = camera_params['z_near']
-    #             scene.camera.z_far = camera_params['z_far']
-    #             scene.graph[scene.camera.name] = camera_params['transform']
-    #         fig, ax =plt.subplots(1,2, figsize=(16, 6))
-    #         image = scene.save_image(resolution=[640, 480], visible=False)
-    #         #print((time.time()-time_s))   
-    #         im0 = ax[0].imshow(image_from_bytes(image))
-    #         ax[0].axis('off')
-
-    #     # beta1 = torch.from_numpy(gt_np_body["betas"]).to(torch.float32).unsqueeze(0)
-    #     # expression1 = torch.from_numpy(gt_np_body["expressions"][i]).to(torch.float32).unsqueeze(0)
-    #     # jaw_pose1 = torch.from_numpy(gt_np_body["poses"][i][66:69]).to(torch.float32).unsqueeze(0)
-    #     # pose1 = torch.from_numpy(gt_np_body["poses"][i]).to(torch.float32).unsqueeze(0)
-    #     # transl1 = torch.from_numpy(gt_np_body["trans"][i]).to(torch.float32).unsqueeze(0)
-    #     # #print(beta.shape, expression.shape, jaw_pose.shape, pose.shape, transl.shape)global_orient=pose[0:1,:3],
-    #     # output1 = model(betas=beta1, transl=transl1, expression=expression1, jaw_pose=jaw_pose1, global_orient=pose1[0:1,:3], body_pose=pose1[0:1,3:21*3+3], left_hand_pose=pose1[0:1,25*3:40*3], right_hand_pose=pose1[0:1,40*3:55*3], return_verts=True)
-    #     # vertices1 = output1["vertices"].cpu().detach().numpy()[0]
-        
-    #     if use_matplotlib:
-    #         ax2 = fig.add_subplot(122, projection="3d")
-    #         ax2.set_box_aspect((1,1,1))
-    #         fig.subplots_adjust(left=0, right=1, bottom=0, top=1)
-    #         #ax2.view_init(elev=0, azim=90)
-    #         x1 = vertices1[:, 0]
-    #         y1 = vertices1[:, 1]
-    #         z1 = vertices1[:, 2]
-    #         ax2.scatter(x1, y1, z1, s=0.5)
-    #         ax2.set_xlim([-1.0, 1.0])
-    #         ax2.set_ylim([-0.5, 1.5])#heigth
-    #         ax2.set_zlim([-0, 2])
-    #         plt.savefig(filename, bbox_inches='tight')
-    #         plt.close(fig)
-    #     else:
-    #         mesh1 = trimesh.Trimesh(vertices1, faces)
-    #         if i == 0:
-    #             scene1 = mesh1.scene()
-    #             camera_params1 = {
-    #                 'fov': scene1.camera.fov,
-    #                 'resolution': scene1.camera.resolution,
-    #                 'focal': scene1.camera.focal,
-    #                 'z_near': scene1.camera.z_near,
-    #                 "z_far": scene1.camera.z_far,
-    #                 'transform': scene1.graph[scene1.camera.name][0]
-    #             }
-    #         else: 
-    #             scene1 = mesh1.scene()
-    #             scene1.camera.fov = camera_params1['fov']
-    #             scene1.camera.resolution = camera_params1['resolution']
-    #             scene1.camera.z_near = camera_params1['z_near']
-    #             scene1.camera.z_far = camera_params1['z_far']
-    #             scene1.graph[scene1.camera.name] = camera_params1['transform']
-    #         image1 = scene1.save_image(resolution=[640, 480], visible=False)
-    #         im1 = ax[1].imshow(image_from_bytes(image1))
-    #         ax[1].axis('off')
-    #         plt.savefig(filename, bbox_inches='tight')
-    #         plt.close(fig)
-
-    display.stop()
-    # print(filenames)
-    images = [imageio.imread(filename) for filename in filenames]
-    imageio.mimsave(f"{output_dir}raw_{res_npz_path.split('/')[-1][:-4]}.mp4", images, fps=30)
-    for filename in filenames:
-        os.remove(filename)
-        
-    video = mp.VideoFileClip(f"{output_dir}raw_{res_npz_path.split('/')[-1][:-4]}.mp4")
-    # audio, sr = librosa.load(audio_path)
-    # audio = audio[:seconds*sr]
-    # print(audio.shape, seconds, sr)
-    # import soundfile as sf
-    # sf.write(f"{output_dir}{res_npz_path.split('/')[-1][:-4]}.wav", audio, 16000, 'PCM_24')
-    # audio_tmp = librosa.output.write_wav(f"{output_dir}{res_npz_path.split('/')[-1][:-4]}.wav", audio, sr=16000)
-    audio = mp.AudioFileClip(audio_path)
-    if audio.duration > video.duration:
-        audio = audio.subclip(0, video.duration)
-    final_clip = video.set_audio(audio)
-    final_clip.write_videofile(f"{output_dir}{res_npz_path.split('/')[-1][4:-4]}.mp4")
-    os.remove(f"{output_dir}raw_{res_npz_path.split('/')[-1][:-4]}.mp4")
+  
+    silent_video_file_path = utils.fast_render.generate_silent_videos(args.render_video_fps, 
+                                                                args.render_video_width,
+                                                                args.render_video_height,
+                                                                args.render_concurrent_num,
+                                                                args.render_tmp_img_filetype,
+                                                                int(seconds*args.render_video_fps), 
+                                                                vertices_all,
+                                                                vertices1_all,
+                                                                faces,
+                                                                output_dir)
+    
+    #final_clip = f"{output_dir}{res_npz_path.split('/')[-1][4:-4]}.mp4"
+    base_filename_without_ext = os.path.splitext(os.path.basename(res_npz_path))[0]
+    final_clip = os.path.join(output_dir, f"{base_filename_without_ext}.mp4")
+    utils.media.add_audio_to_video(silent_video_file_path, audio_path, final_clip)
+    os.remove(silent_video_file_path)
 
 def print_exp_info(args):
     logger.info(pprint.pformat(vars(args)))

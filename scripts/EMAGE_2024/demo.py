@@ -539,7 +539,7 @@ class BaseTrainer(object):
                 )
                 #'''
                 total_length += n
-                other_tools_hf.render_one_sequence(
+                render_vid_path = other_tools_hf.render_one_sequence(
                     results_save_path+"res_"+test_seq_list.iloc[its]['id']+'.npz', 
                     results_save_path+"gt_"+test_seq_list.iloc[its]['id']+'.npz', 
                     results_save_path,
@@ -548,14 +548,13 @@ class BaseTrainer(object):
                     use_matplotlib = False,
                     args = self.args,
                     )
-                render_vid_path = results_save_path + test_seq_list.iloc[its]['id'] + '.mp4'
         result = gr.Video(value=render_vid_path, visible=True)
         end_time = time.time() - start_time
         logger.info(f"total inference time: {int(end_time)} s for {int(total_length/self.args.pose_fps)} s motion")
         return result
        
 @logger.catch
-def emage(smplx_path, audio_path, text_path):
+def emage(video_fps, video_width, video_height, concurrent_num, smplx_path, audio_path, text_path):
     rank = 0
     world_size = 1
     args = config.parse_args()
@@ -569,25 +568,44 @@ def emage(smplx_path, audio_path, text_path):
     other_tools_hf.print_exp_info(args)
 
     # return one intance of trainer
+    args.render_video_fps = video_fps
+    args.render_video_width = video_width
+    args.render_video_height = video_height
+    args.render_concurent_nums = concurrent_num
+    #args.render_tmp_img_filetype = 'png'
+    logger.info(f"fps={args.render_video_fps} video_height={args.render_video_height} " + 
+                f"video_width={args.render_video_width} render_concurent_nums={args.render_concurent_nums} " +
+                f"render_tmp_img_filetype={args.render_tmp_img_filetype}")
+
     trainer = BaseTrainer(args, sp = smplx_path, ap = audio_path, tp = text_path)
     other_tools_hf.load_checkpoints(trainer.model, args.test_ckpt, args.g_name)
     result = trainer.test_demo(999)
     return result
 
+cpu_cores = os.cpu_count() if os.cpu_count() is not None else 1
+max_concurrent = max(1, cpu_cores - 2)
+default_concurrent = max(1, cpu_cores // 2)
+
 demo = gr.Interface(
     emage,  # function
     inputs=[
+        gr.Number(label="Video FPS, Frames per second. Higher FPS for smoother motion.", value=30, minimum=1, maximum=120),
+        gr.Number(label="VideoWidth Video width in pixels.", value=1920, minimum=320, maximum=3840),
+        gr.Number(label="VideoHeight,Video height in pixels.", value=720, minimum=180, maximum=2160),
+        gr.Number(label="Render Concurrent Number", value=default_concurrent, minimum=1, maximum=max_concurrent),
         gr.File(label="Please upload SMPL-X file with npz format here.", file_types=["npz", "NPZ"]),
         gr.Audio(),
-        gr.File(label="Please upload textgrid format file here.", file_types=["TextGrid", "Textgrid", "textgrid"])
+        gr.File(label="Please upload textgrid format file here.", file_types=["TextGrid", "Textgrid", "textgrid"]),
     ],  # input type
     outputs=gr.Video(format="mp4", visible=True),
     title='"EMAGE: Towards Unified Holistic Co-Speech Gesture Generation via Expressive Masked Audio Gesture Modeling" Demo',
     description="Generate SMPLX by following steps. <br/>\
+        0. Configure Rendering Parameters or Use Defaults:\
+           Adjust the Frame Rate (FPS), Video Resolution (Width and Height), and Concurrent Processing Number as needed to balance rendering speed and video quality. <br/>\
         1. Upload your audio.  <br/>\
         2. Upload your textgrid  <br/>\
         3. Upload your seed pose clip.  <br/>\
-        4. Then, sit back and wait for the rendering to happen! This may take a while (e.g. 30 minutes) <br/>\
+        4. Then, sit back and wait for the rendering to happen! This may take a while (e.g. 30 seconds) <br/>\
         5. After, you can view the videos.  <br/>",
     article="Relevant links: [Project Page](https://pantomatrix.github.io/EMAGE/)", 
 )
