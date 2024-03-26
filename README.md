@@ -1,5 +1,5 @@
 <div align="center">
-<p align="center"> <img src="./assets/EMAGE_2024/1711449143651.jpg" width="100px"> </p>
+<!-- <p align="center"> <img src="./assets/EMAGE_2024/1711449143651.jpg" width="100px"> </p> -->
 <h2>PantoMatrix: Talking Face and Body Animation Generation</h2> 
 
 [![PWC](https://img.shields.io/endpoint.svg?url=https://paperswithcode.com/badge/emage-towards-unified-holistic-co-speech/3d-face-animation-on-beat2)](https://paperswithcode.com/sota/3d-face-animation-on-beat2?p=emage-towards-unified-holistic-co-speech)
