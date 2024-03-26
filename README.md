@@ -1,12 +1,37 @@
-PantoMatrix: Talking Head and Gestures Generation
-============
+<div align="center">
+<p align="center"> <img src="./assets/EMAGE_2024/1711449143651.jpg" width="100px"> </p>
+<h2>PantoMatrix: Talking Face and Body Animation Generation</h2> 
+
+[![PWC](https://img.shields.io/endpoint.svg?url=https://paperswithcode.com/badge/emage-towards-unified-holistic-co-speech/3d-face-animation-on-beat2)](https://paperswithcode.com/sota/3d-face-animation-on-beat2?p=emage-towards-unified-holistic-co-speech)
+[![PWC](https://img.shields.io/endpoint.svg?url=https://paperswithcode.com/badge/emage-towards-unified-holistic-co-speech/gesture-generation-on-beat2)](https://paperswithcode.com/sota/gesture-generation-on-beat2?p=emage-towards-unified-holistic-co-speech)
+
+
+<a href='https://github.com/PantoMatrix/PantoMatrix/blob/main/scripts/EMAGE_2024/readme.md'><img src='https://img.shields.io/badge/EMAGE-Readme-green'></a>
+<a href='https://pantomatrix.github.io/EMAGE/'><img src='https://img.shields.io/badge/Project-EMAGE-blue' alt='Project'></a>
+<a href='https://www.youtube.com/watch?v=T0OYPvViFGE'><img src='https://img.shields.io/badge/YouTube-EMAGE-rgb(255, 0, 0)' alt='Youtube'></a>
+<a href="https://colab.research.google.com/drive/1AINafluW6Ba5-KYN_L43eyFK0zRklMvr?usp=sharing" target="_parent"><img src="https://colab.research.google.com/assets/colab-badge.svg" alt="EMAGE Colab"/></a> 
+<a href='https://github.com/PantoMatrix/PantoMatrix/tree/main/scripts/EMAGE_2024#user-content--gradio-demo'><img src='https://img.shields.io/badge/%F0%9F%A4%97%20Hugging%20Face-Spaces-blue'></a>
+<a href='https://arxiv.org/abs/2401.00374'><img src='https://img.shields.io/badge/Paper-CVPR2024-yellow' alt='Project'></a>
+
+<a href='https://github.com/PantoMatrix/PantoMatrix/blob/main/scripts/BEAT_2022/readme_beat.md'><img src='https://img.shields.io/badge/BEAT-Readme-green'></a>
+<a href='https://pantomatrix.github.io/BEAT/'><img src='https://img.shields.io/badge/Project-BEAT-blue' alt='Project'></a>
+<a href='https://www.youtube.com/watch?v=F6nXVTUY0KQ'><img src='https://img.shields.io/badge/YouTube-BEAT-rgb(255, 0, 0)' alt='Youtube'></a>
+<a href="https://colab.research.google.com/drive/1bB3LqAzceNTW2urXeMpOTPoJYTRoKlzB?usp=sharing" target="_parent"><img src="https://colab.research.google.com/assets/colab-badge.svg" alt="BEAT Colab"/></a> 
+<a href='https://arxiv.org/abs/2203.05297'><img src='https://img.shields.io/badge/Paper-ECCV2022-yellow' alt='Project'></a>
+
+
+<a href='https://github.com/PantoMatrix/PantoMatrix/blob/main/scripts/DisCo_2022/'><img src='https://img.shields.io/badge/DisCo-Readme-green'></a>
+<a href='https://pantomatrix.github.io/DisCo/'><img src='https://img.shields.io/badge/Project-DisCo-blue' alt='Project'></a>
+<a href='https://www.youtube.com/watch?v=Nd6NX27ykgA'><img src='https://img.shields.io/badge/YouTube-DisCo-rgb(255, 0, 0)' alt='Youtube'></a>
+<a href='https://dl.acm.org/doi/abs/10.1145/3503161.3548400'><img src='https://img.shields.io/badge/Paper-ACMMM2022-yellow' alt='Project'></a>
+</div>
+
 
 
 # 🎨 Pin
 
-EMAGE Colab Demo is avaliable, click [here](https://colab.research.google.com/drive/1AINafluW6Ba5-KYN_L43eyFK0zRklMvr?usp=sharing).
 
-EMAGE Local Gradio Demo is available!
+EMAGE Colab Demo is avaliable, click [here](https://colab.research.google.com/drive/1AINafluW6Ba5-KYN_L43eyFK0zRklMvr?usp=sharing). Local Gradio Demo is also available!
 
 0. Finish the [environment setup](https://github.com/PantoMatrix/PantoMatrix/tree/main/scripts/EMAGE_2024#build-environtment) & [weight download](https://github.com/PantoMatrix/PantoMatrix/tree/main/scripts/EMAGE_2024#download-weights) steps.
 
@@ -79,7 +104,7 @@ We propose EMAGE, a framework to generate full-body human gestures from audio an
 -
 <a href="https://github.com/PantoMatrix/PantoMatrix/tree/main/scripts/EMAGE_2024">Code</a>
 -
-<a href="https://pantomatrix.github.io/EMAGE/">Demo(coming soon)</a>
+<a href="https://colab.research.google.com/drive/1AINafluW6Ba5-KYN_L43eyFK0zRklMvr?usp=sharing">Demo</a>
 -
 <a href="https://drive.google.com/drive/folders/1ukbifhHc85qWTzspEgvAxCXwn9mK4ifr">Dataset</a>
 -
