@@ -225,7 +225,13 @@ Current co-speech gestures synthesis methods struggle with generating diverse mo
 </p>
 
 
-------------
+Notes
+============
+<div align="center">
+<p align="center"> <img src="./assets/EMAGE_2024/welcome.jpg" width="800px"> </p>
+</div>
+
+
 Copyright Information
 ============
 The website is inspired by the template of <a href="https://github.com/sebastianstarke/AI4Animation">AI4Animation</a>.\
