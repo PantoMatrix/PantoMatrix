@@ -8,7 +8,7 @@ data_path: ./EMAGE/test_sequences/
 e_path:  weights/AESKConv_240_100.bin
 eval_model: motion_representation
 e_name: VAESKConv
-test_ckpt: ./EMAGE/emage_240.bin
+test_ckpt: ./EMAGE/emage_audio_175.bin
 data_path_1: ./EMAGE/
 vae_test_len: 32
 vae_test_dim: 330
@@ -44,7 +44,7 @@ m_encoder: null
 m_fix_pre: False
 
 # audio config
-audio_rep: onset+amplitude
+audio_rep: wave16k
 audio_sr: 16000
 audio_fps: 16000
 audio_norm: False
@@ -54,14 +54,14 @@ audio_f: 256
 # a_fix_pre: False
 
 # text config
-word_rep: textgrid
-word_index_num: 11195
-word_dims: 300
-freeze_wordembed: False
-word_f: 256
-t_pre_encoder: fasttext
-t_encoder: null
-t_fix_pre: False
+# word_rep: textgrid
+# word_index_num: 11195
+# word_dims: 300
+# freeze_wordembed: False
+# word_f: 256
+# t_pre_encoder: fasttext
+# t_encoder: null
+# t_fix_pre: False
 
 # facial config
 facial_rep: smplxflame_30
@@ -81,7 +81,7 @@ batch_size: 64
 # warmup_epochs: 1
 # warmup_lr: 1e-6
 lr_base: 5e-4
-model: emage
+model: emage_audio
 g_name: MAGE_Transformer
 trainer: emage
 hidden_size: 768

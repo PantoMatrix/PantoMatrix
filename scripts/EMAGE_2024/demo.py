@@ -28,12 +28,21 @@ from optimizers.scheduler_factory import create_scheduler
 from optimizers.loss_factory import get_loss_func
 from dataloaders.data_tools import joints_list
 from utils import rotation_conversions as rc
+import soundfile as sf
+import librosa 
 
 class BaseTrainer(object):
     def __init__(self, args, sp, ap, tp):
-        self.args = args
-        self.rank = dist.get_rank()
         hf_dir = "hf"
+        if not os.path.exists(args.out_path + "custom/" + hf_dir + "/"):
+            os.makedirs(args.out_path + "custom/" + hf_dir + "/")
+        sf.write(args.out_path + "custom/" + hf_dir + "/tmp.wav", ap[1], ap[0])
+        self.audio_path = args.out_path + "custom/" + hf_dir + "/tmp.wav"
+        audio, ssr = librosa.load(self.audio_path)
+        ap = (ssr, audio)
+        self.args = args
+        self.rank = 0 # dist.get_rank()
+       
         #self.checkpoint_path = args.out_path + "custom/" + args.name + args.notes + "/" #wandb.run.dir #args.cache_path+args.out_path+"/"+args.name
         self.checkpoint_path = args.out_path + "custom/" + hf_dir + "/" 
         if self.rank == 0:
@@ -156,7 +165,7 @@ class BaseTrainer(object):
         tar_trans = dict_data["trans"].to(self.rank)
         tar_exps = dict_data["facial"].to(self.rank)
         in_audio = dict_data["audio"].to(self.rank) 
-        in_word = dict_data["word"].to(self.rank)
+        in_word = None# dict_data["word"].to(self.rank)
         tar_beta = dict_data["beta"].to(self.rank)
         tar_id = dict_data["id"].to(self.rank).long()
         bs, n, j = tar_pose.shape[0], tar_pose.shape[1], self.joints
@@ -236,7 +245,7 @@ class BaseTrainer(object):
         bs, n, j = loaded_data["tar_pose"].shape[0], loaded_data["tar_pose"].shape[1], self.joints 
         tar_pose = loaded_data["tar_pose"]
         tar_beta = loaded_data["tar_beta"]
-        in_word = loaded_data["in_word"]
+        in_word =None# loaded_data["in_word"]
         tar_exps = loaded_data["tar_exps"]
         tar_contact = loaded_data["tar_contact"]
         in_audio = loaded_data["in_audio"]
@@ -247,7 +256,7 @@ class BaseTrainer(object):
             tar_pose = tar_pose[:, :-remain, :]
             tar_beta = tar_beta[:, :-remain, :]
             tar_trans = tar_trans[:, :-remain, :]
-            in_word = in_word[:, :-remain]
+            # in_word = in_word[:, :-remain]
             tar_exps = tar_exps[:, :-remain, :]
             tar_contact = tar_contact[:, :-remain, :]
             n = n - remain
@@ -284,7 +293,7 @@ class BaseTrainer(object):
         round_l = self.args.pose_length - self.args.pre_frames
 
         for i in range(0, roundt):
-            in_word_tmp = in_word[:, i*(round_l):(i+1)*(round_l)+self.args.pre_frames]
+            # in_word_tmp = in_word[:, i*(round_l):(i+1)*(round_l)+self.args.pre_frames]
             # audio fps is 16000 and pose fps is 30
             in_audio_tmp = in_audio[:, i*(16000//30*round_l):(i+1)*(16000//30*round_l)+16000//30*self.args.pre_frames]
             in_id_tmp = loaded_data['tar_id'][:, i*(round_l):(i+1)*(round_l)+self.args.pre_frames]
@@ -299,7 +308,7 @@ class BaseTrainer(object):
             
             net_out_val = self.model(
                 in_audio = in_audio_tmp,
-                in_word=in_word_tmp,
+                in_word=None, #in_word_tmp,
                 mask=mask_val,
                 in_motion = latent_all_tmp,
                 in_id = in_id_tmp,
@@ -539,77 +548,65 @@ class BaseTrainer(object):
                 )
                 #'''
                 total_length += n
-                render_vid_path = other_tools_hf.render_one_sequence(
+                render_vid_path = other_tools_hf.render_one_sequence_no_gt(
                     results_save_path+"res_"+test_seq_list.iloc[its]['id']+'.npz', 
-                    results_save_path+"gt_"+test_seq_list.iloc[its]['id']+'.npz', 
+                    # results_save_path+"gt_"+test_seq_list.iloc[its]['id']+'.npz', 
                     results_save_path,
-                    self.args.data_path+"wave16k/"+test_seq_list.iloc[its]['id']+".wav",
+                    self.audio_path,
                     self.args.data_path_1+"smplx_models/",
                     use_matplotlib = False,
                     args = self.args,
                     )
+                # render_vid_path = other_tools_hf.render_one_sequence(
+                #     results_save_path+"res_"+test_seq_list.iloc[its]['id']+'.npz', 
+                #     results_save_path+"gt_"+test_seq_list.iloc[its]['id']+'.npz', 
+                #     results_save_path,
+                #     self.audio_path,
+                #     self.args.data_path_1+"smplx_models/",
+                #     use_matplotlib = False,
+                #     args = self.args,
+                #     )
         result = gr.Video(value=render_vid_path, visible=True)
         end_time = time.time() - start_time
         logger.info(f"total inference time: {int(end_time)} s for {int(total_length/self.args.pose_fps)} s motion")
         return result
        
 @logger.catch
-def emage(video_fps, video_width, video_height, concurrent_num, smplx_path, audio_path, text_path):
+def emage(audio_path):
+    smplx_path = None
+    text_path = None
     rank = 0
     world_size = 1
     args = config.parse_args()
     #os.environ['TRANSFORMERS_CACHE'] = args.data_path_1 + "hub/"
     if not sys.warnoptions:
         warnings.simplefilter("ignore")
-    dist.init_process_group(backend="gloo", rank=rank, world_size=world_size)
+    # dist.init_process_group(backend="gloo", rank=rank, world_size=world_size)
 
     #logger_tools.set_args_and_logger(args, rank)
     other_tools_hf.set_random_seed(args)
     other_tools_hf.print_exp_info(args)
 
     # return one intance of trainer
-    args.render_video_fps = video_fps
-    args.render_video_width = video_width
-    args.render_video_height = video_height
-    args.render_concurent_nums = concurrent_num
-    #args.render_tmp_img_filetype = 'png'
-    logger.info(f"fps={args.render_video_fps} video_height={args.render_video_height} " + 
-                f"video_width={args.render_video_width} render_concurent_nums={args.render_concurent_nums} " +
-                f"render_tmp_img_filetype={args.render_tmp_img_filetype}")
-
     trainer = BaseTrainer(args, sp = smplx_path, ap = audio_path, tp = text_path)
     other_tools_hf.load_checkpoints(trainer.model, args.test_ckpt, args.g_name)
     result = trainer.test_demo(999)
     return result
 
-cpu_cores = os.cpu_count() if os.cpu_count() is not None else 1
-max_concurrent = max(1, cpu_cores - 2)
-default_concurrent = max(1, cpu_cores // 2)
-
 demo = gr.Interface(
     emage,  # function
     inputs=[
-        gr.Number(label="Video FPS, Frames per second. Higher FPS for smoother motion.", value=30, minimum=1, maximum=120),
-        gr.Number(label="VideoWidth Video width in pixels.", value=1920, minimum=320, maximum=3840),
-        gr.Number(label="VideoHeight,Video height in pixels.", value=720, minimum=180, maximum=2160),
-        gr.Number(label="Render Concurrent Number", value=default_concurrent, minimum=1, maximum=max_concurrent),
-        gr.File(label="Please upload SMPL-X file with npz format here.", file_types=["npz", "NPZ"]),
+        # gr.File(label="Please upload SMPL-X file with npz format here.", file_types=["npz", "NPZ"]),
         gr.Audio(),
-        gr.File(label="Please upload textgrid format file here.", file_types=["TextGrid", "Textgrid", "textgrid"]),
+        # gr.File(label="Please upload textgrid format file here.", file_types=["TextGrid", "Textgrid", "textgrid"])
     ],  # input type
     outputs=gr.Video(format="mp4", visible=True),
-    title='"EMAGE: Towards Unified Holistic Co-Speech Gesture Generation via Expressive Masked Audio Gesture Modeling" Demo',
-    description="Generate SMPLX by following steps. <br/>\
-        0. Configure Rendering Parameters or Use Defaults:\
-           Adjust the Frame Rate (FPS), Video Resolution (Width and Height), and Concurrent Processing Number as needed to balance rendering speed and video quality. <br/>\
-        1. Upload your audio.  <br/>\
-        2. Upload your textgrid  <br/>\
-        3. Upload your seed pose clip.  <br/>\
-        4. Then, sit back and wait for the rendering to happen! This may take a while (e.g. 30 seconds) <br/>\
-        5. After, you can view the videos.  <br/>",
+    title='EMAGE: Towards Unified Holistic Co-Speech Gesture Generation via Expressive Masked Audio Gesture Modeling',
+    description="1. Upload your audio (less than 60s).  <br/>\
+        2. Then, sit back and wait for the rendering to happen! This may take a while (e.g. 3 minutes) <br/>\
+        3. After, you can view the videos.  <br/>",
     article="Relevant links: [Project Page](https://pantomatrix.github.io/EMAGE/)", 
 )
-
 
             
 if __name__ == "__main__":

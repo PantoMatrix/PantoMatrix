@@ -689,6 +689,93 @@ def render_one_sequence(
     os.remove(silent_video_file_path)
     return final_clip
 
+def render_one_sequence_no_gt(
+         res_npz_path,
+         output_dir,
+         audio_path,
+         model_folder="/data/datasets/smplx_models/",
+         model_type='smplx',
+         gender='NEUTRAL_2020',
+         ext='npz',
+         num_betas=300,
+         num_expression_coeffs=100,
+         use_face_contour=False,
+         use_matplotlib=False,
+         args=None):
+    import smplx
+    import matplotlib.pyplot as plt
+    import imageio
+    from tqdm import tqdm
+    import os
+    import numpy as np 
+    import torch
+    import moviepy.editor as mp
+    import librosa
+    
+    model = smplx.create(model_folder, model_type=model_type,
+                         gender=gender, use_face_contour=use_face_contour,
+                         num_betas=num_betas,
+                         num_expression_coeffs=num_expression_coeffs,
+                         ext=ext, use_pca=False).cuda()
+    
+    #data_npz = np.load(f"{output_dir}{res_npz_path}.npz")
+    data_np_body = np.load(res_npz_path, allow_pickle=True)
+    # gt_np_body = np.load(gt_npz_path, allow_pickle=True)
+    
+    if not os.path.exists(output_dir): os.makedirs(output_dir)
+    # if not use_matplotlib:
+    #    import trimesh 
+       #import pyrender
+    from pyvirtualdisplay import Display
+    #'''
+    #display = Display(visible=0, size=(1000, 1000))
+    #display.start()
+    faces = np.load(f"{model_folder}/smplx/SMPLX_NEUTRAL_2020.npz", allow_pickle=True)["f"]
+    seconds = 1
+    #data_npz["jaw_pose"].shape[0]
+    n = data_np_body["poses"].shape[0]
+    beta = torch.from_numpy(data_np_body["betas"]).to(torch.float32).unsqueeze(0).cuda()
+    beta = beta.repeat(n, 1)
+    expression = torch.from_numpy(data_np_body["expressions"][:n]).to(torch.float32).cuda()
+    jaw_pose = torch.from_numpy(data_np_body["poses"][:n, 66:69]).to(torch.float32).cuda()
+    pose = torch.from_numpy(data_np_body["poses"][:n]).to(torch.float32).cuda()
+    transl = torch.from_numpy(data_np_body["trans"][:n]).to(torch.float32).cuda()
+    # print(beta.shape, expression.shape, jaw_pose.shape, pose.shape, transl.shape, pose[:,:3].shape)
+    output = model(betas=beta, transl=transl, expression=expression, jaw_pose=jaw_pose,
+        global_orient=pose[:,:3], body_pose=pose[:,3:21*3+3], left_hand_pose=pose[:,25*3:40*3], right_hand_pose=pose[:,40*3:55*3],
+        leye_pose=pose[:, 69:72], 
+        reye_pose=pose[:, 72:75],
+        return_verts=True)
+    vertices_all = output["vertices"].cpu().detach().numpy()
+
+    # beta1 = torch.from_numpy(gt_np_body["betas"]).to(torch.float32).unsqueeze(0).cuda()
+    # expression1 = torch.from_numpy(gt_np_body["expressions"][:n]).to(torch.float32).cuda()
+    # jaw_pose1 = torch.from_numpy(gt_np_body["poses"][:n,66:69]).to(torch.float32).cuda()
+    # pose1 = torch.from_numpy(gt_np_body["poses"][:n]).to(torch.float32).cuda()
+    # transl1 = torch.from_numpy(gt_np_body["trans"][:n]).to(torch.float32).cuda()
+    # output1 = model(betas=beta1, transl=transl1, expression=expression1, jaw_pose=jaw_pose1, global_orient=pose1[:,:3], body_pose=pose1[:,3:21*3+3], left_hand_pose=pose1[:,25*3:40*3], right_hand_pose=pose1[:,40*3:55*3],      
+    #     leye_pose=pose1[:, 69:72], 
+    #     reye_pose=pose1[:, 72:75],return_verts=True)
+    # vertices1_all = output1["vertices"].cpu().detach().numpy()
+    if args.debug:
+        seconds = 1
+    else:
+        seconds = vertices_all.shape[0]//30
+    silent_video_file_path = utils.fast_render.generate_silent_videos_no_gt(args.render_video_fps,
+                                                                args.render_video_width,
+                                                                args.render_video_height,
+                                                                args.render_concurrent_num,
+                                                                args.render_tmp_img_filetype,
+                                                                int(seconds*args.render_video_fps), 
+                                                                vertices_all,
+                                                                faces,
+                                                                output_dir)
+    base_filename_without_ext = os.path.splitext(os.path.basename(res_npz_path))[0]
+    final_clip = os.path.join(output_dir, f"{base_filename_without_ext}.mp4")
+    utils.media.add_audio_to_video(silent_video_file_path, audio_path, final_clip)
+    os.remove(silent_video_file_path)
+    return final_clip
+
 def print_exp_info(args):
     logger.info(pprint.pformat(vars(args)))
     logger.info(f"# ------------ {args.name} ----------- #")

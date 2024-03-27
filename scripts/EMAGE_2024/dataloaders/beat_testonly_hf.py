@@ -28,10 +28,10 @@ class CustomDataset(Dataset):
     def __init__(self, args, loader_type, smplx_path=None, audio_path=None, text_path=None, augmentation=None, kwargs=None, build_cache=True):
         self.args = args
         self.loader_type = loader_type
-        self.smplx_path = smplx_path
+        self.smplx_path = "./EMAGE/test_sequences/smplxflame_30/2_scott_0_1_1.npz"
         self.audio_path = audio_path
-        self.text_path = text_path
-        self.rank = dist.get_rank()
+        self.text_path = "./EMAGE/test_sequences/textgrid/2_scott_0_1_1.TextGrid"
+        self.rank = 0 # dist.get_rank()
         self.ori_stride = self.args.stride
         self.ori_length = self.args.pose_length
         self.alignment = [0,0] # for trinity

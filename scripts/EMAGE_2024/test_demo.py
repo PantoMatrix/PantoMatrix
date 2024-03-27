@@ -534,15 +534,15 @@ class BaseTrainer(object):
                     mocap_frame_rate = 30,
                 )
                 total_length += n
-                other_tools.render_one_sequence(
-                    results_save_path+"res_"+test_seq_list.iloc[its]['id']+'.npz', 
-                    results_save_path+"gt_"+test_seq_list.iloc[its]['id']+'.npz', 
-                    results_save_path,
-                    self.args.data_path+"wave16k/"+test_seq_list.iloc[its]['id']+".wav",
-                    self.args.data_path_1+"smplx_models/", 
-                    use_matplotlib = False,
-                    args = self.args,
-                    )
+                # other_tools.render_one_sequence(
+                #     results_save_path+"res_"+test_seq_list.iloc[its]['id']+'.npz', 
+                #     results_save_path+"gt_"+test_seq_list.iloc[its]['id']+'.npz', 
+                #     results_save_path,
+                #     self.args.data_path+"wave16k/"+test_seq_list.iloc[its]['id']+".wav",
+                #     self.args.data_path_1+"smplx_models/", 
+                #     use_matplotlib = False,
+                #     args = self.args,
+                #     )
         end_time = time.time() - start_time
         logger.info(f"total inference time: {int(end_time)} s for {int(total_length/self.args.pose_fps)} s motion")
        

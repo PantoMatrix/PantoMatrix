@@ -31,11 +31,11 @@
 # 🎨 Pin
 
 
-EMAGE Colab Demo is avaliable, click [here](https://colab.research.google.com/drive/1AINafluW6Ba5-KYN_L43eyFK0zRklMvr?usp=sharing). Local Gradio Demo is also available!
+Audio-only EMAGE Gradio Demo is available! Try to drive SMPLX with your custom audio!
 
 0. Finish the [environment setup](https://github.com/PantoMatrix/PantoMatrix/tree/main/scripts/EMAGE_2024#build-environtment) & [weight download](https://github.com/PantoMatrix/PantoMatrix/tree/main/scripts/EMAGE_2024#download-weights) steps.
 
-1. Run the demo, then open the localhost link in browser.
+1. Run the demo, then open the localhost link in the browser.
 
 ```shell
 python scripts/EMAGE_2024/demo.py
@@ -43,7 +43,7 @@ python scripts/EMAGE_2024/demo.py
 
 2. Then hit the submit, and output result will be rendered in output for 10 minutes.
 
-<img src ="https://github.com/PantoMatrix/PantoMatrix/blob/main/assets/EMAGE_2024/afrun.png" width="100%">
+<img src ="https://github.com/PantoMatrix/PantoMatrix/blob/main/assets/EMAGE_2024/afrun.jpg" width="100%">
 
 # News
 

@@ -43,6 +43,7 @@ These weights should be orgnized as follows:
 |-- smplx_models
 |   `-- smplx/SMPLX_NEUTRAL_2020.npz
 |-- test_sequences
+|-- emage_audio_175.bin
 `-- emage_240.bin
 ```
 
@@ -50,7 +51,7 @@ These weights should be orgnized as follows:
 
 ## Inference
 
-Here is the cli command for running inference scripts under the path ```<your root>/PantoMatrix/```, it will take around 1 min for generating motion, and 30 mins for rendering a video.
+Here is the command for running inference scripts under the path ```<your root>/PantoMatrix/```, it will take around 1 min to generate motion. You can visualize the result .npz files via blender using our blender addon. If you want to visualize with video, you may try our gradio demo.
 
 ```shell
 python scripts/EMAGE_2024/test_demo.py --config ./scripts/EMAGE_2024/configs/emage_test.yaml
@@ -124,11 +125,6 @@ python scripts/EMAGE_2024/train.py --config ./scripts/EMAGE_2024/configs/camn.ya
 ```shell
 python scripts/EMAGE_2024/demo.py
 ```
+### Upload audio (less than 60s), then hit the submit, and output result will be rendered in output for 3 minutes.
 
-### First, upload SMPL-X npz file, audio, TextGrid files by following the steps above.
-
-<img src ="https://github.com/PantoMatrix/PantoMatrix/blob/main/assets/EMAGE_2024/bfrun.png" width="100%">
-
-### Then hit the submit, and output result will be rendered in output for 10 minutes.
-
-<img src ="https://github.com/PantoMatrix/PantoMatrix/blob/main/assets/EMAGE_2024/afrun.png" width="100%">
+<img src ="https://github.com/PantoMatrix/PantoMatrix/blob/main/assets/EMAGE_2024/afrun.jpg" width="100%">
