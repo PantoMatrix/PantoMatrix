@@ -32,6 +32,7 @@
 
 
 Audio-only EMAGE Gradio Demo is available! Try to drive SMPLX with your custom audio!
+https://f7b4da5ff738a4aeab.gradio.live/
 
 0. Finish the [environment setup](https://github.com/PantoMatrix/PantoMatrix/tree/main/scripts/EMAGE_2024#build-environtment) & [weight download](https://github.com/PantoMatrix/PantoMatrix/tree/main/scripts/EMAGE_2024#download-weights) steps.
 
@@ -41,7 +42,7 @@ Audio-only EMAGE Gradio Demo is available! Try to drive SMPLX with your custom a
 python scripts/EMAGE_2024/demo.py
 ```
 
-2. Then hit the submit, and output result will be rendered in output for 10 minutes.
+2. Then hit submit, and the output result will be rendered in output for 2 minutes.
 
 <img src ="https://github.com/PantoMatrix/PantoMatrix/blob/main/assets/EMAGE_2024/afrun.jpg" width="100%">
 
