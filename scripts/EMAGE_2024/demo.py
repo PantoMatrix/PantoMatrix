@@ -593,6 +593,12 @@ def emage(audio_path):
     result = trainer.test_demo(999)
     return result
 
+examples = [
+    ["scripts/EMAGE_2024/audio_example/2_scott_0_1_1.wav"],
+    ["scripts/EMAGE_2024/audio_example/2_scott_0_2_2.wav"],
+    ["scripts/EMAGE_2024/audio_example/2_scott_0_3_3.wav"]
+]
+
 demo = gr.Interface(
     emage,  # function
     inputs=[
@@ -606,6 +612,7 @@ demo = gr.Interface(
         2. Then, sit back and wait for the rendering to happen! This may take a while (e.g. 3 minutes) <br/>\
         3. After, you can view the videos.  <br/>",
     article="Relevant links: [Project Page](https://pantomatrix.github.io/EMAGE/)", 
+    examples=examples,
 )
 
             
