@@ -32,7 +32,7 @@
 
 
 Audio-only EMAGE Gradio Demo is available! Try to drive SMPLX with your custom audio!
-https://f7b4da5ff738a4aeab.gradio.live/
+https://238562c7816aa09c15.gradio.live/
 
 0. Finish the [environment setup](https://github.com/PantoMatrix/PantoMatrix/tree/main/scripts/EMAGE_2024#build-environtment) & [weight download](https://github.com/PantoMatrix/PantoMatrix/tree/main/scripts/EMAGE_2024#download-weights) steps.
 
