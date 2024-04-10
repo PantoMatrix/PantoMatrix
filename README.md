@@ -9,6 +9,7 @@
 <a href='https://github.com/PantoMatrix/PantoMatrix/blob/main/scripts/EMAGE_2024/readme.md'><img src='https://img.shields.io/badge/EMAGE-Readme-green'></a>
 <a href='https://pantomatrix.github.io/EMAGE/'><img src='https://img.shields.io/badge/Project-EMAGE-blue' alt='Project'></a>
 <a href='https://www.youtube.com/watch?v=T0OYPvViFGE'><img src='https://img.shields.io/badge/YouTube-EMAGE-rgb(255, 0, 0)' alt='Youtube'></a>
+[![Replicate](https://replicate.com/google-research/frame-interpolation/badge)](https://replicate.com/camenduru/emage)
 <a href="https://colab.research.google.com/drive/1AINafluW6Ba5-KYN_L43eyFK0zRklMvr?usp=sharing" target="_parent"><img src="https://colab.research.google.com/assets/colab-badge.svg" alt="EMAGE Colab"/></a> 
 <a href='https://huggingface.co/spaces/H-Liu1997/EMAGE'><img src='https://img.shields.io/badge/%F0%9F%A4%97%20Hugging%20Face-Spaces-blue'></a>
 <a href='https://arxiv.org/abs/2401.00374'><img src='https://img.shields.io/badge/Paper-CVPR2024-yellow' alt='Project'></a>
@@ -29,6 +30,11 @@
 
 
 # 🎨 Pin
+
+Thanks to [@camenduru](https://twitter.com/camenduru), Replicate version EMAGE is available! you can directly call EMAGE via API!
+
+<img width="1496" alt="image" src="https://github.com/PantoMatrix/PantoMatrix/assets/41906591/9cb413ef-80ca-45af-b5d1-d6e97a0b4eaf">
+
 
 Hugging face space is available! Try to drive SMPLX with your custom audio [here](https://huggingface.co/spaces/H-Liu1997/EMAGE)!
 
