@@ -43,6 +43,7 @@ Hugging face space is available! Try to drive SMPLX with your custom audio [here
 # News
 
 Welcome contributors for speedup the training, better visualization etc. Feel free to submit the pull requests! 
+- **[2024/07]** Now you could [download smplx motion (in .npz) file](https://huggingface.co/spaces/H-Liu1997/EMAGE), visualize with our blender addon and retarget to your avatar!
 - **[2024/03]** Thanks [@sunday9999](https://github.com/sunday9999) for speeding up the inference video rendering from 1000s to 25s! 
 - **[2024/03]** EMAGE Demos: [Colab demo](https://colab.research.google.com/drive/1AINafluW6Ba5-KYN_L43eyFK0zRklMvr?usp=sharing), [Gradio demo](https://github.com/PantoMatrix/PantoMatrix/tree/main/scripts/EMAGE_2024#user-content--gradio-demo).
 - **[2024/02]** Quick Access: [How to setup EMAGE](https://github.com/PantoMatrix/PantoMatrix/blob/main/scripts/EMAGE_2024/readme.md), [Details of BEAT](https://github.com/PantoMatrix/PantoMatrix/blob/main/scripts/BEAT_2022/readme_beat.md). 🚀!
