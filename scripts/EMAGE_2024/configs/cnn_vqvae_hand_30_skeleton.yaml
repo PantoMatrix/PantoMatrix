@@ -18,6 +18,7 @@ pose_rep: skeleton_cache
 #-- Need to be changed to work with skeleton
 ori_joints: skeleton_joint_full
 tar_joints: skeleton_hand
+pose_version: skeleton_hand
 pose_fps: 30
 
 
@@ -51,7 +52,7 @@ facial_dims: 51 # change to work with ARKit(52-tongue=51)
 word_index_num: 11195
 word_dims: 300
 batch_size: 512
-lr_base: 3e-4
+lr_base: 1e-4
 decay_epochs: 9999
 model: motion_representation
 g_name: VQVAEConvZero
@@ -92,7 +93,7 @@ rec_ver_weight: 1
 #fusion_mode: sum
 # grad_norm: 1
 epochs: 500
-test_period: 1
+test_period: 100
 
 ## Thêm vào
 multi_length_training: [1] #Vì trong data loader cần biến này#

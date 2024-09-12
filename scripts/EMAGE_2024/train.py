@@ -33,6 +33,7 @@ class BaseTrainer(object):
         self.rank = dist.get_rank()
         self.ddp = args.ddp
         self.gpus = len(args.gpus)
+        self.pose_version = args.pose_version
         print("gpus:", self.gpus)
         self.checkpoint_path = args.out_path + "custom/" + args.name + args.notes + "/" #wandb.run.dir #args.cache_path+args.out_path+"/"+args.name
         if self.rank==0:

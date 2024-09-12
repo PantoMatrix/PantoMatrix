@@ -47,7 +47,6 @@ class CustomTrainer(train.BaseTrainer):
             'kl_loss': other_tools.AverageMeter('kl_loss'),
             #'acceleration_loss': other_tools.AverageMeter('acceleration_loss'),
         }
-        self.joints = self.train_data.joints
         self.best_epochs = {
             'rec_val': [np.inf, 0],
             'vel_val': [np.inf, 0],
@@ -58,6 +57,22 @@ class CustomTrainer(train.BaseTrainer):
         self.rec_weight = args.rec_weight
         self.vel_weight = args.vel_weight
         self.args = args
+
+        # self.mean_pose = np.load(args.root_path+args.mean_pose_path+f"{args.pose_rep}/bvh_mean.npy")
+        # self.std_pose = np.load(args.root_path+args.mean_pose_path+f"{args.pose_rep}/bvh_std.npy")
+        
+        # self.audio_norm = args.audio_norm
+        # self.facial_norm = args.facial_norm
+        # if self.audio_norm:
+        #     self.mean_audio = np.load(args.root_path+args.mean_pose_path+f"{args.audio_rep}/npy_mean.npy")
+        #     self.std_audio = np.load(args.root_path+args.mean_pose_path+f"{args.audio_rep}/npy_std.npy")
+        # if self.facial_norm:
+        #     self.mean_facial = np.load(args.root_path+args.mean_pose_path+f"{args.facial_rep}/json_mean.npy")
+        #     self.std_facial = np.load(args.root_path+args.mean_pose_path+f"{args.facial_rep}/json_std.npy")
+
+        # self.ori_joint_list = joints_list[args.ori_joints]
+        # self.tar_joint_list = joints_list[args.tar_joints]
+        
         ##--------------Copy from BEAT2022, ae_trainer.py------------##
     
     def train(self, epoch):
@@ -194,37 +209,22 @@ class CustomTrainer(train.BaseTrainer):
                 tar_pose = dict_data["pose"]
                 tar_pose = tar_pose.cuda()
 
-                bs, n, j = tar_pose.shape[0], tar_pose.shape[1], self.joints
-                tar_pose = rc.axis_angle_to_matrix(tar_pose.reshape(bs, n, j, 3))
-                # tar_pose = rc.matrix_to_rotation_6d(tar_pose).reshape(bs, n, j*6)
-
-                remain = n%self.args.pose_length
-                tar_pose = tar_pose[:, :n-remain, :]
-                tar_pose = tar_pose.squeeze(2)
-                
-                recon_data = self.model(tar_pose)
-                
-
                 for i in range(tar_pose.shape[1]//(self.pose_length)):
                     tar_pose_new = tar_pose[:,i*(self.pose_length):i*(self.pose_length)+self.pose_length,:]
                     # print(tar_pose_new.shape)
-                    # tar_pose_new = tar_pose_new.squeeze(2)
                     recon_data = self.model(tar_pose_new)
 
-                    for key in recon_data.keys():
-                        print(recon_data['key'].shape)
-
-                    out_sub = (recon_data['rec_pose'].cpu().numpy().reshape(-1, self.args.pose_dims) * self.std_pose) + self.mean_pose
-                    if i != 0:
-                        out_final = np.concatenate((out_final,out_sub), 0)
-                    else:
-                        out_final = out_sub
+                    std_pose = self.test_data.std_pose[self.test_data.joint_mask.astype(bool)]
+                    mean_pose = self.test_data.mean_pose[self.test_data.joint_mask.astype(bool)]
+                    out_sub = (recon_data['rec_pose'].cpu().numpy().reshape(-1, self.args.pose_dims) * std_pose) + mean_pose
+                    out_final = out_sub
 
                 total_length += out_final.shape[0]
                 with open(f"{results_save_path}result_raw_{test_seq_list[its]}", 'w+') as f_real:
                     for line_id in range(out_final.shape[0]): #,args.pre_frames, args.pose_length
                         line_data = np.array2string(out_final[line_id], max_line_width=np.inf, precision=6, suppress_small=False, separator=' ')
                         f_real.write(line_data[1:-2]+'\n')
+                        
             data_tools.result2target_vis(self.pose_version, results_save_path, results_save_path, self.test_demo, False)
             
         end_time = time.time() - start_time
