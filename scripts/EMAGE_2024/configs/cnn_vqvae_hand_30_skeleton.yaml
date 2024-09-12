@@ -8,7 +8,7 @@ mean_pose_path: /root/nguyen/research/PantoMatrix/beat_4english_30_full/train_co
 std_pose_path: /root/nguyen/research/PantoMatrix/beat_4english_30_full/train_copy/
 stat: wandb
 dataset: beat_skeleton
-new_cache: True
+new_cache: False
 
 # ori_joints: beat_smplx_joints
 # tar_joints: beat_smplx_upper
@@ -50,12 +50,12 @@ facial_dims: 51 # change to work with ARKit(52-tongue=51)
 ##-----Keep unchanged-------##
 word_index_num: 11195
 word_dims: 300
-batch_size: 64
+batch_size: 512
 lr_base: 3e-4
 decay_epochs: 9999
 model: motion_representation
 g_name: VQVAEConvZero
-trainer: aeskeleton # change to work with skeleton
+trainer: aeskeleton_hand # change to work with skeleton
 ##---------------------------##
 
 # audio_f: 256
@@ -92,7 +92,7 @@ rec_ver_weight: 1
 #fusion_mode: sum
 # grad_norm: 1
 epochs: 500
-test_period: 100
+test_period: 1
 
 ## Thêm vào
-multi_length_training: 1 #Vì trong data loader cần biến này#
+multi_length_training: [1] #Vì trong data loader cần biến này#

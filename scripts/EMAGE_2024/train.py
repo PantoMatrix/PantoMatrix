@@ -45,8 +45,10 @@ class BaseTrainer(object):
                 wandb.init(project=args.project, entity="thoai-bt-97", dir=args.out_path, name=args.name[12:] + args.notes)
                 wandb.config.update(args)
                 self.writer = None  
-        #self.test_demo = args.data_path + args.test_data_path + "bvh_full/"        
+        self.test_demo = args.test_data_path + "bvh_full/"        
         self.train_data = __import__(f"dataloaders.{args.dataset}", fromlist=["something"]).CustomDataset(args, "train")
+
+        print(self.train_data[0]['pose'].shape)
         self.train_loader = torch.utils.data.DataLoader(
             self.train_data, 
             batch_size=args.batch_size,  
@@ -59,6 +61,7 @@ class BaseTrainer(object):
         logger.info(f"Init train dataloader success")
        
         self.val_data = __import__(f"dataloaders.{args.dataset}", fromlist=["something"]).CustomDataset(args, "val")  
+        print(self.val_data[0]['pose'].shape)
         self.val_loader = torch.utils.data.DataLoader(
             self.val_data, 
             batch_size=args.batch_size,  
@@ -245,6 +248,8 @@ def main_worker(rank, world_size, args):
     logger.info("Training from starch ...")          
     start_time = time.time()
     for epoch in range(args.epochs):
+        # trainer.test(epoch)
+
         if trainer.ddp: trainer.val_loader.sampler.set_epoch(epoch)
         trainer.val(epoch)
         epoch_time = time.time()-start_time

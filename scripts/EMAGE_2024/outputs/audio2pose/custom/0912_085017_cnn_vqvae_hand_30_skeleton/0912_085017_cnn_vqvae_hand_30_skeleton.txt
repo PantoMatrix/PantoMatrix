@@ -1,0 +1,1271 @@
+ 09-12 08:50:19 | {'acc_weight': 0.0,
+ 'adv_weight': 20.0,
+ 'ali_weight': 0.0,
+ 'amsgrad': False,
+ 'apex': False,
+ 'aud_prob': 1.0,
+ 'audio_dims': 1,
+ 'audio_f': 128,
+ 'audio_fps': 16000,
+ 'audio_norm': False,
+ 'audio_rep': None,
+ 'batch_size': 64,
+ 'benchmark': True,
+ 'clean_final_seconds': 0,
+ 'clean_first_seconds': 0,
+ 'config': 'configs/cnn_vqvae_hand_30_skeleton.yaml',
+ 'csv': 'git3.csv',
+ 'cudnn_enabled': True,
+ 'd_lr_weight': 0.2,
+ 'd_name': None,
+ 'dataset': 'beat_skeleton',
+ 'ddp': False,
+ 'decay_epochs': 9999,
+ 'decay_rate': 0.1,
+ 'deterministic': True,
+ 'disable_filtering': False,
+ 'div_reg_weight': 0.0,
+ 'dropout_prob': 0.3,
+ 'e_name': None,
+ 'e_path': '/datasets/beat/generated_data/self_vae_128.bin',
+ 'emo_rep': None,
+ 'emotion_dims': 8,
+ 'emotion_f': 0,
+ 'epochs': 500,
+ 'eval_model': 'vae',
+ 'fac_prob': 1.0,
+ 'facial_dims': 51,
+ 'facial_f': 128,
+ 'facial_fps': 15,
+ 'facial_norm': False,
+ 'facial_rep': None,
+ 'fid_weight': 0.0,
+ 'finger_net': 'original',
+ 'freeze_wordembed': True,
+ 'g_name': 'VQVAEConvZero',
+ 'gpus': [0],
+ 'grad_norm': 0,
+ 'hidden_size': 300,
+ 'is_train': True,
+ 'kld_aud_weight': 0.0,
+ 'kld_fac_weight': 0.0,
+ 'kld_weight': 0.0,
+ 'loader_workers': 0,
+ 'log_period': 10,
+ 'lr_base': '3e-4',
+ 'lr_min': 1e-07,
+ 'lr_policy': 'step',
+ 'mean_pose_path': '/root/nguyen/research/PantoMatrix/beat_4english_30_full/train_copy/',
+ 'model': 'motion_representation',
+ 'model_name_best': 'best.pth',
+ 'model_name_last': 'last.pth',
+ 'momentum': 0.8,
+ 'multi_length_training': 1,
+ 'n_layer': 4,
+ 'name': '0912_085017_cnn_vqvae_hand_30_skeleton',
+ 'nesterov': True,
+ 'new_cache': True,
+ 'no_adv_epochs': 4,
+ 'notes': '',
+ 'opt': 'adam',
+ 'opt_betas': [0.5, 0.999],
+ 'ori_joints': 'skeleton_joint_full',
+ 'out_path': './outputs/audio2pose/',
+ 'out_root_path': '/outputs/audio2pose/',
+ 'pos_prob': 1.0,
+ 'pose_dims': 144,
+ 'pose_fps': 30,
+ 'pose_length': 64,
+ 'pose_norm': True,
+ 'pose_rep': 'bvh_rot',
+ 'pose_version': 'spine_neck_141',
+ 'pre_frames': 4,
+ 'pre_type': 'zero',
+ 'pretrain': False,
+ 'project': 'emage_skeleton',
+ 'random_seed': 2021,
+ 'rec_aud_weight': 0.0,
+ 'rec_fac_weight': 0.0,
+ 'rec_pos_weight': 1,
+ 'rec_txt_weight': 0.0,
+ 'rec_ver_weight': 1,
+ 'rec_weight': 1,
+ 'root_path': '',
+ 'sem_rep': None,
+ 'speaker_dims': 4,
+ 'speaker_f': 0,
+ 'speaker_id': None,
+ 'stat': 'wandb',
+ 'std_pose_path': '/root/nguyen/research/PantoMatrix/beat_4english_30_full/train_copy/',
+ 'stride': 20,
+ 'tar_joints': 'skeleton_hand',
+ 'test_ckpt': '/datasets/beat_cache/beat_4english_15_141/last.bin',
+ 'test_data_path': '/root/nguyen/research/PantoMatrix/beat_4english_30_full/test_copy/',
+ 'test_period': 100,
+ 'torch_hub_path': '../../datasets/checkpoints/',
+ 'train_data_path': '/root/nguyen/research/PantoMatrix/beat_4english_30_full/train_copy/',
+ 'trainer': 'aeskeleton',
+ 'txt_prob': 1.0,
+ 'use_aug': False,
+ 'vae_codebook_size': 256,
+ 'vae_grow': [1, 1, 2, 1],
+ 'vae_layer': 2,
+ 'vae_length': 256,
+ 'vae_test_dim': 144,
+ 'vae_test_len': 64,
+ 'vae_test_stride': 20,
+ 'val_data_path': '/root/nguyen/research/PantoMatrix/beat_4english_30_full/val_copy/',
+ 'variational': False,
+ 'variational_encoding': False,
+ 'vel_weight': 0.0,
+ 'warmup_epochs': 0,
+ 'warmup_lr': 0.0005,
+ 'weight_decay': 0.0,
+ 'word_dims': 300,
+ 'word_f': 0,
+ 'word_index_num': 11195,
+ 'word_rep': None}
+ 09-12 08:50:19 | # ------------ 0912_085017_cnn_vqvae_hand_30_skeleton ----------- #
+ 09-12 08:50:19 | PyTorch version: 2.1.1
+ 09-12 08:50:19 | CUDA version: 11.8
+ 09-12 08:50:19 | 8 GPUs
+ 09-12 08:50:19 | Random Seed: 2021
+ 09-12 08:50:23 | Audio bit rate: 16000
+ 09-12 08:50:23 | Reading data '/root/nguyen/research/PantoMatrix/beat_4english_30_full/test_copy/'...
+ 09-12 08:50:23 | Creating the dataset cache...
+ 09-12 08:50:23 | [34m# ---- Building cache for Pose   10_kieks_0_103_a ---- #[0m
+ 09-12 08:50:23 | pose from frame 0 to 450, length 450
+ 09-12 08:50:23 | 1 clips is expected with stride 450
+ 09-12 08:50:23 | [34m# ---- Building cache for Pose   10_kieks_0_111_a ---- #[0m
+ 09-12 08:50:24 | pose from frame 0 to 450, length 450
+ 09-12 08:50:24 | 1 clips is expected with stride 450
+ 09-12 08:50:24 | [34m# ---- Building cache for Pose   10_kieks_0_1_1 ---- #[0m
+ 09-12 08:50:27 | pose from frame 0 to 1950, length 1950
+ 09-12 08:50:27 | 1 clips is expected with stride 1950
+ 09-12 08:50:27 | [34m# ---- Building cache for Pose   10_kieks_0_2_2 ---- #[0m
+ 09-12 08:50:30 | pose from frame 0 to 2070, length 2070
+ 09-12 08:50:30 | 1 clips is expected with stride 2070
+ 09-12 08:50:30 | [34m# ---- Building cache for Pose   10_kieks_0_3_3 ---- #[0m
+ 09-12 08:50:32 | pose from frame 0 to 1860, length 1860
+ 09-12 08:50:32 | 1 clips is expected with stride 1860
+ 09-12 08:50:32 | [34m# ---- Building cache for Pose   10_kieks_0_4_4 ---- #[0m
+ 09-12 08:50:35 | pose from frame 0 to 1920, length 1920
+ 09-12 08:50:35 | 1 clips is expected with stride 1920
+ 09-12 08:50:35 | [34m# ---- Building cache for Pose   10_kieks_0_65_a ---- #[0m
+ 09-12 08:50:36 | pose from frame 0 to 450, length 450
+ 09-12 08:50:36 | 1 clips is expected with stride 450
+ 09-12 08:50:36 | [34m# ---- Building cache for Pose   10_kieks_0_73_a ---- #[0m
+ 09-12 08:50:36 | pose from frame 0 to 450, length 450
+ 09-12 08:50:36 | 1 clips is expected with stride 450
+ 09-12 08:50:36 | [34m# ---- Building cache for Pose   10_kieks_0_81_a ---- #[0m
+ 09-12 08:50:37 | pose from frame 0 to 450, length 450
+ 09-12 08:50:37 | 1 clips is expected with stride 450
+ 09-12 08:50:37 | [34m# ---- Building cache for Pose   10_kieks_0_87_a ---- #[0m
+ 09-12 08:50:38 | pose from frame 0 to 450, length 450
+ 09-12 08:50:38 | 1 clips is expected with stride 450
+ 09-12 08:50:38 | [34m# ---- Building cache for Pose   10_kieks_0_95_a ---- #[0m
+ 09-12 08:50:38 | pose from frame 0 to 450, length 450
+ 09-12 08:50:38 | 1 clips is expected with stride 450
+ 09-12 08:50:38 | [34m# ---- Building cache for Pose   10_kieks_1_1_a ---- #[0m
+ 09-12 08:50:44 | pose from frame 0 to 4500, length 4500
+ 09-12 08:50:44 | 1 clips is expected with stride 4500
+ 09-12 08:50:45 | [34m# ---- Building cache for Pose   11_nidal_0_103_103 ---- #[0m
+ 09-12 08:50:48 | pose from frame 0 to 2940, length 2940
+ 09-12 08:50:48 | 1 clips is expected with stride 2940
+ 09-12 08:50:48 | [34m# ---- Building cache for Pose   11_nidal_0_111_111 ---- #[0m
+ 09-12 08:50:52 | pose from frame 0 to 2820, length 2820
+ 09-12 08:50:52 | 1 clips is expected with stride 2820
+ 09-12 08:50:52 | [34m# ---- Building cache for Pose   11_nidal_0_1_1 ---- #[0m
+ 09-12 08:50:55 | pose from frame 0 to 2130, length 2130
+ 09-12 08:50:55 | 1 clips is expected with stride 2130
+ 09-12 08:50:55 | [34m# ---- Building cache for Pose   11_nidal_0_2_2 ---- #[0m
+ 09-12 08:50:59 | pose from frame 0 to 2580, length 2580
+ 09-12 08:50:59 | 1 clips is expected with stride 2580
+ 09-12 08:50:59 | [34m# ---- Building cache for Pose   11_nidal_0_3_3 ---- #[0m
+ 09-12 08:51:02 | pose from frame 0 to 2670, length 2670
+ 09-12 08:51:02 | 1 clips is expected with stride 2670
+ 09-12 08:51:02 | [34m# ---- Building cache for Pose   11_nidal_0_4_4 ---- #[0m
+ 09-12 08:51:06 | pose from frame 0 to 2550, length 2550
+ 09-12 08:51:06 | 1 clips is expected with stride 2550
+ 09-12 08:51:07 | [34m# ---- Building cache for Pose   11_nidal_0_5_5 ---- #[0m
+ 09-12 08:51:12 | pose from frame 0 to 3270, length 3270
+ 09-12 08:51:12 | 1 clips is expected with stride 3270
+ 09-12 08:51:12 | [34m# ---- Building cache for Pose   11_nidal_0_65_65 ---- #[0m
+ 09-12 08:51:15 | pose from frame 0 to 2460, length 2460
+ 09-12 08:51:15 | 1 clips is expected with stride 2460
+ 09-12 08:51:15 | [34m# ---- Building cache for Pose   11_nidal_0_6_6 ---- #[0m
+ 09-12 08:51:19 | pose from frame 0 to 2820, length 2820
+ 09-12 08:51:19 | 1 clips is expected with stride 2820
+ 09-12 08:51:19 | [34m# ---- Building cache for Pose   11_nidal_0_73_73 ---- #[0m
+ 09-12 08:51:22 | pose from frame 0 to 2070, length 2070
+ 09-12 08:51:22 | 1 clips is expected with stride 2070
+ 09-12 08:51:22 | [34m# ---- Building cache for Pose   11_nidal_0_7_7 ---- #[0m
+ 09-12 08:51:26 | pose from frame 0 to 2760, length 2760
+ 09-12 08:51:26 | 1 clips is expected with stride 2760
+ 09-12 08:51:26 | [34m# ---- Building cache for Pose   11_nidal_0_81_81 ---- #[0m
+ 09-12 08:51:29 | pose from frame 0 to 2100, length 2100
+ 09-12 08:51:29 | 1 clips is expected with stride 2100
+ 09-12 08:51:29 | [34m# ---- Building cache for Pose   11_nidal_0_87_87 ---- #[0m
+ 09-12 08:51:33 | pose from frame 0 to 3120, length 3120
+ 09-12 08:51:33 | 1 clips is expected with stride 3120
+ 09-12 08:51:33 | [34m# ---- Building cache for Pose   11_nidal_0_8_8 ---- #[0m
+ 09-12 08:51:37 | pose from frame 0 to 3000, length 3000
+ 09-12 08:51:37 | 1 clips is expected with stride 3000
+ 09-12 08:51:37 | [34m# ---- Building cache for Pose   11_nidal_0_95_95 ---- #[0m
+ 09-12 08:51:40 | pose from frame 0 to 2160, length 2160
+ 09-12 08:51:40 | 1 clips is expected with stride 2160
+ 09-12 08:51:40 | [34m# ---- Building cache for Pose   11_nidal_1_1_1 ---- #[0m
+ 09-12 08:52:06 | pose from frame 0 to 19560, length 19560
+ 09-12 08:52:06 | 1 clips is expected with stride 19560
+ 09-12 08:52:07 | [34m# ---- Building cache for Pose   12_zhao_0_103_a ---- #[0m
+ 09-12 08:52:07 | pose from frame 0 to 450, length 450
+ 09-12 08:52:07 | 1 clips is expected with stride 450
+ 09-12 08:52:07 | [34m# ---- Building cache for Pose   12_zhao_0_111_a ---- #[0m
+ 09-12 08:52:08 | pose from frame 0 to 450, length 450
+ 09-12 08:52:08 | 1 clips is expected with stride 450
+ 09-12 08:52:08 | [34m# ---- Building cache for Pose   12_zhao_0_1_1 ---- #[0m
+ 09-12 08:52:11 | pose from frame 0 to 2070, length 2070
+ 09-12 08:52:11 | 1 clips is expected with stride 2070
+ 09-12 08:52:11 | [34m# ---- Building cache for Pose   12_zhao_0_2_2 ---- #[0m
+ 09-12 08:52:14 | pose from frame 0 to 2400, length 2400
+ 09-12 08:52:14 | 1 clips is expected with stride 2400
+ 09-12 08:52:14 | [34m# ---- Building cache for Pose   12_zhao_0_3_3 ---- #[0m
+ 09-12 08:52:17 | pose from frame 0 to 2430, length 2430
+ 09-12 08:52:17 | 1 clips is expected with stride 2430
+ 09-12 08:52:17 | [34m# ---- Building cache for Pose   12_zhao_0_4_4 ---- #[0m
+ 09-12 08:52:20 | pose from frame 0 to 2280, length 2280
+ 09-12 08:52:20 | 1 clips is expected with stride 2280
+ 09-12 08:52:20 | [34m# ---- Building cache for Pose   12_zhao_0_65_a ---- #[0m
+ 09-12 08:52:21 | pose from frame 0 to 450, length 450
+ 09-12 08:52:21 | 1 clips is expected with stride 450
+ 09-12 08:52:21 | [34m# ---- Building cache for Pose   12_zhao_0_73_a ---- #[0m
+ 09-12 08:52:22 | pose from frame 0 to 450, length 450
+ 09-12 08:52:22 | 1 clips is expected with stride 450
+ 09-12 08:52:22 | [34m# ---- Building cache for Pose   12_zhao_0_81_a ---- #[0m
+ 09-12 08:52:22 | pose from frame 0 to 450, length 450
+ 09-12 08:52:22 | 1 clips is expected with stride 450
+ 09-12 08:52:22 | [34m# ---- Building cache for Pose   12_zhao_0_87_a ---- #[0m
+ 09-12 08:52:23 | pose from frame 0 to 450, length 450
+ 09-12 08:52:23 | 1 clips is expected with stride 450
+ 09-12 08:52:23 | [34m# ---- Building cache for Pose   12_zhao_0_95_a ---- #[0m
+ 09-12 08:52:24 | pose from frame 0 to 450, length 450
+ 09-12 08:52:24 | 1 clips is expected with stride 450
+ 09-12 08:52:24 | [34m# ---- Building cache for Pose   12_zhao_1_1_a ---- #[0m
+ 09-12 08:52:30 | pose from frame 0 to 4500, length 4500
+ 09-12 08:52:30 | 1 clips is expected with stride 4500
+ 09-12 08:52:30 | [34m# ---- Building cache for Pose   13_lu_0_103_a ---- #[0m
+ 09-12 08:52:30 | pose from frame 0 to 450, length 450
+ 09-12 08:52:30 | 1 clips is expected with stride 450
+ 09-12 08:52:30 | [34m# ---- Building cache for Pose   13_lu_0_111_a ---- #[0m
+ 09-12 08:52:31 | pose from frame 0 to 450, length 450
+ 09-12 08:52:31 | 1 clips is expected with stride 450
+ 09-12 08:52:31 | [34m# ---- Building cache for Pose   13_lu_0_1_1 ---- #[0m
+ 09-12 08:52:34 | pose from frame 0 to 2010, length 2010
+ 09-12 08:52:34 | 1 clips is expected with stride 2010
+ 09-12 08:52:34 | [34m# ---- Building cache for Pose   13_lu_0_2_2 ---- #[0m
+ 09-12 08:52:37 | pose from frame 0 to 2220, length 2220
+ 09-12 08:52:37 | 1 clips is expected with stride 2220
+ 09-12 08:52:37 | [34m# ---- Building cache for Pose   13_lu_0_3_3 ---- #[0m
+ 09-12 08:52:41 | pose from frame 0 to 2280, length 2280
+ 09-12 08:52:41 | 1 clips is expected with stride 2280
+ 09-12 08:52:41 | [34m# ---- Building cache for Pose   13_lu_0_4_4 ---- #[0m
+ 09-12 08:52:44 | pose from frame 0 to 2400, length 2400
+ 09-12 08:52:44 | 1 clips is expected with stride 2400
+ 09-12 08:52:44 | [34m# ---- Building cache for Pose   13_lu_0_65_a ---- #[0m
+ 09-12 08:52:45 | pose from frame 0 to 450, length 450
+ 09-12 08:52:45 | 1 clips is expected with stride 450
+ 09-12 08:52:45 | [34m# ---- Building cache for Pose   13_lu_0_73_a ---- #[0m
+ 09-12 08:52:45 | pose from frame 0 to 450, length 450
+ 09-12 08:52:45 | 1 clips is expected with stride 450
+ 09-12 08:52:45 | [34m# ---- Building cache for Pose   13_lu_0_81_a ---- #[0m
+ 09-12 08:52:46 | pose from frame 0 to 450, length 450
+ 09-12 08:52:46 | 1 clips is expected with stride 450
+ 09-12 08:52:46 | [34m# ---- Building cache for Pose   13_lu_0_87_a ---- #[0m
+ 09-12 08:52:47 | pose from frame 0 to 450, length 450
+ 09-12 08:52:47 | 1 clips is expected with stride 450
+ 09-12 08:52:47 | [34m# ---- Building cache for Pose   13_lu_0_95_a ---- #[0m
+ 09-12 08:52:47 | pose from frame 0 to 450, length 450
+ 09-12 08:52:47 | 1 clips is expected with stride 450
+ 09-12 08:52:47 | [34m# ---- Building cache for Pose   13_lu_1_1_a ---- #[0m
+ 09-12 08:52:53 | pose from frame 0 to 4500, length 4500
+ 09-12 08:52:53 | 1 clips is expected with stride 4500
+ 09-12 08:52:53 | [34m# ---- Building cache for Pose   14_zhang_0_103_a ---- #[0m
+ 09-12 08:52:54 | pose from frame 0 to 450, length 450
+ 09-12 08:52:54 | 1 clips is expected with stride 450
+ 09-12 08:52:54 | [34m# ---- Building cache for Pose   14_zhang_0_111_a ---- #[0m
+ 09-12 08:52:55 | pose from frame 0 to 450, length 450
+ 09-12 08:52:55 | 1 clips is expected with stride 450
+ 09-12 08:52:55 | [34m# ---- Building cache for Pose   14_zhang_0_1_1 ---- #[0m
+ 09-12 08:52:58 | pose from frame 0 to 2520, length 2520
+ 09-12 08:52:58 | 1 clips is expected with stride 2520
+ 09-12 08:52:58 | [34m# ---- Building cache for Pose   14_zhang_0_2_2 ---- #[0m
+ 09-12 08:53:02 | pose from frame 0 to 2670, length 2670
+ 09-12 08:53:02 | 1 clips is expected with stride 2670
+ 09-12 08:53:02 | [34m# ---- Building cache for Pose   14_zhang_0_3_3 ---- #[0m
+ 09-12 08:53:06 | pose from frame 0 to 2820, length 2820
+ 09-12 08:53:06 | 1 clips is expected with stride 2820
+ 09-12 08:53:06 | [34m# ---- Building cache for Pose   14_zhang_0_4_4 ---- #[0m
+ 09-12 08:53:10 | pose from frame 0 to 2850, length 2850
+ 09-12 08:53:10 | 1 clips is expected with stride 2850
+ 09-12 08:53:10 | [34m# ---- Building cache for Pose   14_zhang_0_65_a ---- #[0m
+ 09-12 08:53:11 | pose from frame 0 to 450, length 450
+ 09-12 08:53:11 | 1 clips is expected with stride 450
+ 09-12 08:53:11 | [34m# ---- Building cache for Pose   14_zhang_0_73_a ---- #[0m
+ 09-12 08:53:11 | pose from frame 0 to 450, length 450
+ 09-12 08:53:11 | 1 clips is expected with stride 450
+ 09-12 08:53:12 | [34m# ---- Building cache for Pose   14_zhang_0_81_a ---- #[0m
+ 09-12 08:53:12 | pose from frame 0 to 450, length 450
+ 09-12 08:53:12 | 1 clips is expected with stride 450
+ 09-12 08:53:12 | [34m# ---- Building cache for Pose   14_zhang_0_87_a ---- #[0m
+ 09-12 08:53:13 | pose from frame 0 to 450, length 450
+ 09-12 08:53:13 | 1 clips is expected with stride 450
+ 09-12 08:53:13 | [34m# ---- Building cache for Pose   14_zhang_0_95_a ---- #[0m
+ 09-12 08:53:13 | pose from frame 0 to 450, length 450
+ 09-12 08:53:13 | 1 clips is expected with stride 450
+ 09-12 08:53:13 | [34m# ---- Building cache for Pose   14_zhang_1_1_a ---- #[0m
+ 09-12 08:53:19 | pose from frame 0 to 4500, length 4500
+ 09-12 08:53:19 | 1 clips is expected with stride 4500
+ 09-12 08:53:20 | [34m# ---- Building cache for Pose   15_carlos_0_103_a ---- #[0m
+ 09-12 08:53:20 | pose from frame 0 to 450, length 450
+ 09-12 08:53:20 | 1 clips is expected with stride 450
+ 09-12 08:53:20 | [34m# ---- Building cache for Pose   15_carlos_0_111_a ---- #[0m
+ 09-12 08:53:21 | pose from frame 0 to 450, length 450
+ 09-12 08:53:21 | 1 clips is expected with stride 450
+ 09-12 08:53:21 | [34m# ---- Building cache for Pose   15_carlos_0_1_1 ---- #[0m
+ 09-12 08:53:25 | pose from frame 0 to 2820, length 2820
+ 09-12 08:53:25 | 1 clips is expected with stride 2820
+ 09-12 08:53:25 | [34m# ---- Building cache for Pose   15_carlos_0_2_2 ---- #[0m
+ 09-12 08:53:27 | pose from frame 0 to 1710, length 1710
+ 09-12 08:53:27 | 1 clips is expected with stride 1710
+ 09-12 08:53:27 | [34m# ---- Building cache for Pose   15_carlos_0_3_3 ---- #[0m
+ 09-12 08:53:29 | pose from frame 0 to 1500, length 1500
+ 09-12 08:53:29 | 1 clips is expected with stride 1500
+ 09-12 08:53:29 | [34m# ---- Building cache for Pose   15_carlos_0_4_4 ---- #[0m
+ 09-12 08:53:31 | pose from frame 0 to 1290, length 1290
+ 09-12 08:53:31 | 1 clips is expected with stride 1290
+ 09-12 08:53:31 | [34m# ---- Building cache for Pose   15_carlos_0_65_a ---- #[0m
+ 09-12 08:53:32 | pose from frame 0 to 450, length 450
+ 09-12 08:53:32 | 1 clips is expected with stride 450
+ 09-12 08:53:32 | [34m# ---- Building cache for Pose   15_carlos_0_73_a ---- #[0m
+ 09-12 08:53:32 | pose from frame 0 to 450, length 450
+ 09-12 08:53:32 | 1 clips is expected with stride 450
+ 09-12 08:53:32 | [34m# ---- Building cache for Pose   15_carlos_0_81_a ---- #[0m
+ 09-12 08:53:33 | pose from frame 0 to 450, length 450
+ 09-12 08:53:33 | 1 clips is expected with stride 450
+ 09-12 08:53:33 | [34m# ---- Building cache for Pose   15_carlos_0_87_a ---- #[0m
+ 09-12 08:53:33 | pose from frame 0 to 450, length 450
+ 09-12 08:53:33 | 1 clips is expected with stride 450
+ 09-12 08:53:34 | [34m# ---- Building cache for Pose   15_carlos_0_95_a ---- #[0m
+ 09-12 08:53:34 | pose from frame 0 to 450, length 450
+ 09-12 08:53:34 | 1 clips is expected with stride 450
+ 09-12 08:53:34 | [34m# ---- Building cache for Pose   15_carlos_1_1_a ---- #[0m
+ 09-12 08:53:40 | pose from frame 0 to 4500, length 4500
+ 09-12 08:53:40 | 1 clips is expected with stride 4500
+ 09-12 08:53:40 | [34m# ---- Building cache for Pose   16_jorge_0_103_a ---- #[0m
+ 09-12 08:53:41 | pose from frame 0 to 450, length 450
+ 09-12 08:53:41 | 1 clips is expected with stride 450
+ 09-12 08:53:41 | [34m# ---- Building cache for Pose   16_jorge_0_111_a ---- #[0m
+ 09-12 08:53:42 | pose from frame 0 to 450, length 450
+ 09-12 08:53:42 | 1 clips is expected with stride 450
+ 09-12 08:53:42 | [34m# ---- Building cache for Pose   16_jorge_0_1_1 ---- #[0m
+ 09-12 08:53:44 | pose from frame 0 to 1560, length 1560
+ 09-12 08:53:44 | 1 clips is expected with stride 1560
+ 09-12 08:53:44 | [34m# ---- Building cache for Pose   16_jorge_0_2_2 ---- #[0m
+ 09-12 08:53:46 | pose from frame 0 to 1740, length 1740
+ 09-12 08:53:46 | 1 clips is expected with stride 1740
+ 09-12 08:53:46 | [34m# ---- Building cache for Pose   16_jorge_0_3_3 ---- #[0m
+ 09-12 08:53:48 | pose from frame 0 to 1680, length 1680
+ 09-12 08:53:48 | 1 clips is expected with stride 1680
+ 09-12 08:53:48 | [34m# ---- Building cache for Pose   16_jorge_0_4_4 ---- #[0m
+ 09-12 08:53:51 | pose from frame 0 to 1680, length 1680
+ 09-12 08:53:51 | 1 clips is expected with stride 1680
+ 09-12 08:53:51 | [34m# ---- Building cache for Pose   16_jorge_0_65_a ---- #[0m
+ 09-12 08:53:51 | pose from frame 0 to 450, length 450
+ 09-12 08:53:51 | 1 clips is expected with stride 450
+ 09-12 08:53:51 | [34m# ---- Building cache for Pose   16_jorge_0_73_a ---- #[0m
+ 09-12 08:53:52 | pose from frame 0 to 450, length 450
+ 09-12 08:53:52 | 1 clips is expected with stride 450
+ 09-12 08:53:52 | [34m# ---- Building cache for Pose   16_jorge_0_81_a ---- #[0m
+ 09-12 08:53:53 | pose from frame 0 to 450, length 450
+ 09-12 08:53:53 | 1 clips is expected with stride 450
+ 09-12 08:53:53 | [34m# ---- Building cache for Pose   16_jorge_0_87_a ---- #[0m
+ 09-12 08:53:53 | pose from frame 0 to 450, length 450
+ 09-12 08:53:53 | 1 clips is expected with stride 450
+ 09-12 08:53:53 | [34m# ---- Building cache for Pose   16_jorge_0_95_a ---- #[0m
+ 09-12 08:53:54 | pose from frame 0 to 450, length 450
+ 09-12 08:53:54 | 1 clips is expected with stride 450
+ 09-12 08:53:54 | [34m# ---- Building cache for Pose   16_jorge_1_1_a ---- #[0m
+ 09-12 08:54:00 | pose from frame 0 to 4500, length 4500
+ 09-12 08:54:00 | 1 clips is expected with stride 4500
+ 09-12 08:54:00 | [34m# ---- Building cache for Pose   17_itoi_0_103_a ---- #[0m
+ 09-12 08:54:01 | pose from frame 0 to 450, length 450
+ 09-12 08:54:01 | 1 clips is expected with stride 450
+ 09-12 08:54:01 | [34m# ---- Building cache for Pose   17_itoi_0_111_a ---- #[0m
+ 09-12 08:54:01 | pose from frame 0 to 450, length 450
+ 09-12 08:54:01 | 1 clips is expected with stride 450
+ 09-12 08:54:01 | [34m# ---- Building cache for Pose   17_itoi_0_1_1 ---- #[0m
+ 09-12 08:54:05 | pose from frame 0 to 2610, length 2610
+ 09-12 08:54:05 | 1 clips is expected with stride 2610
+ 09-12 08:54:05 | [34m# ---- Building cache for Pose   17_itoi_0_2_2 ---- #[0m
+ 09-12 08:54:09 | pose from frame 0 to 2670, length 2670
+ 09-12 08:54:09 | 1 clips is expected with stride 2670
+ 09-12 08:54:09 | [34m# ---- Building cache for Pose   17_itoi_0_3_3 ---- #[0m
+ 09-12 08:54:12 | pose from frame 0 to 2550, length 2550
+ 09-12 08:54:12 | 1 clips is expected with stride 2550
+ 09-12 08:54:12 | [34m# ---- Building cache for Pose   17_itoi_0_4_4 ---- #[0m
+ 09-12 08:54:16 | pose from frame 0 to 2820, length 2820
+ 09-12 08:54:16 | 1 clips is expected with stride 2820
+ 09-12 08:54:16 | [34m# ---- Building cache for Pose   17_itoi_0_65_a ---- #[0m
+ 09-12 08:54:16 | pose from frame 0 to 450, length 450
+ 09-12 08:54:16 | 1 clips is expected with stride 450
+ 09-12 08:54:16 | [34m# ---- Building cache for Pose   17_itoi_0_73_a ---- #[0m
+ 09-12 08:54:17 | pose from frame 0 to 450, length 450
+ 09-12 08:54:17 | 1 clips is expected with stride 450
+ 09-12 08:54:17 | [34m# ---- Building cache for Pose   17_itoi_0_81_a ---- #[0m
+ 09-12 08:54:18 | pose from frame 0 to 450, length 450
+ 09-12 08:54:18 | 1 clips is expected with stride 450
+ 09-12 08:54:18 | [34m# ---- Building cache for Pose   17_itoi_0_87_a ---- #[0m
+ 09-12 08:54:18 | pose from frame 0 to 450, length 450
+ 09-12 08:54:18 | 1 clips is expected with stride 450
+ 09-12 08:54:19 | [34m# ---- Building cache for Pose   17_itoi_0_95_a ---- #[0m
+ 09-12 08:54:19 | pose from frame 0 to 450, length 450
+ 09-12 08:54:19 | 1 clips is expected with stride 450
+ 09-12 08:54:20 | [34m# ---- Building cache for Pose   17_itoi_1_1_a ---- #[0m
+ 09-12 08:54:26 | pose from frame 0 to 4500, length 4500
+ 09-12 08:54:26 | 1 clips is expected with stride 4500
+ 09-12 08:54:26 | [34m# ---- Building cache for Pose   18_daiki_0_103_a ---- #[0m
+ 09-12 08:54:27 | pose from frame 0 to 450, length 450
+ 09-12 08:54:27 | 1 clips is expected with stride 450
+ 09-12 08:54:27 | [34m# ---- Building cache for Pose   18_daiki_0_111_a ---- #[0m
+ 09-12 08:54:28 | pose from frame 0 to 450, length 450
+ 09-12 08:54:28 | 1 clips is expected with stride 450
+ 09-12 08:54:28 | [34m# ---- Building cache for Pose   18_daiki_0_1_1 ---- #[0m
+ 09-12 08:54:30 | pose from frame 0 to 2010, length 2010
+ 09-12 08:54:30 | 1 clips is expected with stride 2010
+ 09-12 08:54:30 | [34m# ---- Building cache for Pose   18_daiki_0_2_2 ---- #[0m
+ 09-12 08:54:34 | pose from frame 0 to 2520, length 2520
+ 09-12 08:54:34 | 1 clips is expected with stride 2520
+ 09-12 08:54:34 | [34m# ---- Building cache for Pose   18_daiki_0_3_3 ---- #[0m
+ 09-12 08:54:38 | pose from frame 0 to 2730, length 2730
+ 09-12 08:54:38 | 1 clips is expected with stride 2730
+ 09-12 08:54:38 | [34m# ---- Building cache for Pose   18_daiki_0_4_4 ---- #[0m
+ 09-12 08:54:42 | pose from frame 0 to 3000, length 3000
+ 09-12 08:54:42 | 1 clips is expected with stride 3000
+ 09-12 08:54:42 | [34m# ---- Building cache for Pose   18_daiki_0_65_a ---- #[0m
+ 09-12 08:54:43 | pose from frame 0 to 450, length 450
+ 09-12 08:54:43 | 1 clips is expected with stride 450
+ 09-12 08:54:43 | [34m# ---- Building cache for Pose   18_daiki_0_73_a ---- #[0m
+ 09-12 08:54:43 | pose from frame 0 to 450, length 450
+ 09-12 08:54:43 | 1 clips is expected with stride 450
+ 09-12 08:54:43 | [34m# ---- Building cache for Pose   18_daiki_0_81_a ---- #[0m
+ 09-12 08:54:44 | pose from frame 0 to 450, length 450
+ 09-12 08:54:44 | 1 clips is expected with stride 450
+ 09-12 08:54:44 | [34m# ---- Building cache for Pose   18_daiki_0_87_a ---- #[0m
+ 09-12 08:54:44 | pose from frame 0 to 450, length 450
+ 09-12 08:54:44 | 1 clips is expected with stride 450
+ 09-12 08:54:44 | [34m# ---- Building cache for Pose   18_daiki_0_95_a ---- #[0m
+ 09-12 08:54:45 | pose from frame 0 to 450, length 450
+ 09-12 08:54:45 | 1 clips is expected with stride 450
+ 09-12 08:54:45 | [34m# ---- Building cache for Pose   18_daiki_1_1_a ---- #[0m
+ 09-12 08:54:51 | pose from frame 0 to 4500, length 4500
+ 09-12 08:54:51 | 1 clips is expected with stride 4500
+ 09-12 08:54:51 | [34m# ---- Building cache for Pose   19_jaime_0_103_a ---- #[0m
+ 09-12 08:54:52 | pose from frame 0 to 450, length 450
+ 09-12 08:54:52 | 1 clips is expected with stride 450
+ 09-12 08:54:52 | [34m# ---- Building cache for Pose   19_jaime_0_111_a ---- #[0m
+ 09-12 08:54:52 | pose from frame 0 to 450, length 450
+ 09-12 08:54:52 | 1 clips is expected with stride 450
+ 09-12 08:54:53 | [34m# ---- Building cache for Pose   19_jaime_0_1_1 ---- #[0m
+ 09-12 08:54:55 | pose from frame 0 to 1620, length 1620
+ 09-12 08:54:55 | 1 clips is expected with stride 1620
+ 09-12 08:54:55 | [34m# ---- Building cache for Pose   19_jaime_0_2_2 ---- #[0m
+ 09-12 08:54:57 | pose from frame 0 to 1950, length 1950
+ 09-12 08:54:57 | 1 clips is expected with stride 1950
+ 09-12 08:54:58 | [34m# ---- Building cache for Pose   19_jaime_0_3_3 ---- #[0m
+ 09-12 08:55:00 | pose from frame 0 to 1830, length 1830
+ 09-12 08:55:00 | 1 clips is expected with stride 1830
+ 09-12 08:55:00 | [34m# ---- Building cache for Pose   19_jaime_0_4_4 ---- #[0m
+ 09-12 08:55:03 | pose from frame 0 to 1770, length 1770
+ 09-12 08:55:03 | 1 clips is expected with stride 1770
+ 09-12 08:55:03 | [34m# ---- Building cache for Pose   19_jaime_0_65_a ---- #[0m
+ 09-12 08:55:03 | pose from frame 0 to 450, length 450
+ 09-12 08:55:03 | 1 clips is expected with stride 450
+ 09-12 08:55:03 | [34m# ---- Building cache for Pose   19_jaime_0_73_a ---- #[0m
+ 09-12 08:55:04 | pose from frame 0 to 450, length 450
+ 09-12 08:55:04 | 1 clips is expected with stride 450
+ 09-12 08:55:04 | [34m# ---- Building cache for Pose   19_jaime_0_81_a ---- #[0m
+ 09-12 08:55:04 | pose from frame 0 to 450, length 450
+ 09-12 08:55:04 | 1 clips is expected with stride 450
+ 09-12 08:55:05 | [34m# ---- Building cache for Pose   19_jaime_0_87_a ---- #[0m
+ 09-12 08:55:05 | pose from frame 0 to 450, length 450
+ 09-12 08:55:05 | 1 clips is expected with stride 450
+ 09-12 08:55:05 | [34m# ---- Building cache for Pose   19_jaime_0_95_a ---- #[0m
+ 09-12 08:55:06 | pose from frame 0 to 450, length 450
+ 09-12 08:55:06 | 1 clips is expected with stride 450
+ 09-12 08:55:06 | [34m# ---- Building cache for Pose   19_jaime_1_1_a ---- #[0m
+ 09-12 08:55:12 | pose from frame 0 to 4500, length 4500
+ 09-12 08:55:12 | 1 clips is expected with stride 4500
+ 09-12 08:55:12 | [34m# ---- Building cache for Pose   1_wayne_0_103_103 ---- #[0m
+ 09-12 08:55:15 | pose from frame 0 to 2070, length 2070
+ 09-12 08:55:15 | 1 clips is expected with stride 2070
+ 09-12 08:55:15 | [34m# ---- Building cache for Pose   1_wayne_0_111_111 ---- #[0m
+ 09-12 08:55:17 | pose from frame 0 to 1890, length 1890
+ 09-12 08:55:17 | 1 clips is expected with stride 1890
+ 09-12 08:55:17 | [34m# ---- Building cache for Pose   1_wayne_0_1_1 ---- #[0m
+ 09-12 08:55:20 | pose from frame 0 to 2070, length 2070
+ 09-12 08:55:20 | 1 clips is expected with stride 2070
+ 09-12 08:55:20 | [34m# ---- Building cache for Pose   1_wayne_0_2_2 ---- #[0m
+ 09-12 08:55:23 | pose from frame 0 to 2190, length 2190
+ 09-12 08:55:23 | 1 clips is expected with stride 2190
+ 09-12 08:55:23 | [34m# ---- Building cache for Pose   1_wayne_0_3_3 ---- #[0m
+ 09-12 08:55:26 | pose from frame 0 to 2190, length 2190
+ 09-12 08:55:26 | 1 clips is expected with stride 2190
+ 09-12 08:55:26 | [34m# ---- Building cache for Pose   1_wayne_0_4_4 ---- #[0m
+ 09-12 08:55:29 | pose from frame 0 to 2160, length 2160
+ 09-12 08:55:29 | 1 clips is expected with stride 2160
+ 09-12 08:55:29 | [34m# ---- Building cache for Pose   1_wayne_0_5_5 ---- #[0m
+ 09-12 08:55:32 | pose from frame 0 to 2160, length 2160
+ 09-12 08:55:32 | 1 clips is expected with stride 2160
+ 09-12 08:55:32 | [34m# ---- Building cache for Pose   1_wayne_0_65_65 ---- #[0m
+ 09-12 08:55:35 | pose from frame 0 to 1860, length 1860
+ 09-12 08:55:35 | 1 clips is expected with stride 1860
+ 09-12 08:55:35 | [34m# ---- Building cache for Pose   1_wayne_0_6_6 ---- #[0m
+ 09-12 08:55:38 | pose from frame 0 to 1980, length 1980
+ 09-12 08:55:38 | 1 clips is expected with stride 1980
+ 09-12 08:55:38 | [34m# ---- Building cache for Pose   1_wayne_0_73_73 ---- #[0m
+ 09-12 08:55:40 | pose from frame 0 to 1380, length 1380
+ 09-12 08:55:40 | 1 clips is expected with stride 1380
+ 09-12 08:55:40 | [34m# ---- Building cache for Pose   1_wayne_0_7_7 ---- #[0m
+ 09-12 08:55:42 | pose from frame 0 to 1950, length 1950
+ 09-12 08:55:42 | 1 clips is expected with stride 1950
+ 09-12 08:55:42 | [34m# ---- Building cache for Pose   1_wayne_0_81_81 ---- #[0m
+ 09-12 08:55:46 | pose from frame 0 to 2400, length 2400
+ 09-12 08:55:46 | 1 clips is expected with stride 2400
+ 09-12 08:55:46 | [34m# ---- Building cache for Pose   1_wayne_0_87_87 ---- #[0m
+ 09-12 08:55:49 | pose from frame 0 to 2400, length 2400
+ 09-12 08:55:49 | 1 clips is expected with stride 2400
+ 09-12 08:55:49 | [34m# ---- Building cache for Pose   1_wayne_0_8_8 ---- #[0m
+ 09-12 08:55:52 | pose from frame 0 to 2190, length 2190
+ 09-12 08:55:52 | 1 clips is expected with stride 2190
+ 09-12 08:55:52 | [34m# ---- Building cache for Pose   1_wayne_0_95_95 ---- #[0m
+ 09-12 08:55:55 | pose from frame 0 to 1560, length 1560
+ 09-12 08:55:55 | 1 clips is expected with stride 1560
+ 09-12 08:55:55 | [34m# ---- Building cache for Pose   1_wayne_1_1_1 ---- #[0m
+ 09-12 08:56:19 | pose from frame 0 to 18000, length 18000
+ 09-12 08:56:19 | 1 clips is expected with stride 18000
+ 09-12 08:56:19 | [34m# ---- Building cache for Pose   20_li_0_103_a ---- #[0m
+ 09-12 08:56:20 | pose from frame 0 to 450, length 450
+ 09-12 08:56:20 | 1 clips is expected with stride 450
+ 09-12 08:56:20 | [34m# ---- Building cache for Pose   20_li_0_111_a ---- #[0m
+ 09-12 08:56:21 | pose from frame 0 to 450, length 450
+ 09-12 08:56:21 | 1 clips is expected with stride 450
+ 09-12 08:56:21 | [34m# ---- Building cache for Pose   20_li_0_1_1 ---- #[0m
+ 09-12 08:56:24 | pose from frame 0 to 2400, length 2400
+ 09-12 08:56:24 | 1 clips is expected with stride 2400
+ 09-12 08:56:24 | [34m# ---- Building cache for Pose   20_li_0_2_2 ---- #[0m
+ 09-12 08:56:27 | pose from frame 0 to 2550, length 2550
+ 09-12 08:56:27 | 1 clips is expected with stride 2550
+ 09-12 08:56:27 | [34m# ---- Building cache for Pose   20_li_0_3_3 ---- #[0m
+ 09-12 08:56:31 | pose from frame 0 to 2730, length 2730
+ 09-12 08:56:31 | 1 clips is expected with stride 2730
+ 09-12 08:56:31 | [34m# ---- Building cache for Pose   20_li_0_4_4 ---- #[0m
+ 09-12 08:56:35 | pose from frame 0 to 2910, length 2910
+ 09-12 08:56:35 | 1 clips is expected with stride 2910
+ 09-12 08:56:35 | [34m# ---- Building cache for Pose   20_li_0_65_a ---- #[0m
+ 09-12 08:56:36 | pose from frame 0 to 450, length 450
+ 09-12 08:56:36 | 1 clips is expected with stride 450
+ 09-12 08:56:36 | [34m# ---- Building cache for Pose   20_li_0_73_a ---- #[0m
+ 09-12 08:56:36 | pose from frame 0 to 450, length 450
+ 09-12 08:56:36 | 1 clips is expected with stride 450
+ 09-12 08:56:36 | [34m# ---- Building cache for Pose   20_li_0_81_a ---- #[0m
+ 09-12 08:56:37 | pose from frame 0 to 450, length 450
+ 09-12 08:56:37 | 1 clips is expected with stride 450
+ 09-12 08:56:37 | [34m# ---- Building cache for Pose   20_li_0_87_a ---- #[0m
+ 09-12 08:56:38 | pose from frame 0 to 450, length 450
+ 09-12 08:56:38 | 1 clips is expected with stride 450
+ 09-12 08:56:38 | [34m# ---- Building cache for Pose   20_li_0_95_a ---- #[0m
+ 09-12 08:56:38 | pose from frame 0 to 450, length 450
+ 09-12 08:56:38 | 1 clips is expected with stride 450
+ 09-12 08:56:38 | [34m# ---- Building cache for Pose   20_li_1_1_a ---- #[0m
+ 09-12 08:56:44 | pose from frame 0 to 4500, length 4500
+ 09-12 08:56:44 | 1 clips is expected with stride 4500
+ 09-12 08:56:44 | [34m# ---- Building cache for Pose   22_luqi_0_103_a ---- #[0m
+ 09-12 08:56:45 | pose from frame 0 to 450, length 450
+ 09-12 08:56:45 | 1 clips is expected with stride 450
+ 09-12 08:56:45 | [34m# ---- Building cache for Pose   22_luqi_0_111_a ---- #[0m
+ 09-12 08:56:46 | pose from frame 0 to 450, length 450
+ 09-12 08:56:46 | 1 clips is expected with stride 450
+ 09-12 08:56:46 | [34m# ---- Building cache for Pose   22_luqi_0_1_1 ---- #[0m
+ 09-12 08:56:49 | pose from frame 0 to 2190, length 2190
+ 09-12 08:56:49 | 1 clips is expected with stride 2190
+ 09-12 08:56:49 | [34m# ---- Building cache for Pose   22_luqi_0_2_2 ---- #[0m
+ 09-12 08:56:53 | pose from frame 0 to 2460, length 2460
+ 09-12 08:56:53 | 1 clips is expected with stride 2460
+ 09-12 08:56:53 | [34m# ---- Building cache for Pose   22_luqi_0_3_3 ---- #[0m
+ 09-12 08:56:56 | pose from frame 0 to 2340, length 2340
+ 09-12 08:56:56 | 1 clips is expected with stride 2340
+ 09-12 08:56:56 | [34m# ---- Building cache for Pose   22_luqi_0_4_4 ---- #[0m
+ 09-12 08:56:59 | pose from frame 0 to 2400, length 2400
+ 09-12 08:56:59 | 1 clips is expected with stride 2400
+ 09-12 08:56:59 | [34m# ---- Building cache for Pose   22_luqi_0_65_a ---- #[0m
+ 09-12 08:57:00 | pose from frame 0 to 450, length 450
+ 09-12 08:57:00 | 1 clips is expected with stride 450
+ 09-12 08:57:00 | [34m# ---- Building cache for Pose   22_luqi_0_73_a ---- #[0m
+ 09-12 08:57:00 | pose from frame 0 to 450, length 450
+ 09-12 08:57:00 | 1 clips is expected with stride 450
+ 09-12 08:57:00 | [34m# ---- Building cache for Pose   22_luqi_0_81_a ---- #[0m
+ 09-12 08:57:01 | pose from frame 0 to 450, length 450
+ 09-12 08:57:01 | 1 clips is expected with stride 450
+ 09-12 08:57:01 | [34m# ---- Building cache for Pose   22_luqi_0_87_a ---- #[0m
+ 09-12 08:57:02 | pose from frame 0 to 450, length 450
+ 09-12 08:57:02 | 1 clips is expected with stride 450
+ 09-12 08:57:02 | [34m# ---- Building cache for Pose   22_luqi_0_95_a ---- #[0m
+ 09-12 08:57:02 | pose from frame 0 to 450, length 450
+ 09-12 08:57:02 | 1 clips is expected with stride 450
+ 09-12 08:57:03 | [34m# ---- Building cache for Pose   22_luqi_1_1_a ---- #[0m
+ 09-12 08:57:09 | pose from frame 0 to 4500, length 4500
+ 09-12 08:57:09 | 1 clips is expected with stride 4500
+ 09-12 08:57:09 | [34m# ---- Building cache for Pose   23_hailing_0_103_a ---- #[0m
+ 09-12 08:57:10 | pose from frame 0 to 450, length 450
+ 09-12 08:57:10 | 1 clips is expected with stride 450
+ 09-12 08:57:10 | [34m# ---- Building cache for Pose   23_hailing_0_111_a ---- #[0m
+ 09-12 08:57:10 | pose from frame 0 to 450, length 450
+ 09-12 08:57:10 | 1 clips is expected with stride 450
+ 09-12 08:57:10 | [34m# ---- Building cache for Pose   23_hailing_0_1_1 ---- #[0m
+ 09-12 08:57:14 | pose from frame 0 to 2400, length 2400
+ 09-12 08:57:14 | 1 clips is expected with stride 2400
+ 09-12 08:57:14 | [34m# ---- Building cache for Pose   23_hailing_0_2_2 ---- #[0m
+ 09-12 08:57:17 | pose from frame 0 to 2430, length 2430
+ 09-12 08:57:17 | 1 clips is expected with stride 2430
+ 09-12 08:57:17 | [34m# ---- Building cache for Pose   23_hailing_0_3_3 ---- #[0m
+ 09-12 08:57:20 | pose from frame 0 to 2370, length 2370
+ 09-12 08:57:20 | 1 clips is expected with stride 2370
+ 09-12 08:57:20 | [34m# ---- Building cache for Pose   23_hailing_0_4_4 ---- #[0m
+ 09-12 08:57:24 | pose from frame 0 to 2580, length 2580
+ 09-12 08:57:24 | 1 clips is expected with stride 2580
+ 09-12 08:57:24 | [34m# ---- Building cache for Pose   23_hailing_0_65_a ---- #[0m
+ 09-12 08:57:25 | pose from frame 0 to 450, length 450
+ 09-12 08:57:25 | 1 clips is expected with stride 450
+ 09-12 08:57:25 | [34m# ---- Building cache for Pose   23_hailing_0_73_a ---- #[0m
+ 09-12 08:57:25 | pose from frame 0 to 450, length 450
+ 09-12 08:57:25 | 1 clips is expected with stride 450
+ 09-12 08:57:25 | [34m# ---- Building cache for Pose   23_hailing_0_81_a ---- #[0m
+ 09-12 08:57:26 | pose from frame 0 to 450, length 450
+ 09-12 08:57:26 | 1 clips is expected with stride 450
+ 09-12 08:57:26 | [34m# ---- Building cache for Pose   23_hailing_0_87_a ---- #[0m
+ 09-12 08:57:27 | pose from frame 0 to 450, length 450
+ 09-12 08:57:27 | 1 clips is expected with stride 450
+ 09-12 08:57:27 | [34m# ---- Building cache for Pose   23_hailing_0_95_a ---- #[0m
+ 09-12 08:57:28 | pose from frame 0 to 450, length 450
+ 09-12 08:57:28 | 1 clips is expected with stride 450
+ 09-12 08:57:28 | [34m# ---- Building cache for Pose   23_hailing_1_1_a ---- #[0m
+ 09-12 08:57:34 | pose from frame 0 to 4500, length 4500
+ 09-12 08:57:34 | 1 clips is expected with stride 4500
+ 09-12 08:57:34 | [34m# ---- Building cache for Pose   24_kexin_0_103_a ---- #[0m
+ 09-12 08:57:34 | pose from frame 0 to 450, length 450
+ 09-12 08:57:34 | 1 clips is expected with stride 450
+ 09-12 08:57:34 | [34m# ---- Building cache for Pose   24_kexin_0_111_a ---- #[0m
+ 09-12 08:57:35 | pose from frame 0 to 450, length 450
+ 09-12 08:57:35 | 1 clips is expected with stride 450
+ 09-12 08:57:35 | [34m# ---- Building cache for Pose   24_kexin_0_1_1 ---- #[0m
+ 09-12 08:57:38 | pose from frame 0 to 2160, length 2160
+ 09-12 08:57:38 | 1 clips is expected with stride 2160
+ 09-12 08:57:38 | [34m# ---- Building cache for Pose   24_kexin_0_2_2 ---- #[0m
+ 09-12 08:57:42 | pose from frame 0 to 2610, length 2610
+ 09-12 08:57:42 | 1 clips is expected with stride 2610
+ 09-12 08:57:42 | [34m# ---- Building cache for Pose   24_kexin_0_3_3 ---- #[0m
+ 09-12 08:57:45 | pose from frame 0 to 2310, length 2310
+ 09-12 08:57:45 | 1 clips is expected with stride 2310
+ 09-12 08:57:45 | [34m# ---- Building cache for Pose   24_kexin_0_4_4 ---- #[0m
+ 09-12 08:57:48 | pose from frame 0 to 2550, length 2550
+ 09-12 08:57:48 | 1 clips is expected with stride 2550
+ 09-12 08:57:48 | [34m# ---- Building cache for Pose   24_kexin_0_65_a ---- #[0m
+ 09-12 08:57:49 | pose from frame 0 to 450, length 450
+ 09-12 08:57:49 | 1 clips is expected with stride 450
+ 09-12 08:57:49 | [34m# ---- Building cache for Pose   24_kexin_0_73_a ---- #[0m
+ 09-12 08:57:50 | pose from frame 0 to 450, length 450
+ 09-12 08:57:50 | 1 clips is expected with stride 450
+ 09-12 08:57:50 | [34m# ---- Building cache for Pose   24_kexin_0_81_a ---- #[0m
+ 09-12 08:57:50 | pose from frame 0 to 450, length 450
+ 09-12 08:57:50 | 1 clips is expected with stride 450
+ 09-12 08:57:50 | [34m# ---- Building cache for Pose   24_kexin_0_87_a ---- #[0m
+ 09-12 08:57:51 | pose from frame 0 to 450, length 450
+ 09-12 08:57:51 | 1 clips is expected with stride 450
+ 09-12 08:57:51 | [34m# ---- Building cache for Pose   24_kexin_0_95_a ---- #[0m
+ 09-12 08:57:52 | pose from frame 0 to 450, length 450
+ 09-12 08:57:52 | 1 clips is expected with stride 450
+ 09-12 08:57:52 | [34m# ---- Building cache for Pose   24_kexin_1_1_a ---- #[0m
+ 09-12 08:57:58 | pose from frame 0 to 4500, length 4500
+ 09-12 08:57:58 | 1 clips is expected with stride 4500
+ 09-12 08:57:58 | [34m# ---- Building cache for Pose   25_goto_0_103_a ---- #[0m
+ 09-12 08:57:59 | pose from frame 0 to 450, length 450
+ 09-12 08:57:59 | 1 clips is expected with stride 450
+ 09-12 08:57:59 | [34m# ---- Building cache for Pose   25_goto_0_111_a ---- #[0m
+ 09-12 08:57:59 | pose from frame 0 to 450, length 450
+ 09-12 08:57:59 | 1 clips is expected with stride 450
+ 09-12 08:58:00 | [34m# ---- Building cache for Pose   25_goto_0_1_1 ---- #[0m
+ 09-12 08:58:04 | pose from frame 0 to 3180, length 3180
+ 09-12 08:58:04 | 1 clips is expected with stride 3180
+ 09-12 08:58:04 | [34m# ---- Building cache for Pose   25_goto_0_2_2 ---- #[0m
+ 09-12 08:58:08 | pose from frame 0 to 2940, length 2940
+ 09-12 08:58:08 | 1 clips is expected with stride 2940
+ 09-12 08:58:08 | [34m# ---- Building cache for Pose   25_goto_0_3_3 ---- #[0m
+ 09-12 08:58:13 | pose from frame 0 to 3210, length 3210
+ 09-12 08:58:13 | 1 clips is expected with stride 3210
+ 09-12 08:58:13 | [34m# ---- Building cache for Pose   25_goto_0_4_4 ---- #[0m
+ 09-12 08:58:17 | pose from frame 0 to 3390, length 3390
+ 09-12 08:58:17 | 1 clips is expected with stride 3390
+ 09-12 08:58:17 | [34m# ---- Building cache for Pose   25_goto_0_65_a ---- #[0m
+ 09-12 08:58:18 | pose from frame 0 to 450, length 450
+ 09-12 08:58:18 | 1 clips is expected with stride 450
+ 09-12 08:58:18 | [34m# ---- Building cache for Pose   25_goto_0_73_a ---- #[0m
+ 09-12 08:58:19 | pose from frame 0 to 450, length 450
+ 09-12 08:58:19 | 1 clips is expected with stride 450
+ 09-12 08:58:19 | [34m# ---- Building cache for Pose   25_goto_0_81_a ---- #[0m
+ 09-12 08:58:19 | pose from frame 0 to 450, length 450
+ 09-12 08:58:19 | 1 clips is expected with stride 450
+ 09-12 08:58:19 | [34m# ---- Building cache for Pose   25_goto_0_87_a ---- #[0m
+ 09-12 08:58:20 | pose from frame 0 to 450, length 450
+ 09-12 08:58:20 | 1 clips is expected with stride 450
+ 09-12 08:58:20 | [34m# ---- Building cache for Pose   25_goto_0_95_a ---- #[0m
+ 09-12 08:58:21 | pose from frame 0 to 450, length 450
+ 09-12 08:58:21 | 1 clips is expected with stride 450
+ 09-12 08:58:21 | [34m# ---- Building cache for Pose   25_goto_1_1_a ---- #[0m
+ 09-12 08:58:27 | pose from frame 0 to 4500, length 4500
+ 09-12 08:58:27 | 1 clips is expected with stride 4500
+ 09-12 08:58:27 | [34m# ---- Building cache for Pose   26_reamey_0_103_a ---- #[0m
+ 09-12 08:58:28 | pose from frame 0 to 450, length 450
+ 09-12 08:58:28 | 1 clips is expected with stride 450
+ 09-12 08:58:28 | [34m# ---- Building cache for Pose   26_reamey_0_111_a ---- #[0m
+ 09-12 08:58:28 | pose from frame 0 to 450, length 450
+ 09-12 08:58:28 | 1 clips is expected with stride 450
+ 09-12 08:58:28 | [34m# ---- Building cache for Pose   26_reamey_0_1_1 ---- #[0m
+ 09-12 08:58:32 | pose from frame 0 to 2580, length 2580
+ 09-12 08:58:32 | 1 clips is expected with stride 2580
+ 09-12 08:58:32 | [34m# ---- Building cache for Pose   26_reamey_0_2_2 ---- #[0m
+ 09-12 08:58:35 | pose from frame 0 to 2460, length 2460
+ 09-12 08:58:35 | 1 clips is expected with stride 2460
+ 09-12 08:58:35 | [34m# ---- Building cache for Pose   26_reamey_0_3_3 ---- #[0m
+ 09-12 08:58:38 | pose from frame 0 to 2430, length 2430
+ 09-12 08:58:38 | 1 clips is expected with stride 2430
+ 09-12 08:58:39 | [34m# ---- Building cache for Pose   26_reamey_0_4_4 ---- #[0m
+ 09-12 08:58:42 | pose from frame 0 to 2670, length 2670
+ 09-12 08:58:42 | 1 clips is expected with stride 2670
+ 09-12 08:58:42 | [34m# ---- Building cache for Pose   26_reamey_0_65_a ---- #[0m
+ 09-12 08:58:43 | pose from frame 0 to 450, length 450
+ 09-12 08:58:43 | 1 clips is expected with stride 450
+ 09-12 08:58:43 | [34m# ---- Building cache for Pose   26_reamey_0_73_a ---- #[0m
+ 09-12 08:58:43 | pose from frame 0 to 450, length 450
+ 09-12 08:58:44 | 1 clips is expected with stride 450
+ 09-12 08:58:44 | [34m# ---- Building cache for Pose   26_reamey_0_81_a ---- #[0m
+ 09-12 08:58:44 | pose from frame 0 to 450, length 450
+ 09-12 08:58:44 | 1 clips is expected with stride 450
+ 09-12 08:58:44 | [34m# ---- Building cache for Pose   26_reamey_0_87_a ---- #[0m
+ 09-12 08:58:45 | pose from frame 0 to 450, length 450
+ 09-12 08:58:45 | 1 clips is expected with stride 450
+ 09-12 08:58:45 | [34m# ---- Building cache for Pose   26_reamey_0_95_a ---- #[0m
+ 09-12 08:58:45 | pose from frame 0 to 450, length 450
+ 09-12 08:58:45 | 1 clips is expected with stride 450
+ 09-12 08:58:45 | [34m# ---- Building cache for Pose   26_reamey_1_1_a ---- #[0m
+ 09-12 08:58:52 | pose from frame 0 to 4500, length 4500
+ 09-12 08:58:52 | 1 clips is expected with stride 4500
+ 09-12 08:58:52 | [34m# ---- Building cache for Pose   27_yingqing_0_103_a ---- #[0m
+ 09-12 08:58:52 | pose from frame 0 to 450, length 450
+ 09-12 08:58:52 | 1 clips is expected with stride 450
+ 09-12 08:58:52 | [34m# ---- Building cache for Pose   27_yingqing_0_111_a ---- #[0m
+ 09-12 08:58:53 | pose from frame 0 to 450, length 450
+ 09-12 08:58:53 | 1 clips is expected with stride 450
+ 09-12 08:58:53 | [34m# ---- Building cache for Pose   27_yingqing_0_1_1 ---- #[0m
+ 09-12 08:58:56 | pose from frame 0 to 2430, length 2430
+ 09-12 08:58:56 | 1 clips is expected with stride 2430
+ 09-12 08:58:57 | [34m# ---- Building cache for Pose   27_yingqing_0_2_2 ---- #[0m
+ 09-12 08:59:00 | pose from frame 0 to 2190, length 2190
+ 09-12 08:59:00 | 1 clips is expected with stride 2190
+ 09-12 08:59:00 | [34m# ---- Building cache for Pose   27_yingqing_0_3_3 ---- #[0m
+ 09-12 08:59:03 | pose from frame 0 to 2250, length 2250
+ 09-12 08:59:03 | 1 clips is expected with stride 2250
+ 09-12 08:59:03 | [34m# ---- Building cache for Pose   27_yingqing_0_4_4 ---- #[0m
+ 09-12 08:59:06 | pose from frame 0 to 2460, length 2460
+ 09-12 08:59:06 | 1 clips is expected with stride 2460
+ 09-12 08:59:06 | [34m# ---- Building cache for Pose   27_yingqing_0_65_a ---- #[0m
+ 09-12 08:59:07 | pose from frame 0 to 450, length 450
+ 09-12 08:59:07 | 1 clips is expected with stride 450
+ 09-12 08:59:07 | [34m# ---- Building cache for Pose   27_yingqing_0_73_a ---- #[0m
+ 09-12 08:59:07 | pose from frame 0 to 450, length 450
+ 09-12 08:59:07 | 1 clips is expected with stride 450
+ 09-12 08:59:07 | [34m# ---- Building cache for Pose   27_yingqing_0_81_a ---- #[0m
+ 09-12 08:59:08 | pose from frame 0 to 450, length 450
+ 09-12 08:59:08 | 1 clips is expected with stride 450
+ 09-12 08:59:08 | [34m# ---- Building cache for Pose   27_yingqing_0_87_a ---- #[0m
+ 09-12 08:59:09 | pose from frame 0 to 450, length 450
+ 09-12 08:59:09 | 1 clips is expected with stride 450
+ 09-12 08:59:09 | [34m# ---- Building cache for Pose   27_yingqing_0_95_a ---- #[0m
+ 09-12 08:59:09 | pose from frame 0 to 450, length 450
+ 09-12 08:59:09 | 1 clips is expected with stride 450
+ 09-12 08:59:09 | [34m# ---- Building cache for Pose   27_yingqing_1_1_a ---- #[0m
+ 09-12 08:59:15 | pose from frame 0 to 4500, length 4500
+ 09-12 08:59:15 | 1 clips is expected with stride 4500
+ 09-12 08:59:15 | [34m# ---- Building cache for Pose   28_tiffnay_0_103_a ---- #[0m
+ 09-12 08:59:16 | pose from frame 0 to 450, length 450
+ 09-12 08:59:16 | 1 clips is expected with stride 450
+ 09-12 08:59:16 | [34m# ---- Building cache for Pose   28_tiffnay_0_111_a ---- #[0m
+ 09-12 08:59:17 | pose from frame 0 to 450, length 450
+ 09-12 08:59:17 | 1 clips is expected with stride 450
+ 09-12 08:59:17 | [34m# ---- Building cache for Pose   28_tiffnay_0_1_1 ---- #[0m
+ 09-12 08:59:20 | pose from frame 0 to 2460, length 2460
+ 09-12 08:59:20 | 1 clips is expected with stride 2460
+ 09-12 08:59:20 | [34m# ---- Building cache for Pose   28_tiffnay_0_2_2 ---- #[0m
+ 09-12 08:59:23 | pose from frame 0 to 2370, length 2370
+ 09-12 08:59:23 | 1 clips is expected with stride 2370
+ 09-12 08:59:23 | [34m# ---- Building cache for Pose   28_tiffnay_0_3_3 ---- #[0m
+ 09-12 08:59:27 | pose from frame 0 to 2400, length 2400
+ 09-12 08:59:27 | 1 clips is expected with stride 2400
+ 09-12 08:59:27 | [34m# ---- Building cache for Pose   28_tiffnay_0_4_4 ---- #[0m
+ 09-12 08:59:30 | pose from frame 0 to 2340, length 2340
+ 09-12 08:59:30 | 1 clips is expected with stride 2340
+ 09-12 08:59:30 | [34m# ---- Building cache for Pose   28_tiffnay_0_65_a ---- #[0m
+ 09-12 08:59:30 | pose from frame 0 to 450, length 450
+ 09-12 08:59:30 | 1 clips is expected with stride 450
+ 09-12 08:59:30 | [34m# ---- Building cache for Pose   28_tiffnay_0_73_a ---- #[0m
+ 09-12 08:59:31 | pose from frame 0 to 450, length 450
+ 09-12 08:59:31 | 1 clips is expected with stride 450
+ 09-12 08:59:31 | [34m# ---- Building cache for Pose   28_tiffnay_0_81_a ---- #[0m
+ 09-12 08:59:32 | pose from frame 0 to 450, length 450
+ 09-12 08:59:32 | 1 clips is expected with stride 450
+ 09-12 08:59:32 | [34m# ---- Building cache for Pose   28_tiffnay_0_87_a ---- #[0m
+ 09-12 08:59:32 | pose from frame 0 to 450, length 450
+ 09-12 08:59:32 | 1 clips is expected with stride 450
+ 09-12 08:59:32 | [34m# ---- Building cache for Pose   28_tiffnay_0_95_a ---- #[0m
+ 09-12 08:59:33 | pose from frame 0 to 450, length 450
+ 09-12 08:59:33 | 1 clips is expected with stride 450
+ 09-12 08:59:33 | [34m# ---- Building cache for Pose   28_tiffnay_1_1_a ---- #[0m
+ 09-12 08:59:39 | pose from frame 0 to 4500, length 4500
+ 09-12 08:59:39 | 1 clips is expected with stride 4500
+ 09-12 08:59:39 | [34m# ---- Building cache for Pose   29_hanieh_0_103_a ---- #[0m
+ 09-12 08:59:39 | pose from frame 0 to 450, length 450
+ 09-12 08:59:39 | 1 clips is expected with stride 450
+ 09-12 08:59:40 | [34m# ---- Building cache for Pose   29_hanieh_0_111_a ---- #[0m
+ 09-12 08:59:40 | pose from frame 0 to 450, length 450
+ 09-12 08:59:40 | 1 clips is expected with stride 450
+ 09-12 08:59:40 | [34m# ---- Building cache for Pose   29_hanieh_0_1_1 ---- #[0m
+ 09-12 08:59:43 | pose from frame 0 to 2430, length 2430
+ 09-12 08:59:43 | 1 clips is expected with stride 2430
+ 09-12 08:59:43 | [34m# ---- Building cache for Pose   29_hanieh_0_2_2 ---- #[0m
+ 09-12 08:59:47 | pose from frame 0 to 2580, length 2580
+ 09-12 08:59:47 | 1 clips is expected with stride 2580
+ 09-12 08:59:47 | [34m# ---- Building cache for Pose   29_hanieh_0_3_3 ---- #[0m
+ 09-12 08:59:50 | pose from frame 0 to 2610, length 2610
+ 09-12 08:59:50 | 1 clips is expected with stride 2610
+ 09-12 08:59:50 | [34m# ---- Building cache for Pose   29_hanieh_0_4_4 ---- #[0m
+ 09-12 08:59:54 | pose from frame 0 to 2730, length 2730
+ 09-12 08:59:54 | 1 clips is expected with stride 2730
+ 09-12 08:59:54 | [34m# ---- Building cache for Pose   29_hanieh_0_65_a ---- #[0m
+ 09-12 08:59:55 | pose from frame 0 to 450, length 450
+ 09-12 08:59:55 | 1 clips is expected with stride 450
+ 09-12 08:59:55 | [34m# ---- Building cache for Pose   29_hanieh_0_73_a ---- #[0m
+ 09-12 08:59:55 | pose from frame 0 to 450, length 450
+ 09-12 08:59:55 | 1 clips is expected with stride 450
+ 09-12 08:59:55 | [34m# ---- Building cache for Pose   29_hanieh_0_81_a ---- #[0m
+ 09-12 08:59:56 | pose from frame 0 to 450, length 450
+ 09-12 08:59:56 | 1 clips is expected with stride 450
+ 09-12 08:59:56 | [34m# ---- Building cache for Pose   29_hanieh_0_87_a ---- #[0m
+ 09-12 08:59:57 | pose from frame 0 to 450, length 450
+ 09-12 08:59:57 | 1 clips is expected with stride 450
+ 09-12 08:59:57 | [34m# ---- Building cache for Pose   29_hanieh_0_95_a ---- #[0m
+ 09-12 08:59:57 | pose from frame 0 to 450, length 450
+ 09-12 08:59:57 | 1 clips is expected with stride 450
+ 09-12 08:59:57 | [34m# ---- Building cache for Pose   29_hanieh_1_1_a ---- #[0m
+ 09-12 09:00:03 | pose from frame 0 to 4500, length 4500
+ 09-12 09:00:03 | 1 clips is expected with stride 4500
+ 09-12 09:00:03 | [34m# ---- Building cache for Pose   2_scott_0_103_103 ---- #[0m
+ 09-12 09:00:06 | pose from frame 0 to 1710, length 1710
+ 09-12 09:00:06 | 1 clips is expected with stride 1710
+ 09-12 09:00:06 | [34m# ---- Building cache for Pose   2_scott_0_111_111 ---- #[0m
+ 09-12 09:00:08 | pose from frame 0 to 1800, length 1800
+ 09-12 09:00:08 | 1 clips is expected with stride 1800
+ 09-12 09:00:08 | [34m# ---- Building cache for Pose   2_scott_0_1_1 ---- #[0m
+ 09-12 09:00:11 | pose from frame 0 to 1890, length 1890
+ 09-12 09:00:11 | 1 clips is expected with stride 1890
+ 09-12 09:00:11 | [34m# ---- Building cache for Pose   2_scott_0_2_2 ---- #[0m
+ 09-12 09:00:13 | pose from frame 0 to 1860, length 1860
+ 09-12 09:00:13 | 1 clips is expected with stride 1860
+ 09-12 09:00:14 | [34m# ---- Building cache for Pose   2_scott_0_3_3 ---- #[0m
+ 09-12 09:00:17 | pose from frame 0 to 2040, length 2040
+ 09-12 09:00:17 | 1 clips is expected with stride 2040
+ 09-12 09:00:17 | [34m# ---- Building cache for Pose   2_scott_0_4_4 ---- #[0m
+ 09-12 09:00:19 | pose from frame 0 to 2010, length 2010
+ 09-12 09:00:19 | 1 clips is expected with stride 2010
+ 09-12 09:00:19 | [34m# ---- Building cache for Pose   2_scott_0_5_5 ---- #[0m
+ 09-12 09:00:23 | pose from frame 0 to 2310, length 2310
+ 09-12 09:00:23 | 1 clips is expected with stride 2310
+ 09-12 09:00:23 | [34m# ---- Building cache for Pose   2_scott_0_65_65 ---- #[0m
+ 09-12 09:00:25 | pose from frame 0 to 1590, length 1590
+ 09-12 09:00:25 | 1 clips is expected with stride 1590
+ 09-12 09:00:25 | [34m# ---- Building cache for Pose   2_scott_0_6_6 ---- #[0m
+ 09-12 09:00:28 | pose from frame 0 to 2490, length 2490
+ 09-12 09:00:28 | 1 clips is expected with stride 2490
+ 09-12 09:00:28 | [34m# ---- Building cache for Pose   2_scott_0_73_73 ---- #[0m
+ 09-12 09:00:31 | pose from frame 0 to 1770, length 1770
+ 09-12 09:00:31 | 1 clips is expected with stride 1770
+ 09-12 09:00:31 | [34m# ---- Building cache for Pose   2_scott_0_7_7 ---- #[0m
+ 09-12 09:00:34 | pose from frame 0 to 2100, length 2100
+ 09-12 09:00:34 | 1 clips is expected with stride 2100
+ 09-12 09:00:34 | [34m# ---- Building cache for Pose   2_scott_0_81_81 ---- #[0m
+ 09-12 09:00:36 | pose from frame 0 to 2010, length 2010
+ 09-12 09:00:36 | 1 clips is expected with stride 2010
+ 09-12 09:00:36 | [34m# ---- Building cache for Pose   2_scott_0_87_87 ---- #[0m
+ 09-12 09:00:40 | pose from frame 0 to 2340, length 2340
+ 09-12 09:00:40 | 1 clips is expected with stride 2340
+ 09-12 09:00:40 | [34m# ---- Building cache for Pose   2_scott_0_8_8 ---- #[0m
+ 09-12 09:00:43 | pose from frame 0 to 2310, length 2310
+ 09-12 09:00:43 | 1 clips is expected with stride 2310
+ 09-12 09:00:43 | [34m# ---- Building cache for Pose   2_scott_0_95_95 ---- #[0m
+ 09-12 09:00:45 | pose from frame 0 to 1470, length 1470
+ 09-12 09:00:45 | 1 clips is expected with stride 1470
+ 09-12 09:00:45 | [34m# ---- Building cache for Pose   2_scott_1_1_1 ---- #[0m
+ 09-12 09:01:02 | pose from frame 0 to 12600, length 12600
+ 09-12 09:01:02 | 1 clips is expected with stride 12600
+ 09-12 09:01:02 | [34m# ---- Building cache for Pose   30_katya_0_103_a ---- #[0m
+ 09-12 09:01:02 | pose from frame 0 to 450, length 450
+ 09-12 09:01:02 | 1 clips is expected with stride 450
+ 09-12 09:01:02 | [34m# ---- Building cache for Pose   30_katya_0_111_a ---- #[0m
+ 09-12 09:01:03 | pose from frame 0 to 450, length 450
+ 09-12 09:01:03 | 1 clips is expected with stride 450
+ 09-12 09:01:03 | [34m# ---- Building cache for Pose   30_katya_0_1_1 ---- #[0m
+ 09-12 09:01:06 | pose from frame 0 to 2220, length 2220
+ 09-12 09:01:06 | 1 clips is expected with stride 2220
+ 09-12 09:01:06 | [34m# ---- Building cache for Pose   30_katya_0_2_2 ---- #[0m
+ 09-12 09:01:09 | pose from frame 0 to 2310, length 2310
+ 09-12 09:01:09 | 1 clips is expected with stride 2310
+ 09-12 09:01:09 | [34m# ---- Building cache for Pose   30_katya_0_3_3 ---- #[0m
+ 09-12 09:01:12 | pose from frame 0 to 2310, length 2310
+ 09-12 09:01:12 | 1 clips is expected with stride 2310
+ 09-12 09:01:13 | [34m# ---- Building cache for Pose   30_katya_0_4_4 ---- #[0m
+ 09-12 09:01:16 | pose from frame 0 to 2520, length 2520
+ 09-12 09:01:16 | 1 clips is expected with stride 2520
+ 09-12 09:01:16 | [34m# ---- Building cache for Pose   30_katya_0_65_a ---- #[0m
+ 09-12 09:01:17 | pose from frame 0 to 450, length 450
+ 09-12 09:01:17 | 1 clips is expected with stride 450
+ 09-12 09:01:17 | [34m# ---- Building cache for Pose   30_katya_0_73_a ---- #[0m
+ 09-12 09:01:17 | pose from frame 0 to 450, length 450
+ 09-12 09:01:17 | 1 clips is expected with stride 450
+ 09-12 09:01:17 | [34m# ---- Building cache for Pose   30_katya_0_81_a ---- #[0m
+ 09-12 09:01:18 | pose from frame 0 to 450, length 450
+ 09-12 09:01:18 | 1 clips is expected with stride 450
+ 09-12 09:01:18 | [34m# ---- Building cache for Pose   30_katya_0_87_a ---- #[0m
+ 09-12 09:01:19 | pose from frame 0 to 450, length 450
+ 09-12 09:01:19 | 1 clips is expected with stride 450
+ 09-12 09:01:19 | [34m# ---- Building cache for Pose   30_katya_0_95_a ---- #[0m
+ 09-12 09:01:19 | pose from frame 0 to 450, length 450
+ 09-12 09:01:19 | 1 clips is expected with stride 450
+ 09-12 09:01:19 | [34m# ---- Building cache for Pose   30_katya_1_1_a ---- #[0m
+ 09-12 09:01:25 | pose from frame 0 to 4500, length 4500
+ 09-12 09:01:25 | 1 clips is expected with stride 4500
+ 09-12 09:01:25 | [34m# ---- Building cache for Pose   3_solomon_0_103_103 ---- #[0m
+ 09-12 09:01:28 | pose from frame 0 to 2280, length 2280
+ 09-12 09:01:28 | 1 clips is expected with stride 2280
+ 09-12 09:01:28 | [34m# ---- Building cache for Pose   3_solomon_0_111_111 ---- #[0m
+ 09-12 09:01:31 | pose from frame 0 to 2070, length 2070
+ 09-12 09:01:31 | 1 clips is expected with stride 2070
+ 09-12 09:01:31 | [34m# ---- Building cache for Pose   3_solomon_0_1_1 ---- #[0m
+ 09-12 09:01:34 | pose from frame 0 to 2250, length 2250
+ 09-12 09:01:34 | 1 clips is expected with stride 2250
+ 09-12 09:01:34 | [34m# ---- Building cache for Pose   3_solomon_0_2_2 ---- #[0m
+ 09-12 09:01:39 | pose from frame 0 to 3450, length 3450
+ 09-12 09:01:39 | 1 clips is expected with stride 3450
+ 09-12 09:01:39 | [34m# ---- Building cache for Pose   3_solomon_0_3_3 ---- #[0m
+ 09-12 09:01:42 | pose from frame 0 to 2340, length 2340
+ 09-12 09:01:42 | 1 clips is expected with stride 2340
+ 09-12 09:01:42 | [34m# ---- Building cache for Pose   3_solomon_0_4_4 ---- #[0m
+ 09-12 09:01:45 | pose from frame 0 to 2490, length 2490
+ 09-12 09:01:45 | 1 clips is expected with stride 2490
+ 09-12 09:01:45 | [34m# ---- Building cache for Pose   3_solomon_0_5_5 ---- #[0m
+ 09-12 09:01:49 | pose from frame 0 to 2550, length 2550
+ 09-12 09:01:49 | 1 clips is expected with stride 2550
+ 09-12 09:01:49 | [34m# ---- Building cache for Pose   3_solomon_0_65_65 ---- #[0m
+ 09-12 09:01:52 | pose from frame 0 to 2100, length 2100
+ 09-12 09:01:52 | 1 clips is expected with stride 2100
+ 09-12 09:01:52 | [34m# ---- Building cache for Pose   3_solomon_0_6_6 ---- #[0m
+ 09-12 09:01:55 | pose from frame 0 to 2460, length 2460
+ 09-12 09:01:55 | 1 clips is expected with stride 2460
+ 09-12 09:01:55 | [34m# ---- Building cache for Pose   3_solomon_0_73_73 ---- #[0m
+ 09-12 09:01:57 | pose from frame 0 to 1620, length 1620
+ 09-12 09:01:57 | 1 clips is expected with stride 1620
+ 09-12 09:01:57 | [34m# ---- Building cache for Pose   3_solomon_0_7_7 ---- #[0m
+ 09-12 09:02:00 | pose from frame 0 to 2430, length 2430
+ 09-12 09:02:00 | 1 clips is expected with stride 2430
+ 09-12 09:02:01 | [34m# ---- Building cache for Pose   3_solomon_0_81_81 ---- #[0m
+ 09-12 09:02:03 | pose from frame 0 to 2040, length 2040
+ 09-12 09:02:03 | 1 clips is expected with stride 2040
+ 09-12 09:02:03 | [34m# ---- Building cache for Pose   3_solomon_0_87_87 ---- #[0m
+ 09-12 09:02:07 | pose from frame 0 to 2520, length 2520
+ 09-12 09:02:07 | 1 clips is expected with stride 2520
+ 09-12 09:02:07 | [34m# ---- Building cache for Pose   3_solomon_0_8_8 ---- #[0m
+ 09-12 09:02:10 | pose from frame 0 to 2550, length 2550
+ 09-12 09:02:10 | 1 clips is expected with stride 2550
+ 09-12 09:02:10 | [34m# ---- Building cache for Pose   3_solomon_0_95_95 ---- #[0m
+ 09-12 09:02:13 | pose from frame 0 to 2040, length 2040
+ 09-12 09:02:13 | 1 clips is expected with stride 2040
+ 09-12 09:02:13 | [34m# ---- Building cache for Pose   3_solomon_1_1_1 ---- #[0m
+ 09-12 09:02:37 | pose from frame 0 to 18000, length 18000
+ 09-12 09:02:37 | 1 clips is expected with stride 18000
+ 09-12 09:02:37 | [34m# ---- Building cache for Pose   4_lawrence_0_103_103 ---- #[0m
+ 09-12 09:02:41 | pose from frame 0 to 2460, length 2460
+ 09-12 09:02:41 | 1 clips is expected with stride 2460
+ 09-12 09:02:41 | [34m# ---- Building cache for Pose   4_lawrence_0_111_111 ---- #[0m
+ 09-12 09:02:44 | pose from frame 0 to 2550, length 2550
+ 09-12 09:02:44 | 1 clips is expected with stride 2550
+ 09-12 09:02:44 | [34m# ---- Building cache for Pose   4_lawrence_0_1_1 ---- #[0m
+ 09-12 09:02:47 | pose from frame 0 to 2190, length 2190
+ 09-12 09:02:47 | 1 clips is expected with stride 2190
+ 09-12 09:02:47 | [34m# ---- Building cache for Pose   4_lawrence_0_2_2 ---- #[0m
+ 09-12 09:02:51 | pose from frame 0 to 2460, length 2460
+ 09-12 09:02:51 | 1 clips is expected with stride 2460
+ 09-12 09:02:51 | [34m# ---- Building cache for Pose   4_lawrence_0_3_3 ---- #[0m
+ 09-12 09:02:54 | pose from frame 0 to 2550, length 2550
+ 09-12 09:02:54 | 1 clips is expected with stride 2550
+ 09-12 09:02:54 | [34m# ---- Building cache for Pose   4_lawrence_0_4_4 ---- #[0m
+ 09-12 09:02:58 | pose from frame 0 to 2730, length 2730
+ 09-12 09:02:58 | 1 clips is expected with stride 2730
+ 09-12 09:02:58 | [34m# ---- Building cache for Pose   4_lawrence_0_5_5 ---- #[0m
+ 09-12 09:03:02 | pose from frame 0 to 2970, length 2970
+ 09-12 09:03:02 | 1 clips is expected with stride 2970
+ 09-12 09:03:02 | [34m# ---- Building cache for Pose   4_lawrence_0_65_65 ---- #[0m
+ 09-12 09:03:04 | pose from frame 0 to 1590, length 1590
+ 09-12 09:03:04 | 1 clips is expected with stride 1590
+ 09-12 09:03:04 | [34m# ---- Building cache for Pose   4_lawrence_0_6_6 ---- #[0m
+ 09-12 09:03:08 | pose from frame 0 to 2790, length 2790
+ 09-12 09:03:08 | 1 clips is expected with stride 2790
+ 09-12 09:03:08 | [34m# ---- Building cache for Pose   4_lawrence_0_73_73 ---- #[0m
+ 09-12 09:03:10 | pose from frame 0 to 1380, length 1380
+ 09-12 09:03:10 | 1 clips is expected with stride 1380
+ 09-12 09:03:10 | [34m# ---- Building cache for Pose   4_lawrence_0_7_7 ---- #[0m
+ 09-12 09:03:14 | pose from frame 0 to 2580, length 2580
+ 09-12 09:03:14 | 1 clips is expected with stride 2580
+ 09-12 09:03:14 | [34m# ---- Building cache for Pose   4_lawrence_0_81_81 ---- #[0m
+ 09-12 09:03:18 | pose from frame 0 to 2880, length 2880
+ 09-12 09:03:18 | 1 clips is expected with stride 2880
+ 09-12 09:03:18 | [34m# ---- Building cache for Pose   4_lawrence_0_87_87 ---- #[0m
+ 09-12 09:03:22 | pose from frame 0 to 2760, length 2760
+ 09-12 09:03:22 | 1 clips is expected with stride 2760
+ 09-12 09:03:22 | [34m# ---- Building cache for Pose   4_lawrence_0_8_8 ---- #[0m
+ 09-12 09:03:26 | pose from frame 0 to 3030, length 3030
+ 09-12 09:03:26 | 1 clips is expected with stride 3030
+ 09-12 09:03:26 | [34m# ---- Building cache for Pose   4_lawrence_0_95_95 ---- #[0m
+ 09-12 09:03:28 | pose from frame 0 to 1950, length 1950
+ 09-12 09:03:28 | 1 clips is expected with stride 1950
+ 09-12 09:03:29 | [34m# ---- Building cache for Pose   4_lawrence_1_1_1 ---- #[0m
+ 09-12 09:03:56 | pose from frame 0 to 18630, length 18630
+ 09-12 09:03:56 | 1 clips is expected with stride 18630
+ 09-12 09:03:56 | [34m# ---- Building cache for Pose   5_stewart_0_103_a ---- #[0m
+ 09-12 09:03:57 | pose from frame 0 to 450, length 450
+ 09-12 09:03:57 | 1 clips is expected with stride 450
+ 09-12 09:03:57 | [34m# ---- Building cache for Pose   5_stewart_0_111_a ---- #[0m
+ 09-12 09:03:57 | pose from frame 0 to 450, length 450
+ 09-12 09:03:57 | 1 clips is expected with stride 450
+ 09-12 09:03:57 | [34m# ---- Building cache for Pose   5_stewart_0_1_1 ---- #[0m
+ 09-12 09:04:00 | pose from frame 0 to 2010, length 2010
+ 09-12 09:04:00 | 1 clips is expected with stride 2010
+ 09-12 09:04:00 | [34m# ---- Building cache for Pose   5_stewart_0_2_2 ---- #[0m
+ 09-12 09:04:03 | pose from frame 0 to 1950, length 1950
+ 09-12 09:04:03 | 1 clips is expected with stride 1950
+ 09-12 09:04:03 | [34m# ---- Building cache for Pose   5_stewart_0_3_3 ---- #[0m
+ 09-12 09:04:05 | pose from frame 0 to 1890, length 1890
+ 09-12 09:04:05 | 1 clips is expected with stride 1890
+ 09-12 09:04:05 | [34m# ---- Building cache for Pose   5_stewart_0_4_4 ---- #[0m
+ 09-12 09:04:08 | pose from frame 0 to 1980, length 1980
+ 09-12 09:04:08 | 1 clips is expected with stride 1980
+ 09-12 09:04:08 | [34m# ---- Building cache for Pose   5_stewart_0_65_a ---- #[0m
+ 09-12 09:04:09 | pose from frame 0 to 450, length 450
+ 09-12 09:04:09 | 1 clips is expected with stride 450
+ 09-12 09:04:09 | [34m# ---- Building cache for Pose   5_stewart_0_73_a ---- #[0m
+ 09-12 09:04:09 | pose from frame 0 to 450, length 450
+ 09-12 09:04:09 | 1 clips is expected with stride 450
+ 09-12 09:04:09 | [34m# ---- Building cache for Pose   5_stewart_0_81_a ---- #[0m
+ 09-12 09:04:10 | pose from frame 0 to 450, length 450
+ 09-12 09:04:10 | 1 clips is expected with stride 450
+ 09-12 09:04:10 | [34m# ---- Building cache for Pose   5_stewart_0_87_a ---- #[0m
+ 09-12 09:04:11 | pose from frame 0 to 450, length 450
+ 09-12 09:04:11 | 1 clips is expected with stride 450
+ 09-12 09:04:11 | [34m# ---- Building cache for Pose   5_stewart_0_95_a ---- #[0m
+ 09-12 09:04:11 | pose from frame 0 to 450, length 450
+ 09-12 09:04:11 | 1 clips is expected with stride 450
+ 09-12 09:04:12 | [34m# ---- Building cache for Pose   5_stewart_1_1_a ---- #[0m
+ 09-12 09:04:17 | pose from frame 0 to 4500, length 4500
+ 09-12 09:04:17 | 1 clips is expected with stride 4500
+ 09-12 09:04:18 | [34m# ---- Building cache for Pose   6_carla_0_103_103 ---- #[0m
+ 09-12 09:04:20 | pose from frame 0 to 1650, length 1650
+ 09-12 09:04:20 | 1 clips is expected with stride 1650
+ 09-12 09:04:20 | [34m# ---- Building cache for Pose   6_carla_0_111_111 ---- #[0m
+ 09-12 09:04:22 | pose from frame 0 to 1620, length 1620
+ 09-12 09:04:22 | 1 clips is expected with stride 1620
+ 09-12 09:04:22 | [34m# ---- Building cache for Pose   6_carla_0_1_1 ---- #[0m
+ 09-12 09:04:24 | pose from frame 0 to 1800, length 1800
+ 09-12 09:04:24 | 1 clips is expected with stride 1800
+ 09-12 09:04:25 | [34m# ---- Building cache for Pose   6_carla_0_2_2 ---- #[0m
+ 09-12 09:04:28 | pose from frame 0 to 2340, length 2340
+ 09-12 09:04:28 | 1 clips is expected with stride 2340
+ 09-12 09:04:28 | [34m# ---- Building cache for Pose   6_carla_0_3_3 ---- #[0m
+ 09-12 09:04:30 | pose from frame 0 to 1800, length 1800
+ 09-12 09:04:30 | 1 clips is expected with stride 1800
+ 09-12 09:04:30 | [34m# ---- Building cache for Pose   6_carla_0_4_4 ---- #[0m
+ 09-12 09:04:33 | pose from frame 0 to 2130, length 2130
+ 09-12 09:04:33 | 1 clips is expected with stride 2130
+ 09-12 09:04:33 | [34m# ---- Building cache for Pose   6_carla_0_5_5 ---- #[0m
+ 09-12 09:04:36 | pose from frame 0 to 2310, length 2310
+ 09-12 09:04:36 | 1 clips is expected with stride 2310
+ 09-12 09:04:37 | [34m# ---- Building cache for Pose   6_carla_0_65_65 ---- #[0m
+ 09-12 09:04:39 | pose from frame 0 to 1410, length 1410
+ 09-12 09:04:39 | 1 clips is expected with stride 1410
+ 09-12 09:04:39 | [34m# ---- Building cache for Pose   6_carla_0_6_6 ---- #[0m
+ 09-12 09:04:42 | pose from frame 0 to 2190, length 2190
+ 09-12 09:04:42 | 1 clips is expected with stride 2190
+ 09-12 09:04:42 | [34m# ---- Building cache for Pose   6_carla_0_73_73 ---- #[0m
+ 09-12 09:04:44 | pose from frame 0 to 1260, length 1260
+ 09-12 09:04:44 | 1 clips is expected with stride 1260
+ 09-12 09:04:44 | [34m# ---- Building cache for Pose   6_carla_0_7_7 ---- #[0m
+ 09-12 09:04:46 | pose from frame 0 to 1860, length 1860
+ 09-12 09:04:46 | 1 clips is expected with stride 1860
+ 09-12 09:04:46 | [34m# ---- Building cache for Pose   6_carla_0_81_81 ---- #[0m
+ 09-12 09:04:48 | pose from frame 0 to 1620, length 1620
+ 09-12 09:04:48 | 1 clips is expected with stride 1620
+ 09-12 09:04:48 | [34m# ---- Building cache for Pose   6_carla_0_87_87 ---- #[0m
+ 09-12 09:04:51 | pose from frame 0 to 1890, length 1890
+ 09-12 09:04:51 | 1 clips is expected with stride 1890
+ 09-12 09:04:51 | [34m# ---- Building cache for Pose   6_carla_0_8_8 ---- #[0m
+ 09-12 09:04:54 | pose from frame 0 to 2010, length 2010
+ 09-12 09:04:54 | 1 clips is expected with stride 2010
+ 09-12 09:04:54 | [34m# ---- Building cache for Pose   6_carla_0_95_95 ---- #[0m
+ 09-12 09:04:56 | pose from frame 0 to 1440, length 1440
+ 09-12 09:04:56 | 1 clips is expected with stride 1440
+ 09-12 09:04:56 | [34m# ---- Building cache for Pose   6_carla_1_1_1 ---- #[0m
+ 09-12 09:05:20 | pose from frame 0 to 17760, length 17760
+ 09-12 09:05:20 | 1 clips is expected with stride 17760
+ 09-12 09:05:20 | [34m# ---- Building cache for Pose   7_sophie_0_103_103 ---- #[0m
+ 09-12 09:05:23 | pose from frame 0 to 1890, length 1890
+ 09-12 09:05:23 | 1 clips is expected with stride 1890
+ 09-12 09:05:23 | [34m# ---- Building cache for Pose   7_sophie_0_111_111 ---- #[0m
+ 09-12 09:05:25 | pose from frame 0 to 1920, length 1920
+ 09-12 09:05:25 | 1 clips is expected with stride 1920
+ 09-12 09:05:25 | [34m# ---- Building cache for Pose   7_sophie_0_1_1 ---- #[0m
+ 09-12 09:05:28 | pose from frame 0 to 1740, length 1740
+ 09-12 09:05:28 | 1 clips is expected with stride 1740
+ 09-12 09:05:28 | [34m# ---- Building cache for Pose   7_sophie_0_2_2 ---- #[0m
+ 09-12 09:05:30 | pose from frame 0 to 1890, length 1890
+ 09-12 09:05:30 | 1 clips is expected with stride 1890
+ 09-12 09:05:31 | [34m# ---- Building cache for Pose   7_sophie_0_3_3 ---- #[0m
+ 09-12 09:05:33 | pose from frame 0 to 1860, length 1860
+ 09-12 09:05:33 | 1 clips is expected with stride 1860
+ 09-12 09:05:33 | [34m# ---- Building cache for Pose   7_sophie_0_4_4 ---- #[0m
+ 09-12 09:05:36 | pose from frame 0 to 2010, length 2010
+ 09-12 09:05:36 | 1 clips is expected with stride 2010
+ 09-12 09:05:36 | [34m# ---- Building cache for Pose   7_sophie_0_5_5 ---- #[0m
+ 09-12 09:05:39 | pose from frame 0 to 2160, length 2160
+ 09-12 09:05:39 | 1 clips is expected with stride 2160
+ 09-12 09:05:39 | [34m# ---- Building cache for Pose   7_sophie_0_65_65 ---- #[0m
+ 09-12 09:05:41 | pose from frame 0 to 1500, length 1500
+ 09-12 09:05:41 | 1 clips is expected with stride 1500
+ 09-12 09:05:41 | [34m# ---- Building cache for Pose   7_sophie_0_6_6 ---- #[0m
+ 09-12 09:05:44 | pose from frame 0 to 1950, length 1950
+ 09-12 09:05:44 | 1 clips is expected with stride 1950
+ 09-12 09:05:44 | [34m# ---- Building cache for Pose   7_sophie_0_73_73 ---- #[0m
+ 09-12 09:05:46 | pose from frame 0 to 1320, length 1320
+ 09-12 09:05:46 | 1 clips is expected with stride 1320
+ 09-12 09:05:46 | [34m# ---- Building cache for Pose   7_sophie_0_7_7 ---- #[0m
+ 09-12 09:05:48 | pose from frame 0 to 1740, length 1740
+ 09-12 09:05:48 | 1 clips is expected with stride 1740
+ 09-12 09:05:48 | [34m# ---- Building cache for Pose   7_sophie_0_81_81 ---- #[0m
+ 09-12 09:05:51 | pose from frame 0 to 1800, length 1800
+ 09-12 09:05:51 | 1 clips is expected with stride 1800
+ 09-12 09:05:51 | [34m# ---- Building cache for Pose   7_sophie_0_87_87 ---- #[0m
+ 09-12 09:05:54 | pose from frame 0 to 2070, length 2070
+ 09-12 09:05:54 | 1 clips is expected with stride 2070
+ 09-12 09:05:54 | [34m# ---- Building cache for Pose   7_sophie_0_8_8 ---- #[0m
+ 09-12 09:05:56 | pose from frame 0 to 1950, length 1950
+ 09-12 09:05:56 | 1 clips is expected with stride 1950
+ 09-12 09:05:56 | [34m# ---- Building cache for Pose   7_sophie_0_95_95 ---- #[0m
+ 09-12 09:05:58 | pose from frame 0 to 1410, length 1410
+ 09-12 09:05:58 | 1 clips is expected with stride 1410
+ 09-12 09:05:58 | [34m# ---- Building cache for Pose   7_sophie_1_1_1 ---- #[0m
+ 09-12 09:06:23 | pose from frame 0 to 18000, length 18000
+ 09-12 09:06:23 | 1 clips is expected with stride 18000
+ 09-12 09:06:23 | [34m# ---- Building cache for Pose   8_catherine_0_103_103 ---- #[0m
+ 09-12 09:06:25 | pose from frame 0 to 1740, length 1740
+ 09-12 09:06:25 | 1 clips is expected with stride 1740
+ 09-12 09:06:26 | [34m# ---- Building cache for Pose   8_catherine_0_111_111 ---- #[0m
+ 09-12 09:06:28 | pose from frame 0 to 1710, length 1710
+ 09-12 09:06:28 | 1 clips is expected with stride 1710
+ 09-12 09:06:28 | [34m# ---- Building cache for Pose   8_catherine_0_1_1 ---- #[0m
+ 09-12 09:06:30 | pose from frame 0 to 1740, length 1740
+ 09-12 09:06:30 | 1 clips is expected with stride 1740
+ 09-12 09:06:30 | [34m# ---- Building cache for Pose   8_catherine_0_2_2 ---- #[0m
+ 09-12 09:06:33 | pose from frame 0 to 1710, length 1710
+ 09-12 09:06:33 | 1 clips is expected with stride 1710
+ 09-12 09:06:33 | [34m# ---- Building cache for Pose   8_catherine_0_3_3 ---- #[0m
+ 09-12 09:06:35 | pose from frame 0 to 1800, length 1800
+ 09-12 09:06:35 | 1 clips is expected with stride 1800
+ 09-12 09:06:35 | [34m# ---- Building cache for Pose   8_catherine_0_4_4 ---- #[0m
+ 09-12 09:06:38 | pose from frame 0 to 1800, length 1800
+ 09-12 09:06:38 | 1 clips is expected with stride 1800
+ 09-12 09:06:38 | [34m# ---- Building cache for Pose   8_catherine_0_5_5 ---- #[0m
+ 09-12 09:06:40 | pose from frame 0 to 1800, length 1800
+ 09-12 09:06:40 | 1 clips is expected with stride 1800
+ 09-12 09:06:40 | [34m# ---- Building cache for Pose   8_catherine_0_65_65 ---- #[0m
+ 09-12 09:06:42 | pose from frame 0 to 1470, length 1470
+ 09-12 09:06:42 | 1 clips is expected with stride 1470
+ 09-12 09:06:42 | [34m# ---- Building cache for Pose   8_catherine_0_6_6 ---- #[0m
+ 09-12 09:06:45 | pose from frame 0 to 1830, length 1830
+ 09-12 09:06:45 | 1 clips is expected with stride 1830
+ 09-12 09:06:45 | [34m# ---- Building cache for Pose   8_catherine_0_73_73 ---- #[0m
+ 09-12 09:06:47 | pose from frame 0 to 1140, length 1140
+ 09-12 09:06:47 | 1 clips is expected with stride 1140
+ 09-12 09:06:47 | [34m# ---- Building cache for Pose   8_catherine_0_7_7 ---- #[0m
+ 09-12 09:06:49 | pose from frame 0 to 1770, length 1770
+ 09-12 09:06:49 | 1 clips is expected with stride 1770
+ 09-12 09:06:49 | [34m# ---- Building cache for Pose   8_catherine_0_81_81 ---- #[0m
+ 09-12 09:06:51 | pose from frame 0 to 1440, length 1440
+ 09-12 09:06:51 | 1 clips is expected with stride 1440
+ 09-12 09:06:51 | [34m# ---- Building cache for Pose   8_catherine_0_87_87 ---- #[0m
+ 09-12 09:06:53 | pose from frame 0 to 1800, length 1800
+ 09-12 09:06:53 | 1 clips is expected with stride 1800
+ 09-12 09:06:53 | [34m# ---- Building cache for Pose   8_catherine_0_8_8 ---- #[0m
+ 09-12 09:06:56 | pose from frame 0 to 2010, length 2010
+ 09-12 09:06:56 | 1 clips is expected with stride 2010
+ 09-12 09:06:56 | [34m# ---- Building cache for Pose   8_catherine_0_95_95 ---- #[0m
+ 09-12 09:06:58 | pose from frame 0 to 1380, length 1380
+ 09-12 09:06:58 | 1 clips is expected with stride 1380
+ 09-12 09:06:58 | [34m# ---- Building cache for Pose   8_catherine_1_1_1 ---- #[0m
+ 09-12 09:07:22 | pose from frame 0 to 18000, length 18000
+ 09-12 09:07:22 | 1 clips is expected with stride 18000
+ 09-12 09:07:23 | [34m# ---- Building cache for Pose   9_miranda_0_103_103 ---- #[0m
+ 09-12 09:07:26 | pose from frame 0 to 2640, length 2640
+ 09-12 09:07:26 | 1 clips is expected with stride 2640
+ 09-12 09:07:26 | [34m# ---- Building cache for Pose   9_miranda_0_111_111 ---- #[0m
+ 09-12 09:07:29 | pose from frame 0 to 1770, length 1770
+ 09-12 09:07:29 | 1 clips is expected with stride 1770
+ 09-12 09:07:29 | [34m# ---- Building cache for Pose   9_miranda_0_1_1 ---- #[0m
+ 09-12 09:07:31 | pose from frame 0 to 1650, length 1650
+ 09-12 09:07:31 | 1 clips is expected with stride 1650
+ 09-12 09:07:31 | [34m# ---- Building cache for Pose   9_miranda_0_65_65 ---- #[0m
+ 09-12 09:07:33 | pose from frame 0 to 1410, length 1410
+ 09-12 09:07:33 | 1 clips is expected with stride 1410
+ 09-12 09:07:33 | [34m# ---- Building cache for Pose   9_miranda_0_73_73 ---- #[0m
+ 09-12 09:07:34 | pose from frame 0 to 1290, length 1290
+ 09-12 09:07:34 | 1 clips is expected with stride 1290
+ 09-12 09:07:34 | [34m# ---- Building cache for Pose   9_miranda_0_81_81 ---- #[0m
+ 09-12 09:07:36 | pose from frame 0 to 1560, length 1560
+ 09-12 09:07:36 | 1 clips is expected with stride 1560
+ 09-12 09:07:36 | [34m# ---- Building cache for Pose   9_miranda_0_87_87 ---- #[0m
+ 09-12 09:07:39 | pose from frame 0 to 1920, length 1920
+ 09-12 09:07:39 | 1 clips is expected with stride 1920
+ 09-12 09:07:39 | [34m# ---- Building cache for Pose   9_miranda_0_95_95 ---- #[0m
+ 09-12 09:07:41 | pose from frame 0 to 1470, length 1470
+ 09-12 09:07:41 | 1 clips is expected with stride 1470
+ 09-12 09:07:41 | [34m# ---- Building cache for Pose   9_miranda_1_1_1 ---- #[0m
+ 09-12 09:08:05 | pose from frame 0 to 18270, length 18270
+ 09-12 09:08:05 | 1 clips is expected with stride 18270
+ 09-12 09:08:06 | [36mno. of samples: 377[0m
+ 09-12 09:08:06 | [36mno. of excluded samples: 0 (0.0%)[0m
+ 09-12 09:16:41 | Audio bit rate: 16000
+ 09-12 09:16:41 | Reading data '/root/nguyen/research/PantoMatrix/beat_4english_30_full/test_copy/'...
+ 09-12 09:16:41 | Creating the dataset cache...

@@ -182,26 +182,29 @@ class CustomDataset(Dataset):
             with open(pose_file, "r") as pose_data:
                 for j, line in enumerate(pose_data.readlines()):
                     data = np.fromstring(line, dtype=float, sep=" ") # 1*27 e.g., 27 rotation 
-                    pose_each_file_new.append(data)
+                    data =  np.array(data)
+                    data = data * self.joint_mask
+                    data = data[self.joint_mask.astype(bool)]
+                    pose_each_file.append(data)
 
             #     print("X1: ", len(pose_each_file_new))
                 
             # print("joint_mask: ", len(self.joint_mask))
             # print("joint_mask: ", self.joint_mask)
 
-            assert 120%self.args.pose_fps == 0, 'pose_fps should be an aliquot part of 120'
-            stride = int(120/self.args.pose_fps)
-            with open(pose_file, "r") as pose_data:
-                for j, line in enumerate(pose_data.readlines()):
-                    # if j < 431: continue     
-                    # if j%stride != 0:continue
-                    data = np.fromstring(line, dtype=float, sep=" ")
+            # assert 120%self.args.pose_fps == 0, 'pose_fps should be an aliquot part of 120'
+            # stride = int(120/self.args.pose_fps)
+            # with open(pose_file, "r") as pose_data:
+            #     for j, line in enumerate(pose_data.readlines()):
+            #         # if j < 431: continue     
+            #         # if j%stride != 0:continue
+            #         data = np.fromstring(line, dtype=float, sep=" ")
 
-                    rot_data = rc.euler_angles_to_matrix(torch.from_numpy(np.deg2rad(data)).reshape(-1, self.joints,3), "XYZ")
-                    rot_data = rc.matrix_to_axis_angle(rot_data).reshape(-1, self.joints*3) 
-                    rot_data = rot_data.numpy() * self.joint_mask
-                    rot_data = rot_data[:, self.joint_mask.astype(bool)]
-                    pose_each_file.append(rot_data)
+            #         rot_data = rc.euler_angles_to_matrix(torch.from_numpy(np.deg2rad(data)).reshape(-1, self.joints,3), "XYZ")
+            #         rot_data = rc.matrix_to_axis_angle(rot_data).reshape(-1, self.joints*3) 
+            #         rot_data = rot_data.numpy() * self.joint_mask
+            #         rot_data = rot_data[:, self.joint_mask.astype(bool)]
+            #         pose_each_file.append(rot_data)
 
             pose_each_file = np.array(pose_each_file) # n frames * 27
             # shape_each_file = np.repeat(np.array(-1).reshape(1, 1), pose_each_file.shape[0], axis=0)
@@ -390,7 +393,6 @@ class CustomDataset(Dataset):
                 self.stride = int(ratio*self.ori_stride)
                 self.pose_length = int(self.ori_length*ratio)
 
-            print("stride", self.stride) 
             num_subdivision = math.floor((clip_e_f_pose - clip_s_f_pose - self.pose_length) / self.stride) + 1
             logger.info(f"pose from frame {clip_s_f_pose} to {clip_e_f_pose}, length {self.pose_length}")
             logger.info(f"{num_subdivision} clips is expected with stride {self.stride}")

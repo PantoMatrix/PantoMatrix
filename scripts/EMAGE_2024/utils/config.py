@@ -243,7 +243,7 @@ def parse_args():
     # mix precision
     parser.add("--apex", default=False, type=str2bool)
     parser.add("--gpus", default=[0], type=int, nargs="*")
-    parser.add("--loader_workers", default=0, type=int)
+    parser.add("--loader_workers", default=16, type=int)
     parser.add("--ddp", default=False, type=str2bool)
     parser.add("--sparse", default=1, type=int)
     #parser.add("--world_size")
