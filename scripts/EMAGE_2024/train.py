@@ -141,20 +141,7 @@ class BaseTrainer(object):
         self.opt = create_optimizer(args, self.model)
         self.opt_s = create_scheduler(args, self.opt)
         
-        # self.smplx = smplx.create(
-        #     self.args.data_path_1+"smplx_models/", 
-        #     model_type='smplx',
-        #     gender='NEUTRAL_2020', 
-        #     use_face_contour=False,
-        #     num_betas=300,
-        #     num_expression_coeffs=100, 
-        #     ext='npz',
-        #     use_pca=False,
-        # ).to(self.rank).eval()
 
-        #### Không tìm thấy biến avg_vel trong tất cả file config)
-        # self.alignmenter = metric.alignment(0.3, 7, self.train_data.avg_vel, upper_body=[3,6,9,12,13,14,15,16,17,18,19,20,21]) if self.rank == 0 else None
-        # self.align_mask = 60
         self.l1_calculator = metric.L1div() if self.rank == 0 else None
        
     
@@ -165,16 +152,6 @@ class BaseTrainer(object):
             original_shape_t[i, selected_indices] = filtered_t[i]
         return original_shape_t
 
-    # def inverse_selection_6d(self, filtered_t, selection_array, n):
-    #     original_shape_t = np.zeros((n, selection_array.size))
-    #     selected_indices = np.where(selection_array == 1)[0]
-    #     new_selected_indices = np.zeros((n, selected_indices.size*2))
-    #     new_selected_indices[:, ::2] = selected_indices
-    #     new_selected_indices[:, 1::2] = selected_indices 
-    #     selected_indices = new_selected_indices.astype(np.bool)
-    #     for i in range(n):
-    #         original_shape_t[i, selected_indices] = filtered_t[i]
-    #     return original_shape_t
     
     def inverse_selection_tensor(self, filtered_t, selection_array, n):
         selection_array = torch.from_numpy(selection_array).cuda()
@@ -226,46 +203,6 @@ class BaseTrainer(object):
             pstr += "mem: {:.2f} ".format(mem_cost*self.gpus)
             logger.info(pstr)
 
-    ## Code from EMAGE
-    # def train_recording(self, epoch, its, t_data, t_train, mem_cost, lr_g, lr_d=None):
-    #     pstr = "[%03d][%03d/%03d]  "%(epoch, its, self.train_length)
-    #     for name, states in self.tracker.loss_meters.items():
-    #         metric = states['train']
-    #         if metric.count > 0:
-    #             pstr += "{}: {:.3f}\t".format(name, metric.avg)
-    #             self.writer.add_scalar(f"train/{name}", metric.avg, epoch*self.train_length+its) if self.args.stat == "ts" else wandb.log({name: metric.avg}, step=epoch*self.train_length+its)
-    #     pstr += "glr: {:.1e}\t".format(lr_g)
-    #     self.writer.add_scalar("lr/glr", lr_g, epoch*self.train_length+its) if self.args.stat == "ts" else wandb.log({'glr': lr_g}, step=epoch*self.train_length+its)
-    #     if lr_d is not None:
-    #         pstr += "dlr: {:.1e}\t".format(lr_d)
-    #         self.writer.add_scalar("lr/dlr", lr_d, epoch*self.train_length+its) if self.args.stat == "ts" else wandb.log({'dlr': lr_d}, step=epoch*self.train_length+its)
-    #     pstr += "dtime: %04d\t"%(t_data*1000)        
-    #     pstr += "ntime: %04d\t"%(t_train*1000)
-    #     pstr += "mem: {:.2f} ".format(mem_cost*len(self.args.gpus))
-    #     logger.info(pstr)
-
-# Code from EMAGE     
-    # def val_recording(self, epoch):
-    #     pstr_curr = "Curr info >>>>  "
-    #     pstr_best = "Best info >>>>  "
-    #     for name, states in self.tracker.loss_meters.items():
-    #         metric = states['val']
-    #         if metric.count > 0:
-    #             pstr_curr += "{}: {:.3f}     \t".format(name, metric.avg)
-    #             if epoch != 0:
-    #                 if self.args.stat == "ts":
-    #                     self.writer.add_scalars(f"val/{name}", {name+"_val":metric.avg, name+"_train":states['train'].avg}, epoch*self.train_length)
-    #                 else:
-    #                     wandb.log({name+"_val": metric.avg, name+"_train":states['train'].avg}, step=epoch*self.train_length)
-    #                 new_best_train, new_best_val = self.tracker.update_and_plot(name, epoch, self.checkpoint_path+f"{name}_{self.args.name+self.args.notes}.png")
-    #                 if new_best_val:
-    #                     other_tools.save_checkpoints(os.path.join(self.checkpoint_path, f"{name}.bin"), self.model, opt=None, epoch=None, lrs=None)        
-    #     for k, v in self.tracker.values.items():
-    #         metric = v['val']['best']
-    #         if self.tracker.loss_meters[k]['val'].count > 0:
-    #             pstr_best += "{}: {:.3f}({:03d})\t".format(k, metric['value'], metric['epoch'])
-    #     logger.info(pstr_curr)
-    #     logger.info(pstr_best)
 
 ## Code from BEAT
     def val_recording(self, epoch, metrics):
@@ -325,53 +262,7 @@ def main_worker(rank, world_size, args):
     if rank == 0:
         wandb.finish()
 
-#This code from EMAGE
-# def main_worker(rank, world_size, args):
-#     #os.environ['TRANSFORMERS_CACHE'] = args.data_path_1 + "hub/"
-#     if not sys.warnoptions:
-#         warnings.simplefilter("ignore")
-#     dist.init_process_group(backend="nccl", rank=rank, world_size=world_size)
-        
-#     logger_tools.set_args_and_logger(args, rank)
-#     other_tools.set_random_seed(args)
-#     other_tools.print_exp_info(args)
-      
-#     # return one intance of trainer
-#     trainer = __import__(f"{args.trainer}_trainer", fromlist=["something"]).CustomTrainer(args) if args.trainer != "base" else BaseTrainer(args) 
-#     logger.info("Training from scratch ...")          
-#     start_time = time.time()
-#     for epoch in range(args.epochs+1):
-#         if args.ddp: trainer.val_loader.sampler.set_epoch(epoch)
-#         trainer.val(epoch)
-#         # if (epoch) % args.test_period == 1: trainer.val(epoch)
-#         epoch_time = time.time()-start_time
-#         if trainer.rank == 0: logger.info("Time info >>>>  elapsed: %.2f mins\t"%(epoch_time/60)+"remain: %.2f mins"%((args.epochs/(epoch+1e-7)-1)*epoch_time/60))
-#         if epoch != args.epochs:
-#             if args.ddp: trainer.train_loader.sampler.set_epoch(epoch)
-#             trainer.tracker.reset()
-#             trainer.train(epoch)
-#         if args.debug:
-#             other_tools.save_checkpoints(os.path.join(trainer.checkpoint_path, f"last_{epoch}.bin"), trainer.model, opt=None, epoch=None, lrs=None)
-#             other_tools.load_checkpoints(trainer.model, os.path.join(trainer.checkpoint_path, f"last_{epoch}.bin"), args.g_name)
-#             #other_tools.load_checkpoints(trainer.model, "/home/s24273/datasets/hub/pretrained_vq/last_140.bin", args.g_name)
-#             trainer.test(epoch)
-#         if (epoch) % args.test_period == 0 and epoch !=0:
-#             if rank == 0:
-#                 other_tools.save_checkpoints(os.path.join(trainer.checkpoint_path, f"last_{epoch}.bin"), trainer.model, opt=None, epoch=None, lrs=None)
-#                 trainer.test(epoch)
-       
-#     if rank == 0:
-#         for k, v in trainer.tracker.values.items():
-#             if trainer.tracker.loss_meters[k]['val'].count > 0:
-#                 other_tools.load_checkpoints(trainer.model, os.path.join(trainer.checkpoint_path, f"{k}.bin"), args.g_name)
-#                 logger.info(f"inference on ckpt {k}_val_{v['val']['best']['epoch']}:")
-#                 trainer.test(v['val']['best']['epoch'])
-#         other_tools.record_trial(args, trainer.tracker)
-#         wandb.log({"fid_test": trainer.tracker["fid"]["test"]["best"]})
-#         if args.stat == "ts":
-#             trainer.writer.close()
-#         else:
-#             wandb.finish()
+
     
             
 if __name__ == "__main__":

@@ -20,6 +20,9 @@ from sklearn.preprocessing import normalize
 import scipy.io.wavfile
 from scipy import signal
 from .build_vocab import Vocab
+from .utils import rotation_conversions as rc
+from .data_tools import joints_list
+from .utils import other_tools
 
 
 class CustomDataset(Dataset):
@@ -31,6 +34,8 @@ class CustomDataset(Dataset):
         self.stride = args.stride #10
         self.pose_fps = args.pose_fps #15
         self.pose_dims = args.pose_dims # 141
+
+        self.args = args
 
         self.speaker_dims = args.speaker_dims
         self.loader_type = loader_type
@@ -51,6 +56,9 @@ class CustomDataset(Dataset):
         self.ori_length = self.pose_length
         self.alignment = [0,0] # for beat
 
+
+        self.ori_joint_list = joints_list[args.ori_joints]
+        self.tar_joint_list = joints_list[args.tar_joints]
         
         ##----------------Copy from beat_sep_lower.py-----------##
         # if 'smplx' in self.args.pose_rep:
@@ -59,14 +67,14 @@ class CustomDataset(Dataset):
         #     for joint_name in self.tar_joint_list:
         #         self.joint_mask[self.ori_joint_list[joint_name][1] - self.ori_joint_list[joint_name][0]:self.ori_joint_list[joint_name][1]] = 1
         # else:
-        #     self.joints = len(list(self.ori_joint_list.keys()))+1
-        #     self.joint_mask = np.zeros(self.joints*3)
-        #     for joint_name in self.tar_joint_list:
-        #         if joint_name == "Hips":
-        #             self.joint_mask[3:6] = 1
-        #         else:
-        #             self.joint_mask[self.ori_joint_list[joint_name][1] - self.ori_joint_list[joint_name][0]:self.ori_joint_list[joint_name][1]] = 1
-        ##----------------Copy from beat_sep_lower.py-----------##
+        self.joints = len(list(self.ori_joint_list.keys()))
+        self.joint_mask = np.zeros(self.joints*3)
+        for joint_name in self.tar_joint_list:
+            if joint_name == "Hips":
+                self.joint_mask[3:6] = 1
+            else:
+                self.joint_mask[self.ori_joint_list[joint_name][1] - self.ori_joint_list[joint_name][0]:self.ori_joint_list[joint_name][1]] = 1
+    #----------------Copy from beat_sep_lower.py-----------##
         
         if loader_type == "train":
             self.data_dir = args.root_path + args.train_data_path
@@ -160,6 +168,7 @@ class CustomDataset(Dataset):
     
         for pose_file in pose_files:
             pose_each_file = []
+            pose_each_file_new = []
             audio_each_file = []
             facial_each_file = []
             word_each_file = []
@@ -169,26 +178,38 @@ class CustomDataset(Dataset):
             
             id_pose = pose_file.split("/")[-1][:-4] #1_wayne_0_1_1
             logger.info(colored(f"# ---- Building cache for Pose   {id_pose} ---- #", "blue"))
+            
             with open(pose_file, "r") as pose_data:
                 for j, line in enumerate(pose_data.readlines()):
                     data = np.fromstring(line, dtype=float, sep=" ") # 1*27 e.g., 27 rotation 
-                    pose_each_file.append(data)
+                    pose_each_file_new.append(data)
+
+            #     print("X1: ", len(pose_each_file_new))
+                
+            # print("joint_mask: ", len(self.joint_mask))
+            # print("joint_mask: ", self.joint_mask)
+
+            assert 120%self.args.pose_fps == 0, 'pose_fps should be an aliquot part of 120'
+            stride = int(120/self.args.pose_fps)
+            with open(pose_file, "r") as pose_data:
+                for j, line in enumerate(pose_data.readlines()):
+                    # if j < 431: continue     
+                    # if j%stride != 0:continue
+                    data = np.fromstring(line, dtype=float, sep=" ")
+
+                    rot_data = rc.euler_angles_to_matrix(torch.from_numpy(np.deg2rad(data)).reshape(-1, self.joints,3), "XYZ")
+                    rot_data = rc.matrix_to_axis_angle(rot_data).reshape(-1, self.joints*3) 
+                    rot_data = rot_data.numpy() * self.joint_mask
+                    rot_data = rot_data[:, self.joint_mask.astype(bool)]
+                    pose_each_file.append(rot_data)
+
             pose_each_file = np.array(pose_each_file) # n frames * 27
+            # shape_each_file = np.repeat(np.array(-1).reshape(1, 1), pose_each_file.shape[0], axis=0)
 
             if self.audio_rep is not None:
                 logger.info(f"# ---- Building cache for Audio  {id_pose} and Pose {id_pose} ---- #")
                 audio_file = pose_file.replace(self.pose_rep, self.audio_rep).replace("bvh", "npy")
                 try:
-                    # the librosa cannot use on the cloud sever
-#                     audio_data, _ = librosa.load(audio_file, sr=None)
-#                     if self.audio_rep == "melspec":
-#                         audio_each_file = np.load(f"{audio_file[:-4]}_melspec_128_64.npy").transpose(1,0)
-#                         self.audio_fps = 32
-#                     elif self.audio_rep == "disentangled":
-#                         audio_each_file = np.load(f"{audio_file[:-4]}_disentangled_v1.npy").transpose(1,0)
-#                     else:
-#                         sr, audio_each_file = scipy.io.wavfile.read(audio_file) # np array
-#                     audio_each_file = audio_each_file[::sr//16000]
                     audio_each_file = np.load(audio_file)
                 except:
                     logger.warning(f"# ---- file not found for Audio {id_pose}, skip all files with the same id ---- #")
@@ -368,7 +389,8 @@ class CustomDataset(Dataset):
             else:
                 self.stride = int(ratio*self.ori_stride)
                 self.pose_length = int(self.ori_length*ratio)
-                
+
+            print("stride", self.stride) 
             num_subdivision = math.floor((clip_e_f_pose - clip_s_f_pose - self.pose_length) / self.stride) + 1
             logger.info(f"pose from frame {clip_s_f_pose} to {clip_e_f_pose}, length {self.pose_length}")
             logger.info(f"{num_subdivision} clips is expected with stride {self.stride}")
@@ -414,7 +436,7 @@ class CustomDataset(Dataset):
                 
                 if sample_pose.any() != None:
                     # filtering motion skeleton data
-                    sample_pose, filtering_message = MotionPreprocessor(sample_pose, self.mean_pose).get()
+                    sample_pose, filtering_message = MotionPreprocessor(sample_pose, self.mean_pose, self.joint_mask).get()
                     is_correct_motion = (sample_pose != [])
                     if is_correct_motion or disable_filtering:
                         sample_pose_list.append(sample_pose)
@@ -437,7 +459,7 @@ class CustomDataset(Dataset):
                                                         sample_emo_list,
                                                         sample_sem_list,
                                                         ):
-                        normalized_pose = self.normalize_pose(pose, self.mean_pose, self.std_pose)
+                        normalized_pose = self.normalize_pose(pose, self.mean_pose, self.std_pose, self.joint_mask)
                         k = "{:005}".format(self.n_out_samples).encode("ascii")
                         v = [normalized_pose, audio, facial, word, emo, sem, vid]
                         v = pyarrow.serialize(v).to_buffer()
@@ -446,7 +468,10 @@ class CustomDataset(Dataset):
         return n_filtered_out
 
     @staticmethod
-    def normalize_pose(dir_vec, mean_pose, std_pose=None):
+    def normalize_pose(dir_vec, mean_pose, std_pose=None, joint_mask=None):
+        mean_pose = mean_pose[joint_mask.astype(bool)]
+        std_pose = std_pose[joint_mask.astype(bool)]
+
         return (dir_vec - mean_pose) / std_pose 
     
     def __getitem__(self, idx):
@@ -471,9 +496,10 @@ class CustomDataset(Dataset):
 
          
 class MotionPreprocessor:
-    def __init__(self, skeletons, mean_pose):
+    def __init__(self, skeletons, mean_pose, joint_mask):
         self.skeletons = skeletons
         self.mean_pose = mean_pose
+        self.joint_mask = joint_mask
         self.filtering_message = "PASS"
 
     def get(self):
@@ -520,7 +546,8 @@ class MotionPreprocessor:
 
 
     def check_pose_diff(self, verbose=False):
-        diff = np.abs(self.skeletons - self.mean_pose) # 186*1
+        mean_pose = self.mean_pose[self.joint_mask.astype(bool)]
+        diff = np.abs(self.skeletons - mean_pose) # 186*1
         diff = np.mean(diff)
 
         # th = 0.017
