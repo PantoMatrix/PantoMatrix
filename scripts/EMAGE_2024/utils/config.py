@@ -26,7 +26,7 @@ def parse_args():
     4. hierarchical is not necessary
     """
     parser = configargparse.ArgParser()
-    parser.add("-c", "--config", default='./scripts/EMAGE_2024/configs/emage_test_hf.yaml', is_config_file=True)
+    parser.add("-c", "--config", default='./scripts/EMAGE_2024/configs/cnn_vqvae_hand_30_skeleton.yaml', is_config_file=True)
     parser.add("--project", default="audio2pose", type=str) # wandb project name
     parser.add("--stat", default="ts", type=str)
     parser.add("--csv_name", default="a2g_0", type=str) # local device id
@@ -84,7 +84,7 @@ def parse_args():
     parser.add("--ori_joints", default="spine_neck_141", type=str)
     parser.add("--tar_joints", default="spine_neck_141", type=str)
     parser.add("--training_speakers", default=[1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30], type=int, nargs="*")
-    #parser.add("--pose_version", default="spine_neck_141", type=str)
+    parser.add("--pose_version", default="spine_neck_141", type=str)
     parser.add("--new_cache", default=True, type=str2bool)
     parser.add("--beat_align", default=True, type=str2bool)
     parser.add("--cache_only", default=False, type=str2bool)
@@ -243,7 +243,7 @@ def parse_args():
     # mix precision
     parser.add("--apex", default=False, type=str2bool)
     parser.add("--gpus", default=[0], type=int, nargs="*")
-    parser.add("--loader_workers", default=0, type=int)
+    parser.add("--loader_workers", default=16, type=int)
     parser.add("--ddp", default=False, type=str2bool)
     parser.add("--sparse", default=1, type=int)
     #parser.add("--world_size")

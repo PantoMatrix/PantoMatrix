@@ -5,3 +5,5 @@
 /outputs/
 *.pyc
 *.pyc
+
+/outputs

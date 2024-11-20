@@ -64,7 +64,7 @@ class CustomDataset(Dataset):
         self.max_length = int(self.pose_length * self.multi_length_training[-1])
         
         if self.word_rep is not None:
-            with open(f"{args.root_path}{args.train_data_path[:-6]}vocab.pkl", 'rb') as f:
+            with open(f"/root/nguyen/research/PantoMatrix/beat_4english_30_full/vocab.pkl", 'rb') as f: # {args.train_data_path[:-6]}
                 self.lang_model = pickle.load(f)
         preloaded_dir = self.data_dir + f"{self.pose_rep}_cache"
         
