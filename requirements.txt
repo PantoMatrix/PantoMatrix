@@ -1,0 +1,63 @@
+--extra-index-url https://download.openmmlab.com/mmcv/dist/cu118/torch2.0.0/index.html
+https://download.openmmlab.com/mmcv/dist/cu118/torch2.0.0/mmcv-2.1.0-cp39-cp39-manylinux1_x86_64.whl
+
+-f https://dl.fbaipublicfiles.com/pytorch3d/packaging/wheels/py39_cu117_pyt200/download.html
+pytorch3d
+scikit-image==0.21.0
+scikit-learn==1.3.2
+scipy==1.11.4
+smplx==0.1.28
+tqdm
+yacs
+numba
+opencv-contrib-python==4.8.1.78
+opencv-python==4.8.1.78
+tensorboardx
+filterpy
+cython
+chumpy==0.70.0
+Pillow==9.5.0
+trimesh
+pyrender
+matplotlib
+json_tricks
+torchgeometry
+einops
+joblib
+easydict
+pycocotools
+plyfile
+timm
+pyglet
+# mmcv==2.1.0
+# mmdet==3.2.0
+# mmpose==0.28.0
+eval_type_backport
+
+wget
+gradio==4.44.1
+av==11.0.0
+ffmpeg-python
+mediapipe
+batch-face @ git+https://github.com/elliottzheng/batch-face.git@master
+decord==0.6.0
+imageio==2.33.0
+imageio-ffmpeg==0.4.9
+omegaconf==2.2.3
+open-clip-torch==2.20.0
+transformers==4.30.2
+torchvision
+moviepy==1.0.3
+igraph
+ConfigArgParse
+librosa
+
+numpy==1.23.5
+wandb
+diffusers==0.31.0
+huggingface_hub
+lpips
+controlnet-aux==0.0.7
+onnxruntime
+accelerate
+xformers==0.0.19

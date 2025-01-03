@@ -1,0 +1,4 @@
+numpy==1.23
+torch==2.0.0
+torchvision
+torchaudio

@@ -1,0 +1,71 @@
+wandb_project: 'EMAGE++'
+exp_name: 'debug'
+debug: False
+wandb_entity: ''
+wandb_key: ""
+# wandb_log_dir: '/content/outputs/wandb'
+output_dir: /content/outputs/
+log_period: 1
+seed: 42
+resume_from_checkpoint: null
+test: False
+
+
+data:
+  name_pyfile: "datasets.beat2"
+  class_name: "BEAT2Dataset"
+  train_bs: 64
+  meta_paths:
+    - "/content/drive/MyDrive/my-codes/PantoMatrix/datasets/data_json/beat2_s20_l128_speaker2.json"
+  test_meta_paths: 
+    - "/content/drive/MyDrive/my-codes/PantoMatrix/datasets/data_json/beat2_s20_l128_speaker2.json"
+  pose_norm: False
+  pose_length: 128
+  stride: 20
+  test_length: 128
+
+model:
+  name_pyfile: "models.camn_audio.modeling_camn_audio"
+  class_name: "CamnAudioModel"
+  pose_fps: 15
+  motion_f: 256
+  pose_dims: 258
+  pose_rep: "smplx"
+  body_dims: 78
+  hands_dims: 180
+  audio_rep: wave16k
+  audio_sr: 16000
+  audio_fps: 16000
+  audio_norm: False
+  audio_f: 128
+  speaker_f: 16
+  speaker_dims: 1
+  hidden_size: 512
+  n_layer: 4
+  dropout_prob: 0.1
+  seed_frames: 4 
+  joint_mask: "local_upper"
+ 
+validation:
+  validation_steps: 500
+  test_steps: 500
+  visualization: False
+  evaluation: False
+  wandb: False
+
+solver:
+  gradient_accumulation_steps: 1
+  gradient_checkpointing: False 
+  max_train_steps: 100000
+  max_grad_norm: 0.0
+  # lr
+  learning_rate: 3e-4
+  scale_lr: False 
+  lr_warmup_steps: 0
+  lr_scheduler: 'constant'
+  # optimizer
+  use_8bit_adam: False 
+  adam_beta1: 0.9
+  adam_beta2: 0.999
+  adam_weight_decay:  0.0
+  adam_epsilon: 1.0e-8

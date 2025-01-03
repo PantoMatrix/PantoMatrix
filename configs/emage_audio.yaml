@@ -1,0 +1,78 @@
+wandb_project: 'EMAGE++'
+exp_name: 'debug'
+debug: False
+wandb_entity: ''
+wandb_key: ""
+# wandb_log_dir: '/content/outputs/wandb'
+output_dir: /content/outputs/
+log_period: 1
+seed: 222
+resume_from_checkpoint: null
+test: False
+
+data:
+  name_pyfile: "datasets.beat2"
+  class_name: "BEAT2DatasetEamgeFootContact"
+  train_bs: 56
+  meta_paths:
+    - "/content/drive/MyDrive/my-codes/PantoMatrix/datasets/data_json/beat2_s20_l64_speaker2.json"
+  test_meta_paths: 
+    - "/content/drive/MyDrive/my-codes/PantoMatrix/datasets/data_json/beat2_s20_l64_speaker2.json"
+  pose_norm: False
+  
+
+model:
+  name_pyfile: "models.emage_audio.modeling_emage_audio"
+  class_name: "EmageAudioModel"
+  pose_fps: 30
+  motion_f: 256
+  pose_dims: 330
+  pose_rep: "smplx"
+  audio_rep: wave16k
+  audio_sr: 16000
+  audio_fps: 16000
+  audio_norm: False
+  audio_f: 256
+  speaker_f: 768
+  speaker_dims: 1
+  hidden_size: 768
+  seed_frames: 4 
+  pose_length: 64
+  stride: 20
+  test_length: 64
+  joint_mask: null
+  vae_codebook_size: 256
+  ll: 3
+  lf: 3
+  lu: 3
+  lh: 3
+  cl: 1
+  cf: 0
+  cu: 1
+  ch: 1 
+  
+ 
+validation:
+  validation_steps: 500
+  test_steps: 1000
+  visualization: False
+  evaluation: False
+  wandb: False
+
+
+solver:
+  gradient_accumulation_steps: 1
+  gradient_checkpointing: False 
+  max_train_steps: 100000
+  max_grad_norm: 0.99
+  # lr
+  learning_rate: 1.5e-4
+  scale_lr: False 
+  lr_warmup_steps: 0
+  lr_scheduler: 'constant'
+  # optimizer
+  use_8bit_adam: False 
+  adam_beta1: 0.9
+  adam_beta2: 0.999
+  adam_weight_decay:  0.0
+  adam_epsilon: 1.0e-8
