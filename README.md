@@ -78,7 +78,7 @@ We summarize the download links for pretrained models, datasets, tools supported
 
 ### Model list
 
-| Model  | Paper           | Inputs | Outputs**         | Language (Train)         | Performance*** (Full Body FGD) | Weights |
+| Model  | Paper           | Inputs | Outputs**         | Language (Train)         | Full Body FGD | Weights |
 |--------|-----------------|--------|------------------|--------------------------|-------------------------------|---------|
 | DisCo  | ACMMM 2022     | Audio  | Upper + Hands    | English (Speaker 2) | 2.233                            |    [Link](https://huggingface.co/H-Liu1997/disco_audio/tree/main)     |
 | CaMN   | ECCV 2022      | Audio  | Upper + Hands    | English (Speaker 2) | 2.120                         |     [Link](https://huggingface.co/H-Liu1997/camn_audio/tree/main)    |
