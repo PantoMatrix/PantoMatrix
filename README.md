@@ -1,5 +1,5 @@
 <div align="center">
-<h1>PantoMatrix<br>Talking Face and Body Animation Generation</h1> 
+<h1>PantoMatrix<br>Generating Face and Body Animation from Speech</h1> 
 PantoMatrix is an Open-Source and research project to generate 3D body and face animation from speech. 
 It works as an API inputs speech audio and outputs body and face motion parameters. 
 You may transfer these motion parameters to other formats such as Iphone ARKit Blendshape Weights or Vicon Skeleton bvh files. 
