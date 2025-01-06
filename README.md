@@ -1,17 +1,11 @@
 <div align="center">
-<h1>PantoMatrix: Talking Face and Body Animation Generation</h1> 
+<h1>PantoMatrix<br>Talking Face and Body Animation Generation</h1> 
 PantoMatrix is an Open-Source and research project to generate 3D body and face animation from speech. 
 It works as an API inputs speech audio and outputs body and face motion parameters. 
 You may transfer these motion parameters to other formats such as Iphone ARKit Blendshape Weights or Vicon Skeleton bvh files. 
-<br>
-<br>
 </div>
 <!-- [![PWC](https://img.shields.io/endpoint.svg?url=https://paperswithcode.com/badge/emage-towards-unified-holistic-co-speech/3d-face-animation-on-beat2)](https://paperswithcode.com/sota/3d-face-animation-on-beat2?p=emage-towards-unified-holistic-co-speech)
 [![PWC](https://img.shields.io/endpoint.svg?url=https://paperswithcode.com/badge/emage-towards-unified-holistic-co-speech/gesture-generation-on-beat2)](https://paperswithcode.com/sota/gesture-generation-on-beat2?p=emage-towards-unified-holistic-co-speech) -->
-
-<div align="center">
-  <img src="assets/intro.gif" alt="Animation Example" style="width:95%; clip-path: inset(0px 0px 3px 0px);">
-</div>
 
 <br>
 
@@ -47,6 +41,10 @@ You may transfer these motion parameters to other formats such as Iphone ARKit B
 
 <h2>1. News</h2>
 
+<div align="center">
+  <img src="assets/intro.gif" alt="Animation Example" style="width:95%; clip-path: inset(0px 0px 3px 0px);">
+</div>
+
 Welcome volunteers to contribute and collaborate on related topics. Feel free to submit the pull requests! Currently this repo is mainly maintained by haiyangliu1997@gmail.com in freetime since 2022.
  
 - **[2025/01]** New inference api, visualization api, evaluation api, training codebase, are available!
@@ -67,11 +65,6 @@ Welcome volunteers to contribute and collaborate on related topics. Feel free to
 - **[2022/12]** Provide English data in Zip files (#10).
 - **[2022/10]** [Project page](https://pantomatrix.github.io/BEAT/) and [rendered videos](https://drive.google.com/drive/folders/1ghZ7_4LkCyM_IZxTElzAwPzGheLrBGBu) are available.
 - **[2022/08]** [All languages data v0.1.0](https://drive.google.com/drive/folders/1CVyJOp3G_A9l1N_CsKdHgXQfB4pXhG8c?usp=share_link)  (in separated files) are available. -->
-
-
- <!-- fgd: 2.2332441801
-  bc: 0.7650137509
-  l1: 9.8172253088 -->
 
 <br>
 
@@ -157,7 +150,7 @@ beat_format_save(motion_pred_np, "/result_motion.npz")
 
 When you run the test scripts, 
 there is an parameter `--visualization` to automatic enable visualizaion. 
-Besides, you could also try visualiztion by the below.
+<br>Besides, you could also try visualiztion by the below.
 
 #### Approach 1: Blender (Recommended)
 Render the output using Blender by download the [blender addon](https://huggingface.co/datasets/H-Liu1997/BEAT2_Tools/blob/main/smplx_blender_addon_20230921.zip)
@@ -172,15 +165,16 @@ from emage_utils import fast_render
 fast_render.render_one_sequence_no_gt("/result_motion.npz", "/audio_path.wav", "/result_video.mp4", remove_global=True)
 ```
 
-<table>
+<table class="center">
   <tr>
-    <td>
-      <video width="240" controls>
-        <source src="./examples/motion/2_scott_0_103_103_output_camn_mesh.mp4" type="video/mp4">
-        Your browser does not support the video tag.
-      </video>
-      <center><p><strong>CaMN</strong></p></center>
-    </td>
+    <td style="text-align: center"><b>DisCo (Mesh)</b></td>
+    <td style="text-align: center"><b>CaMN (Mesh)</b></td>
+    <td style="text-align: center"><b>EMAGE (Mesh)</b></td>
+  </tr>
+  <tr>
+    <td style="text-align: center"><a target="_blank" href="./assets/videos/2_scott_0_103_103_output_disco_mesh.mp4"><img src="./assets/videos/2_scott_0_103_103_output_disco_mesh_v1.gif" width="240"></a></td>
+    <td style="text-align: center"><a target="_blank" href="./assets/videos/2_scott_0_103_103_output_camn_mesh.mp4"><img src="./assets/videos/2_scott_0_103_103_output_camn_mesh_V2.gif" width="240"></a></td>
+    <td style="text-align: center"><a target="_blank" href="./assets/videos/2_scott_0_103_103_output_emage_mesh.mp4"><img src="./assets/videos/2_scott_0_103_103_output_emage_mesh_v1.gif" width="480"></a></td>
   </tr>
 </table>
 
@@ -205,40 +199,20 @@ fast_render.add_audio_to_video(npz_path.replace(".npz", "_2dbody.mp4"), audio_pa
 ```
 
 
-<table>
+<table class="center">
   <tr>
-    <td>
-      <video width="240" controls>
-        <source src="./examples/motion/2_scott_0_103_103_disco.mp4" type="video/mp4">
-        Your browser does not support the video tag.
-      </video>
-      <center><p><strong>DisCo</strong></p></center>
-    </td>
-    <td>
-      <video width="240" controls>
-        <source src="./examples/motion/2_scott_0_103_103_output_camn.mp4" type="video/mp4">
-        Your browser does not support the video tag.
-      </video>
-      <center><p><strong>CaMN</strong></p></center>
-    </td>
-    <td>
-      <video width="240" controls>
-        <source src="./examples/motion/2_scott_0_103_103_output_emage.mp4" type="video/mp4">
-        Your browser does not support the video tag.
-      </video>
-      <center><p><strong>EMAGE</strong></p></center>
-    </td>
-    <td>
-      <video width="240" controls>
-        <source src="./examples/motion/2_scott_0_103_103_output_emage_face.mp4" type="video/mp4">
-        Your browser does not support the video tag.
-      </video>
-      <center><p><strong>EMAGE-Face</strong></p></center>
-    </td>
+    <td style="text-align: center"><b>DisCo (2D Pose)</b></td>
+    <td style="text-align: center"><b>CaMN (2D Pose)</b></td>
+    <td style="text-align: center"><b>EMAGE (2D Pose)</b></td>
+    <td style="text-align: center"><b>EMAGE-Face (2D Pose)</b></td>
+  </tr>
+  <tr>
+    <td style="text-align: center"><a target="_blank" href="./assets/videos/2_scott_0_103_103_disco.mp4"><img src="./assets/videos/2_scott_0_103_103_disco_V1.gif" width="240"></a></td>
+    <td style="text-align: center"><a target="_blank" href="./assets/videos/2_scott_0_103_103_output_camn.mp4"><img src="./assets/videos/2_scott_0_103_103_output_camn_V1.gif" width="240"></a></td>
+    <td style="text-align: center"><a target="_blank" href="./assets/videos/2_scott_0_103_103_output_emage.mp4"><img src="./assets/videos/2_scott_0_103_103_output_emage_V1.gif" width="240"></a></td>
+    <td style="text-align: center"><a target="_blank" href="./assets/videos/2_scott_0_103_103_output_emage_face.mp4"><img src="./assets/videos/2_scott_0_103_103_output_emage_face_V1.gif" width="240"></a></td>
   </tr>
 </table>
-
-
 
 
 <br>
@@ -290,13 +264,14 @@ metrics["lvd"] = lvd_evaluator.avg()
 metrics["mse"] = mse_evaluator.avg()
 ```
 
-Hyperparameters may vary depending on the dataset. For example, for the BEAT dataset, we use `(0.3, 7)`; for the TalkShow dataset, we use `(0.5, 7)`. You may adjust based on your data.
+Hyperparameters may vary depending on the dataset. 
+<br> For example, for the BEAT dataset, we use `(0.3, 7)`; for the TalkShow dataset, we use `(0.5, 7)`. You may adjust based on your data.
 
 <br>
 
 ## 6. Training
 
-This new codebase only have the audio-only version model for better real-world applications. For reproducing audio+text results in the paper, please check and reference the previous codebase below.
+This new codebase only have the audio-only version model for better real-world applications. <br>For reproducing audio+text results in the paper, please check and reference the previous codebase below.
 
 | Model  | Inputs (Paper)      | Old Codebase | Input (Current Codebase)  | 
 |--------|---------------------|-----------------------------|---------------------|
@@ -372,29 +347,25 @@ torchrun --nproc_per_node 1 --nnodes 1 train_disco_audio.py --config ./configs/d
 
 <h2> Reference </h2>
 
-<!-- **CoRR 2024**<br /> -->
-**CVPR 2024**<br />
-**EMAGE: Towards Unified Holistic Co-Speech Gesture Generation via Expressive Masked Audio Gesture Modeling**<br >
-<sub>
-<a href="https://h-liu1997.github.io/">Haiyang Liu</a>\*,
-<a href="https://zzhat0706.github.io/PersonalPage/">Zihao Zhu</a>\*,
+<div align="center">
+<h2>
+EMAGE: Towards Unified Holistic Co-Speech Gesture Generation via Expressive Masked Audio Gesture Modeling (CVPR 2024)
+
+<h4>
+<a href="https://h-liu1997.github.io/">Haiyang Liu</a>*,
+<a href="https://zzhat0706.github.io/PersonalPage/">Zihao Zhu</a>*,
 <a href="https://ps.is.mpg.de/person/gbecherini">Giorgio Becherini</a>, 
 <a href="https://scholar.google.com/citations?user=9sWVrREAAAAJ&hl=en">Yichen Peng</a>,
 <a>Mingyang Su</a>,
 <a>You Zhou</a>,
 <a href="https://iwanao731.github.io/">Naoya Iwamoto</a>,
 <a href="http://www.bozheng-lab.com/">Bo Zheng</a>,
-<a href="https://ps.is.mpg.de/person/black">Michael J. Black</a>\
-</sub>
-<sub>
+<a href="https://ps.is.mpg.de/person/black">Michael J. Black</a>
+<br>
+<br>
 <sup>(*Equal Contribution)</sup>
 <sub>
-------------
-<img src ="assets/EMAGE_2024/teaser.gif" width="100%">
-
-<p align="left">
-We propose EMAGE, a framework to generate full-body human gestures from audio and masked gestures, encompassing facial, local body, hands, and global movements. To achieve this, we first introduce BEATX (BEAT-SMPLXFLAME), a new mesh-level holistic co-speech dataset. BEATX combines MoShed SMPLX body with FLAME head parameters and further refines the modeling of head, neck, and finger movements, offering a community-standardized, high-quality 3D motion captured dataset. EMAGE leverages masked body gesture priors during training to boost inference performance. It involves a Masked Audio Gesture Transformer, facilitating joint training on audio-togesture generation and masked gesture reconstruction to effectively encode audio and body gesture hints. Encoded body hints from masked gestures are then separately employed to generate facial and body movements. Moreover, EMAGE adaptively merges speech features from the audio’s rhythm and content and utilizes four compositional VQVAEs to enhance the results’ fidelity and diversity. Experiments demonstrate that EMAGE generates holistic gestures with state-of-the-art performance and is flexible in accepting predefined spatial-temporal gesture inputs, generating complete, audio-synchronized results.
-</p>
+</div>
 
 <p align="center">
 <img src ="assets/EMAGE_2024/res.png" width="100%">
@@ -424,18 +395,11 @@ We propose EMAGE, a framework to generate full-body human gestures from audio an
     </a>
 </p>
 
-<!-- <p align="center">
--
-<a>Data Processing</a>
--
-</p>
-<img src ="assets/EMAGE_2024/data.png" width="100%"> -->
-
 ------------
-
-**ECCV 2022**<br />
-**BEAT: A Large-Scale Semantic and Emotional Multi-Modal Dataset for Conversational Gestures Synthesis**<br >
-<sub>
+<div align="center">
+<h2>
+BEAT: A Large-Scale Semantic and Emotional Multi-Modal Dataset for Conversational Gestures Synthesis (ECCV 2022)
+<h4>
 <a href="https://h-liu1997.github.io/">Haiyang Liu</a>,
 <a href="https://zzhat0706.github.io/PersonalPage/">Zihao Zhu</a>,
 <a href="https://iwanao731.github.io/">Naoya Iwamoto</a>,
@@ -444,13 +408,7 @@ We propose EMAGE, a framework to generate full-body human gestures from audio an
 <a>You Zhou</a>,
 <a href="https://scholar.google.com.sg/citations?user=Bm1TcmsAAAAJ&hl=en">Elif Bozkurt</a>,
 <a href="http://www.bozheng-lab.com/">Bo Zheng</a>
-</sub>
-------------
-<img src ="assets/BEAT_2022/teaser.png" width="100%">
-
-<p align="left">
-Achieving realistic, vivid, and human-like synthesized conversational gestures conditioned on multi-modal data is still an unsolved problem due to the lack of available datasets, models and standard evaluation metrics. To address this, we build Body-Expression-Audio-Text dataset, BEAT, which has i) 76 hours, high-quality, multi-modal data captured from 30 speakers talking with eight different emotions and in four different languages, ii) 32 millions frame-level emotion and semantic relevance annotations. Our statistical analysis on BEAT demonstrates the correlation of conversational gestures with facial expressions, emotions, and semantics, in addition to the known correlation with audio, text, and speaker identity. Based on this observation, we propose a baseline model, Cascaded Motion Network (CaMN), which consists of above six modalities modeled in a cascaded architecture for gesture synthesis. To evaluate the semantic relevancy, we introduce a metric, Semantic Relevance Gesture Recall (SRGR). Qualitative and quantitative experiments demonstrate metrics’ validness, ground truth data quality, and baseline’s state-of-the-art performance. To the best of our knowledge, BEAT is the largest motion capture dataset for investigating human gestures, which may contribute to a number of different research fields, including controllable gesture synthesis, cross-modality analysis, and emotional gesture recognition.
-</p>
+</div>
 
 <p align="center">
 <img src ="assets/BEAT_2022/data2.png" width="100%">
@@ -480,19 +438,11 @@ Achieving realistic, vivid, and human-like synthesized conversational gestures c
     </a>
 </p>
 
-<!-- <p align="center">
--
-<a>Data Distribution</a>
--
-</p>
-<img src ="assets/BEAT_2022/data1.png" width="100%">
-<img src ="assets/BEAT_2022/data2.png" width="100%"> -->
-
 ------------
-
-**ACMMM 2022**<br />
-**DisCo: Disentangled Implicit Content and Rhythm Learning for Diverse Co-Speech Gesture Synthesis**<br >
-<sub>
+<div align="center">
+<h2>
+DisCo: Disentangled Implicit Content and Rhythm Learning for Diverse Co-Speech Gesture Synthesis (ACMMM 2022)
+<h4>
 <a href="https://h-liu1997.github.io/">Haiyang Liu</a>,
 <a href="https://iwanao731.github.io/">Naoya Iwamoto</a>,
 <a href="https://zzhat0706.github.io/PersonalPage/">Zihao Zhu</a>,
@@ -500,17 +450,8 @@ Achieving realistic, vivid, and human-like synthesized conversational gestures c
 <a>You Zhou</a>,
 <a href="https://scholar.google.com.sg/citations?user=Bm1TcmsAAAAJ&hl=en">Elif Bozkurt</a>,
 <a href="http://www.bozheng-lab.com/">Bo Zheng</a>
-</sub>
-------------
+</div>
 <img src ="assets/DisCo_2022/teaser.png" width="100%">
-
-<p align="left">
-Current co-speech gestures synthesis methods struggle with generating diverse motions and typically collapse to single or few frequent motion sequences, which are trained on original data distribution with customized models and strategies. We tackle this problem by temporally clustering motion sequences into content and rhythm segments and then training on content-balanced data distribution. In particular, by clustering motion sequences, we have observed for each rhythm pattern, some motions appear frequently, while others appear less. This imbalance results in the difficulty of generating low frequent occurrence motions and it cannot be easily solved by resampling, due to the inherent many-tomany mapping between content and rhythm. Therefore, we present DisCo, which disentangles motion into implicit content and rhythm features by contrastive loss for adopting different data balance strategies. Besides, to model the inherent mapping between content and rhythm features, we design a diversity-and-inclusion network (DIN), which firstly generates content features candidates and then selects one candidate by learned voting. Experiments on two public datasets, Trinity and S2G-Ellen, justify that DisCo generates more realistic and diverse motions than state-of-the-art methods.
-</p>
-
-<p align="center">
-<img src ="assets/DisCo_2022/res.png" width="100%">
-</p>
 
 <p align="center">
 -
@@ -531,7 +472,3 @@ Current co-speech gestures synthesis methods struggle with generating diverse mo
 </p>
 
 
-
-Copyright Information
-============
-The website is inspired by the template of <a href="https://github.com/sebastianstarke/AI4Animation">AI4Animation</a>.
