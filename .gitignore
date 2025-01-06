@@ -1,3 +1,5 @@
 *.pyc
-./datasets/data_json/
 ./BEAT2/
+./examples/
+./emage_evaltools/
+./datasets/data_json/*
