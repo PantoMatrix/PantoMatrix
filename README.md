@@ -1,6 +1,8 @@
 <div align="center">
 <h1>PantoMatrix: Talking Face and Body Animation Generation</h1> 
-PantoMatrix is an Open-Source and research project to generate 3D body and face animation from speech. It works as an API inputs speech audio and outputs body and face motion parameters. You may transfer these motion parameters to other formats such as Iphone ARKit Blendshape Weights or Vicon Skeleton bvh files based on your needs. 
+PantoMatrix is an Open-Source and research project to generate 3D body and face animation from speech. 
+It works as an API inputs speech audio and outputs body and face motion parameters. 
+You may transfer these motion parameters to other formats such as Iphone ARKit Blendshape Weights or Vicon Skeleton bvh files. 
 <br>
 <br>
 </div>
@@ -48,7 +50,7 @@ PantoMatrix is an Open-Source and research project to generate 3D body and face 
 Welcome volunteers to contribute and collaborate on related topics. Feel free to submit the pull requests! Currently this repo is mainly maintained by haiyangliu1997@gmail.com in freetime since 2022.
  
 - **[2025/01]** New inference api, visualization api, evaluation api, training codebase, are available!
-- **[2024/07]** Now you could [download smplx motion (in .npz) file](https://huggingface.co/spaces/H-Liu1997/EMAGE), visualize with our blender addon and retarget to your avatar!
+- **[2024/07]** [download smplx motion (in .npz) file](https://huggingface.co/spaces/H-Liu1997/EMAGE), visualize with our blender addon and retarget to your avatar!
 - **[2024/04]** Thanks to [@camenduru](https://twitter.com/camenduru), Replicate version EMAGE is available! you can directly call EMAGE via API!
 - **[2024/03]** Thanks to [@sunday9999](https://github.com/sunday9999) for speeding up the inference video rendering from 1000s to 25s! 
 - **[2024/02]** Thanks to [@wubowen416](https://github.com/wubowen416) for the [scripts of automatic video visualization #83](https://github.com/PantoMatrix/PantoMatrix/issues/83) during inference!
@@ -153,7 +155,9 @@ beat_format_save(motion_pred_np, "/result_motion.npz")
 
 ## 4. Visualization
 
-When you run the test scripts, there is an parameter `--visualization` to automatic enable visualizaion. Besides, you could also try visualiztion by the below.
+When you run the test scripts, 
+there is an parameter `--visualization` to automatic enable visualizaion. 
+Besides, you could also try visualiztion by the below.
 
 #### Approach 1: Blender (Recommended)
 Render the output using Blender by download the [blender addon](https://huggingface.co/datasets/H-Liu1997/BEAT2_Tools/blob/main/smplx_blender_addon_20230921.zip)
