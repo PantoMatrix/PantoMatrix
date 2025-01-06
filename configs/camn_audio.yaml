@@ -4,7 +4,7 @@ debug: False
 wandb_entity: ''
 wandb_key: ""
 # wandb_log_dir: '/content/outputs/wandb'
-output_dir: /content/outputs/
+output_dir: "../outputs/"
 log_period: 1
 seed: 42
 resume_from_checkpoint: null
@@ -16,9 +16,9 @@ data:
   class_name: "BEAT2Dataset"
   train_bs: 64
   meta_paths:
-    - "/content/drive/MyDrive/my-codes/PantoMatrix/datasets/data_json/beat2_s20_l128_speaker2.json"
+    - "./datasets/data_json/beat2_s20_l128_speaker2.json"
   test_meta_paths: 
-    - "/content/drive/MyDrive/my-codes/PantoMatrix/datasets/data_json/beat2_s20_l128_speaker2.json"
+    - "./datasets/data_json/beat2_s20_l128_speaker2.json"
   pose_norm: False
   pose_length: 128
   stride: 20

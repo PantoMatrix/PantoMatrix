@@ -45,19 +45,20 @@ PantoMatrix is an Open-Source and research project to generate 3D body and face 
 
 <h2>1. News</h2>
 
-Welcome volunteers to contribute and collaborate on related topics. Feel free to submit the pull requests! Currently this repo is mainly maintained by haiyangliu1997@gmail.com in freetime.
+Welcome volunteers to contribute and collaborate on related topics. Feel free to submit the pull requests! Currently this repo is mainly maintained by haiyangliu1997@gmail.com in freetime since 2022.
  
 - **[2025/01]** New inference api, visualization api, evaluation api, training codebase, are available!
 - **[2024/07]** Now you could [download smplx motion (in .npz) file](https://huggingface.co/spaces/H-Liu1997/EMAGE), visualize with our blender addon and retarget to your avatar!
 - **[2024/04]** Thanks to [@camenduru](https://twitter.com/camenduru), Replicate version EMAGE is available! you can directly call EMAGE via API!
 - **[2024/03]** Thanks to [@sunday9999](https://github.com/sunday9999) for speeding up the inference video rendering from 1000s to 25s! 
-- **[2024/03]** EMAGE Demos: [Colab demo](https://colab.research.google.com/drive/1AINafluW6Ba5-KYN_L43eyFK0zRklMvr?usp=sharing), [Gradio demo](https://github.com/PantoMatrix/PantoMatrix/tree/main/scripts/EMAGE_2024#user-content--gradio-demo).
-- **[2024/02]** Quick Access: [How to setup EMAGE](https://github.com/PantoMatrix/PantoMatrix/blob/main/scripts/EMAGE_2024/readme.md), [Details of BEAT](https://github.com/PantoMatrix/PantoMatrix/blob/main/scripts/BEAT_2022/readme_beat.md). 🚀!
 - **[2024/02]** Thanks to [@wubowen416](https://github.com/wubowen416) for the [scripts of automatic video visualization #83](https://github.com/PantoMatrix/PantoMatrix/issues/83) during inference!
-- **[2022/03]** CaMN training scripts from [anonymous submission](https://github.com/beat2022dataset/beat).
+- **[2023/05]** [BEAT_GENEA](https://drive.google.com/file/d/1wYW7eWAYPkYZ7WPOrZ9Z_GIll13-FZfx/view?usp=share_link) is allowed for pretraining in [GENEA2023](https://genea-workshop.github.io/2023/challenge/)! Thanks for GENEA's organizers! 
+<!-- - **[2024/03]** EMAGE Demos: [Colab demo](https://colab.research.google.com/drive/1AINafluW6Ba5-KYN_L43eyFK0zRklMvr?usp=sharing), [Gradio demo](https://github.com/PantoMatrix/PantoMatrix/tree/main/scripts/EMAGE_2024#user-content--gradio-demo).
+- **[2024/02]** Quick Access: [How to setup EMAGE](https://github.com/PantoMatrix/PantoMatrix/blob/main/scripts/EMAGE_2024/readme.md), [Details of BEAT](https://github.com/PantoMatrix/PantoMatrix/blob/main/scripts/BEAT_2022/readme_beat.md). 🚀!
+
+- **[2022/03]** CaMN training scripts from [anonymous submission](https://github.com/beat2022dataset/beat). -->
 <!-- - **[2024/02]** Training and Inference [Scripts](https://github.com/PantoMatrix/PantoMatrix/blob/main/scripts/EMAGE_2024/readme.md) are available for [EMAGE](https://pantomatrix.github.io/EMAGE/). -->
 <!-- - **[2023/12]** [EMAGE](https://pantomatrix.github.io/EMAGE/) is available, including BEATX with both FLAME head and SMPLX body parameters.
-- **[2023/05]** [BEAT_GENEA](https://drive.google.com/file/d/1wYW7eWAYPkYZ7WPOrZ9Z_GIll13-FZfx/view?usp=share_link) is allowed for pretraining in [GENEA2023](https://genea-workshop.github.io/2023/challenge/)! Thanks for GENEA's organizers! 
 - **[2023/03]** [Samples](https://drive.google.com/drive/folders/1YLoGaJcrhp9Ap2tsJ4A5xNbKpzmDX6yD?usp=share_link) and [readme](https://github.com/PantoMatrix/BEAT/tree/main/beat2smpl) for SMPL-X body and hands data.
 - **[2023/01]** [English data v0.2.1](https://drive.google.com/file/d/1Akf0WgAwuH2fvlWbvNpif4XRqXlpznh9/view?usp=share_link) are available. Fix the orientation issue. See [updation](./docs/updation.md) for details.
 - **[2023/01]** Provide checkpoints (#14, #16), scripts for rendering (#17), preprocessing (#18).  
@@ -72,13 +73,10 @@ Welcome volunteers to contribute and collaborate on related topics. Feel free to
 
 <br>
 
-## 2. Download links
+## 2. Models and Tools List
 
-We summarize the download links for pretrained models, datasets, tools supported as below.
 
-### Model list
-
-| Model  | Paper           | Inputs | Outputs**         | Language (Train)         | Performance*** (Full Body FGD) | Weights |
+| Model  | Paper           | Inputs | Outputs**         | Language (Train)         | Full Body FGD | Weights |
 |--------|-----------------|--------|------------------|--------------------------|-------------------------------|---------|
 | DisCo  | ACMMM 2022     | Audio  | Upper + Hands    | English (Speaker 2) | 2.233                            |    [Link](https://huggingface.co/H-Liu1997/disco_audio/tree/main)     |
 | CaMN   | ECCV 2022      | Audio  | Upper + Hands    | English (Speaker 2) | 2.120                         |     [Link](https://huggingface.co/H-Liu1997/camn_audio/tree/main)    |
@@ -86,27 +84,19 @@ We summarize the download links for pretrained models, datasets, tools supported
 
 ** Outputs are in SMPLX and FLAME parameters. 
 
-<!-- *** Full performance report including more metrics is [here](#performance-report). -->
-
-
-## Dataset and tools
-
-
-| Type   |  |  |         |
-|--------|----------------------|--------------------|---------|
-| Datasets  | [BEAT2 (SMPLX+FLAME)](https://huggingface.co/datasets/H-Liu1997/BEAT2) | [BEAT (BVH + ARKit)]()    | FGD Eval |
-| Tools  | [Blender Addon](https://huggingface.co/datasets/H-Liu1997/BEAT2_Tools/resolve/main/smplx_blender_addon_20230921.zip?download=true) | SMPLX-FLAME Model | ARKit2FLAME |
+|        |                      |                    |                     |
+|--------|----------------------|--------------------|---------------------|
+| Datasets      | [BEAT2 (SMPLX+FLAME)](https://huggingface.co/datasets/H-Liu1997/BEAT2) | [BEAT (BVH + ARKit)](https://huggingface.co/datasets/H-Liu1997/BEAT)    | [Rendered Skeleton Videos](https://huggingface.co/datasets/H-Liu1997/BEAT_Rendered_Videos) |
+| Blender Tools | [Blender Addon](https://huggingface.co/datasets/H-Liu1997/BEAT2_Tools/blob/main/smplx_blender_addon_20230921.zip) | [Character on BEAT](https://huggingface.co/datasets/H-Liu1997/BEAT2_Tools/blob/main/BEAT_Avatars.zip) | [Blender Render Scripts](https://huggingface.co/datasets/H-Liu1997/BEAT2_Tools/blob/main/rendervideo.zip) |
+| SMPLX Tools   | [SMPLX-FLAME Model](https://huggingface.co/H-Liu1997/emage_evaltools/blob/main/smplx_models/smplx/SMPLX_NEUTRAL_2020.npz) | [ARKit2FLAME Sripts](https://huggingface.co/datasets/H-Liu1997/BEAT2_Tools/blob/main/ARkit_FLAME.zip) | [ARkit2FLAME Weights](https://huggingface.co/datasets/H-Liu1997/BEAT2_Tools/blob/main/mat_final.npy) |
+| Weights       | [FGD on BEAT2](https://huggingface.co/H-Liu1997/emage_evaltools/blob/main/AESKConv_240_100.bin) | [FGD on BEAT](https://huggingface.co/datasets/H-Liu1997/BEAT2_Tools/blob/main/beat_weights/ae_300.bin) | [Text Vocab](https://huggingface.co/datasets/H-Liu1997/BEAT2_Tools/blob/main/emage_weights/vocab.pkl) |
 
 
 
 <br>
 
 
-## 3. How to Use the API (Inference)
-
-### 3.1. Generate Gestures from Speech
-
-You will generate SMPLX and FLAME parameters in this step and store into `.npz` files
+## 3. Quick Start (Inference)
 
 #### Approach 1: Using Hugging Face Space
 Upload your audio and directly download the results from our Hugging Face Space.
@@ -115,12 +105,24 @@ Upload your audio and directly download the results from our Hugging Face Space.
 Clone the repository and set up locally.
 
 ```bash
-# Clone the repository
-git clone <repo_url>
-bash setup.sh
+git clone https://github.com/PantoMatrix/PantoMatrix.git
+cd PantoMatrix/
 
-# Run the test script
-python test.py --audio_dir /your_audio_dir --save_dir /your_save_dir --visualization
+bash setup.sh
+source /content/py39/bin/activate
+
+python test_camn_audio.py --visualization 
+# if you have trouble in install pytroch3d
+# use --nopytorch3d, this will not render the 2D openpose style video
+python test_camn_audio.py --visualization --nopytorch3d
+
+# try differnet models with your data, put your audio in --audio_folder
+# DisCo (ACMMM2022), upper body motion, with data resampling and rhythm content disentanglement.
+python test_disco_audio.py --visualization --audio_folder ./examples/audio --save_folder ./examples/motion 
+# BEAT (ECCV2022), upper body motion, with body2hands decoder
+python test_camn_audio.py --visualization --audio_folder ./examples/audio --save_folder ./examples/motion
+# EMAGE (CVPR2024), full body  + face animation 
+python test_emage_audio.py --visualization --audio_folder ./examples/audio --save_folder ./examples/motion
 ```
 
 #### Approach 3: Call API Directly
@@ -149,12 +151,12 @@ beat_format_save(motion_pred_np, "/result_motion.npz")
 <br>
 
 
-### 3.2. Visualization
+## 4. Visualization
 
-When you run the scripts in 3.1. there is an parameter `--visualization` to automatic enable visualizaion. Besides, you could also try visualiztion by the below.
+When you run the test scripts, there is an parameter `--visualization` to automatic enable visualizaion. Besides, you could also try visualiztion by the below.
 
 #### Approach 1: Blender (Recommended)
-Render the output using Blender or our visualization function:
+Render the output using Blender by download the [blender addon](https://huggingface.co/datasets/H-Liu1997/BEAT2_Tools/blob/main/smplx_blender_addon_20230921.zip)
 
 
 
@@ -166,7 +168,19 @@ from emage_utils import fast_render
 fast_render.render_one_sequence_no_gt("/result_motion.npz", "/audio_path.wav", "/result_video.mp4", remove_global=True)
 ```
 
-#### Approach 3: 2D OpenPose style video
+<table>
+  <tr>
+    <td>
+      <video width="240" controls>
+        <source src="./examples/motion/2_scott_0_103_103_output_camn_mesh.mp4" type="video/mp4">
+        Your browser does not support the video tag.
+      </video>
+      <center><p><strong>CaMN</strong></p></center>
+    </td>
+  </tr>
+</table>
+
+#### Approach 3: 2D OpenPose style video (Require Pytorch3D)
 
 ```python
 from trochvision.io import write_video
@@ -186,9 +200,46 @@ write_video(npz_path.replace(".npz", "_2dbody.mp4"), v2d_body.permute(0, 2, 3, 1
 fast_render.add_audio_to_video(npz_path.replace(".npz", "_2dbody.mp4"), audio_path, npz_path.replace(".npz", "_2dbody_audio.mp4"))
 ```
 
+
+<table>
+  <tr>
+    <td>
+      <video width="240" controls>
+        <source src="./examples/motion/2_scott_0_103_103_disco.mp4" type="video/mp4">
+        Your browser does not support the video tag.
+      </video>
+      <center><p><strong>DisCo</strong></p></center>
+    </td>
+    <td>
+      <video width="240" controls>
+        <source src="./examples/motion/2_scott_0_103_103_output_camn.mp4" type="video/mp4">
+        Your browser does not support the video tag.
+      </video>
+      <center><p><strong>CaMN</strong></p></center>
+    </td>
+    <td>
+      <video width="240" controls>
+        <source src="./examples/motion/2_scott_0_103_103_output_emage.mp4" type="video/mp4">
+        Your browser does not support the video tag.
+      </video>
+      <center><p><strong>EMAGE</strong></p></center>
+    </td>
+    <td>
+      <video width="240" controls>
+        <source src="./examples/motion/2_scott_0_103_103_output_emage_face.mp4" type="video/mp4">
+        Your browser does not support the video tag.
+      </video>
+      <center><p><strong>EMAGE-Face</strong></p></center>
+    </td>
+  </tr>
+</table>
+
+
+
+
 <br>
 
-###  3.3. Evaluation
+## 5. Evaluation
 
 For academic users, the evaluation code is organized into an evaluation API. 
 
@@ -239,27 +290,29 @@ Hyperparameters may vary depending on the dataset. For example, for the BEAT dat
 
 <br>
 
-## 4. Training
+## 6. Training
 
 This new codebase only have the audio-only version model for better real-world applications. For reproducing audio+text results in the paper, please check and reference the previous codebase below.
 
 | Model  | Inputs (Paper)      | Old Codebase | Input (Current Codebase)  | 
 |--------|---------------------|-----------------------------|---------------------|
-| DisCo  | Audio + Text        |    link                         | Audio               |       
-| CaMN   | Audio + Text + Emotion + Facial |      link               | Audio               |          
-| EMAGE  | Audio + Text        | link                      | Audio               |     
+| DisCo  | Audio + Text        |    [link](https://github.com/PantoMatrix/PantoMatrix/tree/6ca70b9541285b124da2eeedcd80f7c5a54eb111/scripts/DisCo_2022)                         | Audio               |       
+| CaMN   | Audio + Text + Emotion + Facial |      [link](https://github.com/PantoMatrix/PantoMatrix/tree/6ca70b9541285b124da2eeedcd80f7c5a54eb111/scripts/BEAT_2022)               | Audio               |          
+| EMAGE  | Audio + Text        | [link](https://github.com/PantoMatrix/PantoMatrix/tree/6ca70b9541285b124da2eeedcd80f7c5a54eb111/scripts/EMAGE_2024)                      | Audio               |     
 
 
-### 4.1. General Setup
+#### Before Start
 
 Environment setup, skip if you already setup the inference.
 ```bash
-bash setup.sh
-source /content/py39/bin/activate
-```
 
-Download the dataset
-```bash
+# if you didn't run test, run the below four commands.
+# git clone https://github.com/PantoMatrix/PantoMatrix.git
+# cd PantoMatrix/
+# bash setup.sh
+# source /content/py39/bin/activate
+
+# Download the BEAT2
 sudo apt-get update
 sudo apt-get install git-lfs
 git lfs install
@@ -268,45 +321,24 @@ git clone https://huggingface.co/datasets/H-Liu1997/BEAT2
 
 Your folder should like follows for the correct path
 ```bash
-/content/
-|-- beat2
-|-- pantomatrix-master
+/your_root/
+|-- PantoMatrix
+   |-- BEAT2
    `-- train_emage_audio.py
 ```
 
-### 4.1. Training EMAGE
+####  Method 1: Training EMAGE
 
-#### Preprocessing
-
-Extract the foot contact data
+#### 
 ```bash
-cd ./pantomatrix-master/
+# Preprocessing Extract the foot contact data
 python ./datasets/foot_contact.py
+
+# (todo) train the vqvae
+
+# train the audio2motion model
+torchrun --nproc_per_node 1 --nnodes 1 train_emage_audio.py --config ./configs/emage_audio.yaml --evaluation
 ```
-
-#### VQ-VAEs
-
-Use pretrained models:
-
-```python
-from .model.emage_audio import EmageVQVAEModel, EmageVAEModel, EmageVQModel
-
-motion_vq = EmageVQModel(
-  face_model=EmageVQVAEConv.from_pretrained("H-Liu1997/emage_audio", subfolder="emage_vq/face"),
-  upper_model=EmageVQVAEConv.from_pretrained("H-Liu1997/emage_audio", subfolder="emage_vq/upper"),
-  lower_model=EmageVQVAEConv.from_pretrained("H-Liu1997/emage_audio", subfolder="emage_vq/lower"),
-  hands_model=EmageVQVAEConv.from_pretrained("H-Liu1997/emage_audio", subfolder="emage_vq/hands"),
-  global_model=EmageVAEConv.from_pretrained("H-Liu1997/emage_audio", subfolder="emage_vq/global"),
-).to(device)
-motion_vq.eval()
-```
-
-#### Audio2Gesture Network
-
-```bash
-torchrun --nproc_per_node 1 --nnodes 1 train_emage_audio.py --config ./configs/emage_audio.py --evaluation
-```
-
 Use these flags as needed:
 
 - `--evaluation`: Calculate the test metric.
@@ -314,52 +346,27 @@ Use these flags as needed:
 - `--visualization`: Render test results (slow; disable for efficiency).
 - `--test`: Test mode; load last checkpoint and evaluate.
 - `--debug`: Debug mode; iterate one data point for fast testing.
+
+
+#### Method 2: Training CaMN
+
+```bash
+torchrun --nproc_per_node 1 --nnodes 1 train_camn_audio.py --config ./configs/camn_audio.yaml --evaluation
+```
+
+#### Method 3: Training DisCo
+
+```bash
+# (optional) Extract the cluster information
+# python ./datasets/clustering.py
+
+# train audio2motion 
+torchrun --nproc_per_node 1 --nnodes 1 train_disco_audio.py --config ./configs/disco_audio.yaml --evaluation
+```
 
 <br>
 
-### 4.2. Training CaMN
-
-#### Audio2Gesture Network
-
-```bash
-torchrun --nproc_per_node 1 --nnodes 1 train_camn_audio.py --config ./configs/camn_audio.py --evaluation
-```
-
-Use these flags as needed:
-
-- `--evaluation`: Calculate the test metric.
-- `--wandb`: Activate logging to WandB.
-- `--visualization`: Render test results (slow; disable for efficiency).
-- `--test`: Test mode; load last checkpoint and evaluate.
-- `--debug`: Debug mode; iterate one data point for fast testing.
-
-### 4.3. Training DisCo
-
-#### Preprocessing
-
-Extract the cluster information
-```bash
-cd ./pantomatrix-master/
-python ./datasets/clustering.py
-```
-
-#### Audio2Gesture Network
-
-```bash
-torchrun --nproc_per_node 1 --nnodes 1 train_disco_audio.py --config ./configs/disco_audio.py --evaluation
-```
-
-Use these flags as needed:
-
-- `--evaluation`: Calculate the test metric.
-- `--wandb`: Activate logging to WandB.
-- `--visualization`: Render test results (slow; disable for efficiency).
-- `--test`: Test mode; load last checkpoint and evaluate.
-- `--debug`: Debug mode; iterate one data point for fast testing.
-
-<br>
-
-<h2>5. Reference </h2>
+<h2> Reference </h2>
 
 <!-- **CoRR 2024**<br /> -->
 **CVPR 2024**<br />

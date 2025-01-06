@@ -17,3 +17,5 @@ pip install --upgrade pip==24.0
 # Install Python dependencies
 pip install -r ./pre-requirements.txt
 pip install -r ./requirements.txt
+git lfs install
+git clone https://huggingface.co/H-Liu1997/emage_evaltools

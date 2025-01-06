@@ -1,7 +1,3 @@
 *.pyc
-/BEAT2/
-/datasets/
-/EMAGE/
-/outputs/
-*.pyc
-*.pyc
+./datasets/data_json/
+./BEAT2/

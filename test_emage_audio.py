@@ -10,11 +10,10 @@ import numpy as np
 from tqdm import tqdm
 from emage_utils.motion_io import beat_format_save
 from emage_utils import fast_render
-from emage_utils.npz2pose import render2d, render3d
 from models.emage_audio import EmageAudioModel, EmageVQVAEConv, EmageVAEConv, EmageVQModel
 
 
-def inference(model, motion_vq, audio_path, device, save_path, sr, pose_fps,):
+def inference(model, motion_vq, audio_path, device, save_folder, sr, pose_fps,):
     audio, _ = librosa.load(audio_path, sr=sr)
     audio = torch.from_numpy(audio).to(device).unsqueeze(0)
     speaker_id = torch.zeros(1,1).long().to(device)
@@ -52,29 +51,32 @@ def inference(model, motion_vq, audio_path, device, save_path, sr, pose_fps,):
     motion_pred = motion_pred.cpu().numpy().reshape(t, -1)
     face_pred = all_pred["expression"].cpu().numpy().reshape(t, -1)
     trans_pred = all_pred["trans"].cpu().numpy().reshape(t, -1)
-    beat_format_save(os.path.join(save_path, f"{os.path.splitext(os.path.basename(audio_path))[0]}_output.npz"),
+    beat_format_save(os.path.join(save_folder, f"{os.path.splitext(os.path.basename(audio_path))[0]}_output.npz"),
                      motion_pred, upsample=30//pose_fps, expressions=face_pred, trans=trans_pred)
     return t
 
-def visualize_one(save_path, audio_path):
-    npz_path = os.path.join(save_path, f"{os.path.splitext(os.path.basename(audio_path))[0]}_output.npz")
+def visualize_one(save_folder, audio_path, nopytorch3d=False):  
+    npz_path = os.path.join(save_folder, f"{os.path.splitext(os.path.basename(audio_path))[0]}_output.npz")
     motion_dict = np.load(npz_path, allow_pickle=True)
-    v2d_face = render2d(motion_dict, (512, 512), face_only=True, remove_global=True)
-    write_video(npz_path.replace(".npz", "_2dface.mp4"), v2d_face.permute(0, 2, 3, 1), fps=30)
-    fast_render.add_audio_to_video(npz_path.replace(".npz", "_2dface.mp4"), audio_path, npz_path.replace(".npz", "_2dface_audio.mp4"))
-    v2d_body = render2d(motion_dict, (720, 480), face_only=False, remove_global=True)
-    write_video(npz_path.replace(".npz", "_2dbody.mp4"), v2d_body.permute(0, 2, 3, 1), fps=30)
-    fast_render.add_audio_to_video(npz_path.replace(".npz", "_2dbody.mp4"), audio_path, npz_path.replace(".npz", "_2dbody_audio.mp4"))
+    if not nopytorch3d:
+        from emage_utils.npz2pose import render2d
+        v2d_face = render2d(motion_dict, (512, 512), face_only=True, remove_global=True)
+        write_video(npz_path.replace(".npz", "_2dface.mp4"), v2d_face.permute(0, 2, 3, 1), fps=30)
+        fast_render.add_audio_to_video(npz_path.replace(".npz", "_2dface.mp4"), audio_path, npz_path.replace(".npz", "_2dface_audio.mp4"))
+        v2d_body = render2d(motion_dict, (720, 480), face_only=False, remove_global=True)
+        write_video(npz_path.replace(".npz", "_2dbody.mp4"), v2d_body.permute(0, 2, 3, 1), fps=30)
+        fast_render.add_audio_to_video(npz_path.replace(".npz", "_2dbody.mp4"), audio_path, npz_path.replace(".npz", "_2dbody_audio.mp4"))
     fast_render.render_one_sequence_with_face(npz_path, os.path.dirname(npz_path), audio_path, model_folder="./emage_evaltools/smplx_models/")  
 
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--audio_folder", type=str, default="./examples/audio")
-    parser.add_argument("--save_path", type=str, default="./examples/motion")
+    parser.add_argument("--save_folder", type=str, default="./examples/motion")
     parser.add_argument("--visualization", action="store_true")
+    parser.add_argument("--nopytorch3d", action="store_true")
     args = parser.parse_args()
 
-    os.makedirs(args.save_path, exist_ok=True)
+    os.makedirs(args.save_folder, exist_ok=True)
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
     face_motion_vq = EmageVQVAEConv.from_pretrained("H-Liu1997/emage_audio", subfolder="emage_vq/face").to(device)
@@ -97,9 +99,9 @@ def main():
     start_time = time.time()
 
     for audio_path in tqdm(audio_files, desc="Inference"):
-        all_t += inference(model, motion_vq, audio_path, device, args.save_path, sr, pose_fps)
+        all_t += inference(model, motion_vq, audio_path, device, args.save_folder, sr, pose_fps)
         if args.visualization:
-            visualize_one(args.save_path, audio_path)
+            visualize_one(args.save_folder, audio_path, args.nopytorch3d)
     print(f"generate total {all_t/pose_fps:.2f} seconds motion in {time.time()-start_time:.2f} seconds")
 if __name__ == "__main__":
     main()
