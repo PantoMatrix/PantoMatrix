@@ -27,6 +27,7 @@ You may transfer these motion parameters to other formats such as Iphone ARKit B
     <!-- <a href="https://replicate.com/camenduru/emage"><img src="https://img.shields.io/badge/Replicate-gray?logo=google&amp"></a> -->
     <a href="https://colab.research.google.com/drive/1MeuZtBv8yUUG9FFeN8UGy78Plk4gzxT4?usp=sharing"><img src="https://img.shields.io/badge/Colab-gray?logo=Google%20Colab&amp"></a>
     <!-- <a href="https://huggingface.co/spaces/H-Liu1997/EMAGE"><img src="https://img.shields.io/badge/Huggingface Space-gray?logo=huggingface&amp"></a> -->
+    <a href="https://huggingface.co/spaces/H-Liu1997/EMAGE"><img src="https://img.shields.io/badge/Huggingface Space-gray?logo=huggingface&amp"></a>
     <a href="https://www.youtube.com/watch?v=T0OYPvViFGE"><img src="https://img.shields.io/badge/ECCV 2022-gray?logo=arxiv&amp"></a>
 </div>
 
@@ -38,6 +39,7 @@ You may transfer these motion parameters to other formats such as Iphone ARKit B
     <!-- <a href="https://replicate.com/camenduru/emage"><img src="https://img.shields.io/badge/Replicate-gray?logo=google&amp"></a> -->
     <!-- <a href="https://colab.research.google.com/drive/1bB3LqAzceNTW2urXeMpOTPoJYTRoKlzB?usp=sharing"><img src="https://img.shields.io/badge/Colab-gray?logo=Google%20Colab&amp"></a> -->
     <!-- <a href="https://huggingface.co/spaces/H-Liu1997/EMAGE"><img src="https://img.shields.io/badge/Huggingface Space-gray?logo=huggingface&amp"></a> -->
+    <a href="https://huggingface.co/spaces/H-Liu1997/EMAGE"><img src="https://img.shields.io/badge/Huggingface Space-gray?logo=huggingface&amp"></a>
     <a href="https://www.youtube.com/watch?v=T0OYPvViFGE"><img src="https://img.shields.io/badge/ACMMM 2022-gray?logo=arxiv&amp"></a>
 </div>
 
@@ -98,6 +100,10 @@ Welcome volunteers to contribute and collaborate on related topics. Feel free to
 
 #### Approach 1: Using Hugging Face Space
 Upload your audio and directly download the results from our Hugging Face Space.
+
+<div align="center">
+  <img src="assets/gradio.png" alt="Animation Example" style="width:95%; clip-path: inset(0px 0px 3px 0px);">
+</div>
 
 #### Approach 2: Local Setup
 Clone the repository and set up locally. <br>
