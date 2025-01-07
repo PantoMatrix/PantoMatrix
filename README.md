@@ -14,7 +14,8 @@ You may transfer these motion parameters to other formats such as Iphone ARKit B
     <!-- <a href="https://github.com/PantoMatrix/PantoMatrix/blob/main/scripts/EMAGE_2024/readme.md"><img src="https://img.shields.io/badge/Readme-gray?logo=readthedocs&amp"></a> -->
     <a href="https://www.youtube.com/watch?v=T0OYPvViFGE"><img src="https://img.shields.io/badge/Youtube-gray?logo=youtube&amp"></a>
     <a href="https://replicate.com/camenduru/emage"><img src="https://img.shields.io/badge/Replicate-gray?logo=google&amp"></a>
-    <a href="https://colab.research.google.com/drive/1bB3LqAzceNTW2urXeMpOTPoJYTRoKlzB?usp=sharing"><img src="https://img.shields.io/badge/Colab-gray?logo=Google%20Colab&amp"></a>
+    <!-- <a href="https://colab.research.google.com/drive/1bB3LqAzceNTW2urXeMpOTPoJYTRoKlzB?usp=sharing"><img src="https://img.shields.io/badge/Colab-gray?logo=Google%20Colab&amp"></a> -->
+    <a href="https://colab.research.google.com/drive/1MeuZtBv8yUUG9FFeN8UGy78Plk4gzxT4?usp=sharing"><img src="https://img.shields.io/badge/Colab-gray?logo=Google%20Colab&amp"></a>
     <a href="https://huggingface.co/spaces/H-Liu1997/EMAGE"><img src="https://img.shields.io/badge/Huggingface Space-gray?logo=huggingface&amp"></a>
     <a href="https://www.youtube.com/watch?v=T0OYPvViFGE"><img src="https://img.shields.io/badge/CVPR 2024-gray?logo=arxiv&amp"></a>
 </div>
@@ -24,7 +25,7 @@ You may transfer these motion parameters to other formats such as Iphone ARKit B
     <!-- <a href="https://github.com/PantoMatrix/PantoMatrix/blob/main/scripts/EMAGE_2024/readme.md"><img src="https://img.shields.io/badge/Readme-gray?logo=readthedocs&amp"></a> -->
     <a href="https://www.youtube.com/watch?v=T0OYPvViFGE"><img src="https://img.shields.io/badge/Youtube-gray?logo=youtube&amp"></a>
     <!-- <a href="https://replicate.com/camenduru/emage"><img src="https://img.shields.io/badge/Replicate-gray?logo=google&amp"></a> -->
-    <a href="https://colab.research.google.com/drive/1bB3LqAzceNTW2urXeMpOTPoJYTRoKlzB?usp=sharing"><img src="https://img.shields.io/badge/Colab-gray?logo=Google%20Colab&amp"></a>
+    <a href="https://colab.research.google.com/drive/1MeuZtBv8yUUG9FFeN8UGy78Plk4gzxT4?usp=sharing"><img src="https://img.shields.io/badge/Colab-gray?logo=Google%20Colab&amp"></a>
     <!-- <a href="https://huggingface.co/spaces/H-Liu1997/EMAGE"><img src="https://img.shields.io/badge/Huggingface Space-gray?logo=huggingface&amp"></a> -->
     <a href="https://www.youtube.com/watch?v=T0OYPvViFGE"><img src="https://img.shields.io/badge/ECCV 2022-gray?logo=arxiv&amp"></a>
 </div>
@@ -33,6 +34,7 @@ You may transfer these motion parameters to other formats such as Iphone ARKit B
     <a href="https://pantomatrix.github.io/DisCo/"><img src="https://img.shields.io/badge/Project-DisCo-pink?logo=github&amp"></a>
     <!-- <a href="https://github.com/PantoMatrix/PantoMatrix/blob/main/scripts/EMAGE_2024/readme.md"><img src="https://img.shields.io/badge/Readme-gray?logo=readthedocs&amp"></a> -->
     <a href="https://www.youtube.com/watch?v=T0OYPvViFGE"><img src="https://img.shields.io/badge/Youtube-gray?logo=youtube&amp"></a>
+    <a href="https://colab.research.google.com/drive/1MeuZtBv8yUUG9FFeN8UGy78Plk4gzxT4?usp=sharing"><img src="https://img.shields.io/badge/Colab-gray?logo=Google%20Colab&amp"></a>
     <!-- <a href="https://replicate.com/camenduru/emage"><img src="https://img.shields.io/badge/Replicate-gray?logo=google&amp"></a> -->
     <!-- <a href="https://colab.research.google.com/drive/1bB3LqAzceNTW2urXeMpOTPoJYTRoKlzB?usp=sharing"><img src="https://img.shields.io/badge/Colab-gray?logo=Google%20Colab&amp"></a> -->
     <!-- <a href="https://huggingface.co/spaces/H-Liu1997/EMAGE"><img src="https://img.shields.io/badge/Huggingface Space-gray?logo=huggingface&amp"></a> -->
@@ -47,6 +49,7 @@ You may transfer these motion parameters to other formats such as Iphone ARKit B
 
 Welcome volunteers to contribute and collaborate on related topics. Feel free to submit the pull requests! Currently this repo is mainly maintained by haiyangliu1997@gmail.com in freetime since 2022.
  
+- **[2025/01]** Demo of how to set up inference and training is available on [Colab](https://colab.research.google.com/drive/1MeuZtBv8yUUG9FFeN8UGy78Plk4gzxT4?usp=sharing)!
 - **[2025/01]** New inference api, visualization api, evaluation api, training codebase, are available!
 - **[2024/07]** [download smplx motion (in .npz) file](https://huggingface.co/spaces/H-Liu1997/EMAGE), visualize with our blender addon and retarget to your avatar!
 - **[2024/04]** Thanks to [@camenduru](https://twitter.com/camenduru), Replicate version EMAGE is available! you can directly call EMAGE via API!
@@ -97,7 +100,8 @@ Welcome volunteers to contribute and collaborate on related topics. Feel free to
 Upload your audio and directly download the results from our Hugging Face Space.
 
 #### Approach 2: Local Setup
-Clone the repository and set up locally.
+Clone the repository and set up locally. <br>
+Demo of how to set up is available on [Colab](https://colab.research.google.com/drive/1MeuZtBv8yUUG9FFeN8UGy78Plk4gzxT4?usp=sharing).
 
 ```bash
 git clone https://github.com/PantoMatrix/PantoMatrix.git
