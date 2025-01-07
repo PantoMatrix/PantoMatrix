@@ -16,8 +16,8 @@ import matplotlib.pyplot as plt
 
 args = {
     'render_video_fps': 30,
-    'render_video_width': 1920,
-    'render_video_height': 1080,
+    'render_video_width': 480,
+    'render_video_height': 720,
     'render_concurrent_num': max(1, multiprocessing.cpu_count() - 1)  ,
     'render_tmp_img_filetype': 'bmp',
     'debug': False
@@ -47,7 +47,7 @@ def create_pose_light(angle_deg):
 def create_scene_with_mesh(vertices, faces, uniform_color, pose_camera, pose_light):
     trimesh_mesh = trimesh.Trimesh(vertices=vertices, faces=faces, vertex_colors=uniform_color)
     mesh = pyrender.Mesh.from_trimesh(trimesh_mesh, smooth=True)
-    scene = pyrender.Scene()
+    scene = pyrender.Scene(bg_color=[0, 0, 0, 0])
     scene.add(mesh)
     camera = pyrender.OrthographicCamera(xmag=1.0, ymag=1.0)
     scene.add(camera, pose=pose_camera)
@@ -106,7 +106,7 @@ def write_images_from_queue_no_gt(fig_queue, output_dir, img_filetype):
             raise ex
 
 def render_frames_and_enqueue(fids, frame_vertex_pairs, faces, render_width, render_height, fig_queue):
-    fig_resolution = (render_width // 2, render_height)
+    fig_resolution = (render_width, render_height)
     renderer = pyrender.OffscreenRenderer(*fig_resolution)
     for idx, fid in enumerate(fids):
         fig1, fig2 = do_render_one_frame(renderer, fid, frame_vertex_pairs[idx][0], frame_vertex_pairs[idx][1], faces)
@@ -114,7 +114,7 @@ def render_frames_and_enqueue(fids, frame_vertex_pairs, faces, render_width, ren
     renderer.delete()
 
 def render_frames_and_enqueue_no_gt(fids, frame_vertex_pairs, faces, render_width, render_height, fig_queue):
-    fig_resolution = (render_width // 2, render_height)
+    fig_resolution = (render_width, render_height)
     renderer = pyrender.OffscreenRenderer(*fig_resolution)
     for idx, fid in enumerate(fids):
         fig1 = do_render_one_frame_no_gt(renderer, fid, frame_vertex_pairs[idx][0], faces)
@@ -379,6 +379,44 @@ def render_one_sequence_no_gt(res_npz_path, output_dir, audio_path, model_folder
         transl = transl[0:1].repeat(n, 1)
     output = model(betas=beta, transl=transl, expression=expression, jaw_pose=jaw_pose, global_orient=pose[:,:3], body_pose=pose[:,3:21*3+3], left_hand_pose=pose[:,25*3:40*3], right_hand_pose=pose[:,40*3:55*3], leye_pose=pose[:,69:72], reye_pose=pose[:,72:75], return_verts=True)
     vertices_all = output["vertices"].cpu().numpy()
+    if args['debug']:
+        seconds = 1
+    else:
+        seconds = vertices_all.shape[0]//30
+    sfile = generate_silent_videos_no_gt(int(seconds*args['render_video_fps']), vertices_all, faces, output_dir)
+    base = os.path.splitext(os.path.basename(res_npz_path))[0]
+    final_clip = os.path.join(output_dir, f"{base}.mp4")
+    add_audio_to_video(sfile, audio_path, final_clip)
+    os.remove(sfile)
+    return final_clip
+
+def render_one_sequence_face_only(res_npz_path, output_dir, audio_path, model_folder="/data/datasets/smplx_models/", model_type='smplx', gender='NEUTRAL_2020', ext='npz', num_betas=300, num_expression_coeffs=100, use_face_contour=False, use_matplotlib=False, remove_transl=True):
+    import smplx
+    import torch
+    data_np_body = np.load(res_npz_path, allow_pickle=True)
+    if not os.path.exists(output_dir):
+        os.makedirs(output_dir)
+    faces = np.load(f"{model_folder}/smplx/SMPLX_NEUTRAL_2020.npz", allow_pickle=True)["f"]
+    n = data_np_body["poses"].shape[0]
+    model = smplx.create(model_folder, model_type=model_type, gender=gender, use_face_contour=use_face_contour, num_betas=num_betas, num_expression_coeffs=num_expression_coeffs, ext=ext, use_pca=False).cuda()
+    beta = torch.from_numpy(data_np_body["betas"]).to(torch.float32).unsqueeze(0).cuda()
+    beta = beta.repeat(n, 1)
+    expression = torch.from_numpy(data_np_body["expressions"][:n]).to(torch.float32).cuda()
+    jaw_pose = torch.from_numpy(data_np_body["poses"][:n, 66:69]).to(torch.float32).cuda()
+    pose = torch.from_numpy(data_np_body["poses"][:n]).to(torch.float32).cuda()
+    transl = torch.from_numpy(data_np_body["trans"][:n]).to(torch.float32).cuda()
+    if remove_transl: 
+        transl = transl[0:1].repeat(n, 1)
+    output = model(betas=beta, transl=transl, expression=expression, jaw_pose=jaw_pose, global_orient=pose[:,:3], body_pose=pose[:,3:21*3+3], left_hand_pose=pose[:,25*3:40*3], right_hand_pose=pose[:,40*3:55*3], leye_pose=pose[:,69:72], reye_pose=pose[:,72:75], return_verts=True)
+    vertices_all = output["vertices"].cpu().numpy()
+
+    pose1 = torch.zeros_like(pose).to(torch.float32).cuda()
+    output1 = model(betas=beta, transl=transl, expression=expression, jaw_pose=jaw_pose, global_orient=pose1[:,:3], body_pose=pose1[:,3:21*3+3], left_hand_pose=pose1[:,25*3:40*3], right_hand_pose=pose1[:,40*3:55*3], leye_pose=pose1[:,69:72], reye_pose=pose1[:,72:75], return_verts=True)
+    v1 = output1["vertices"].cpu().numpy()*7
+    td = np.zeros_like(v1)
+    td[:, :, 1] = 10
+    vertices_all = v1 - td
+
     if args['debug']:
         seconds = 1
     else:
