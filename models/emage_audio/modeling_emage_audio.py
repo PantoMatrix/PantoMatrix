@@ -263,13 +263,6 @@ class EmageAudioModel(PreTrainedModel):
         self.face_cls = MLP(self.cfg.vae_codebook_size, self.cfg.hidden_size, self.cfg.vae_codebook_size)
     
     def forward(self, audio, speaker_id, masked_motion, mask, use_audio=True):
-        audio2face_fea = self.audio_encoder_face(audio)
-        audio2body_fea = self.audio_encoder_body(audio)
-        bs, t, _ = audio2face_fea.shape
-
-        speaker_motion_fea_proj = self.speaker_embedding_body(speaker_id).repeat(1, t, 1)
-        speaker_face_fea_proj = self.speaker_embedding_face(speaker_id).repeat(1, t, 1)
-
         # mask motion
         masked_embeddings = self.mask_embedding.expand_as(masked_motion)
         masked_motion = torch.where(mask==1, masked_embeddings, masked_motion)
@@ -278,7 +271,20 @@ class EmageAudioModel(PreTrainedModel):
         body_hint = self.motion_encoder(masked_motion)
         body_hint_body = self.bodyhints_body(body_hint)
         body_hint_face = self.bodyhints_face(body_hint)
+        
+        audio2face_fea = self.audio_encoder_face(audio)
+        audio2body_fea = self.audio_encoder_body(audio)
 
+        if audio2face_fea.shape[1] > body_hint_face.shape[1]:
+            audio2face_fea = audio2face_fea[:, :body_hint_face.shape[1]]
+        if audio2body_fea.shape[1] > body_hint_face.shape[1]:
+            audio2face_fea = audio2face_fea[:, :body_hint_face.shape[1]]
+
+        bs, t, _ = audio2face_fea.shape
+
+        speaker_motion_fea_proj = self.speaker_embedding_body(speaker_id).repeat(1, t, 1)
+        speaker_face_fea_proj = self.speaker_embedding_face(speaker_id).repeat(1, t, 1)
+        
         audio2face_fea_proj = self.audio_face_motion_proj(torch.cat([audio2face_fea, body_hint_face], dim=2))
         # audio2face_fea_proj = self.position_embeddings(audio2face_fea_proj)
         # audio2face_fea_proj = speaker_face_fea_proj + audio2face_fea_proj
