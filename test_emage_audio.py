@@ -1,6 +1,9 @@
 import os
 import argparse
 import torch
+# import ffmpeg
+# import soundfile as sf
+# import io
 import torch.nn.functional as F
 from torchvision.io import write_video
 
@@ -66,7 +69,8 @@ def visualize_one(save_folder, audio_path, nopytorch3d=False):
         v2d_body = render2d(motion_dict, (720, 480), face_only=False, remove_global=True)
         write_video(npz_path.replace(".npz", "_2dbody.mp4"), v2d_body.permute(0, 2, 3, 1), fps=30)
         fast_render.add_audio_to_video(npz_path.replace(".npz", "_2dbody.mp4"), audio_path, npz_path.replace(".npz", "_2dbody_audio.mp4"))
-    fast_render.render_one_sequence_with_face(npz_path, os.path.dirname(npz_path), audio_path, model_folder="./emage_evaltools/smplx_models/")  
+    # fast_render.render_one_sequence_with_face(npz_path, os.path.dirname(npz_path), audio_path, model_folder="./emage_evaltools/smplx_models/")  
+    fast_render.render_sequence_in_batches(npz_path, os.path.dirname(npz_path), audio_path, model_folder="./emage_evaltools/smplx_models/")
 
 def main():
     parser = argparse.ArgumentParser()
@@ -98,10 +102,22 @@ def main():
     all_t = 0
     start_time = time.time()
 
-    for audio_path in tqdm(audio_files, desc="Inference"):
-        all_t += inference(model, motion_vq, audio_path, device, args.save_folder, sr, pose_fps)
+    # for audio_path in tqdm(audio_files, desc="Inference"):
+    #     all_t += inference(model, motion_vq, audio_path, device, args.save_folder, sr, pose_fps)
+    #     if args.visualization:
+    #         visualize_one(args.save_folder, audio_path, args.nopytorch3d)
+    # print(f"generate total {all_t/pose_fps:.2f} seconds motion in {time.time()-start_time:.2f} seconds")
+
+    batch_size = 5 # 避免cuda out of memory
+    for i in range(0, len(audio_files), batch_size):
+        batch = audio_files[i:i+batch_size]
+        # for audio_path in batch:
+        #     all_t += inference(model, motion_vq, audio_path, device, args.save_folder, sr, pose_fps)
+        #     torch.cuda.empty_cache()
         if args.visualization:
-            visualize_one(args.save_folder, audio_path, args.nopytorch3d)
+            for audio_path in batch:
+                visualize_one(args.save_folder, audio_path, args.nopytorch3d)
+        torch.cuda.empty_cache()
     print(f"generate total {all_t/pose_fps:.2f} seconds motion in {time.time()-start_time:.2f} seconds")
 if __name__ == "__main__":
     main()

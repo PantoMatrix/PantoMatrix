@@ -300,15 +300,18 @@ def render_one_sequence_with_face(res_npz_path, output_dir, audio_path, model_fo
     transl = torch.from_numpy(data_np_body["trans"][:n]).to(torch.float32).cuda()
     if remove_transl: 
         transl = transl[0:1].repeat(n, 1)
-    output = model(betas=beta, transl=transl, expression=expression, jaw_pose=jaw_pose, global_orient=pose[:,:3], body_pose=pose[:,3:21*3+3], left_hand_pose=pose[:,25*3:40*3], right_hand_pose=pose[:,40*3:55*3], leye_pose=pose[:,69:72], reye_pose=pose[:,72:75], return_verts=True)
-    vertices_all = output["vertices"].cpu().numpy()
+    
+    with torch.no_grad():
+        output = model(betas=beta, transl=transl, expression=expression, jaw_pose=jaw_pose, global_orient=pose[:,:3], body_pose=pose[:,3:21*3+3], left_hand_pose=pose[:,25*3:40*3], right_hand_pose=pose[:,40*3:55*3], leye_pose=pose[:,69:72], reye_pose=pose[:,72:75], return_verts=True)
+        vertices_all = output["vertices"].cpu().numpy()
 
-    pose1 = torch.zeros_like(pose).to(torch.float32).cuda()
-    output1 = model(betas=beta, transl=transl, expression=expression, jaw_pose=jaw_pose, global_orient=pose1[:,:3], body_pose=pose1[:,3:21*3+3], left_hand_pose=pose1[:,25*3:40*3], right_hand_pose=pose1[:,40*3:55*3], leye_pose=pose1[:,69:72], reye_pose=pose1[:,72:75], return_verts=True)
-    v1 = output1["vertices"].cpu().numpy()*7
-    td = np.zeros_like(v1)
-    td[:, :, 1] = 10
-    vertices1_all = v1 - td
+        pose1 = torch.zeros_like(pose).to(torch.float32).cuda()
+    with torch.no_grad():
+        output1 = model(betas=beta, transl=transl, expression=expression, jaw_pose=jaw_pose, global_orient=pose1[:,:3], body_pose=pose1[:,3:21*3+3], left_hand_pose=pose1[:,25*3:40*3], right_hand_pose=pose1[:,40*3:55*3], leye_pose=pose1[:,69:72], reye_pose=pose1[:,72:75], return_verts=True)
+        v1 = output1["vertices"].cpu().numpy()*7
+        td = np.zeros_like(v1)
+        td[:, :, 1] = 10
+        vertices1_all = v1 - td
     if args['debug']:
         seconds = 1
     else:
@@ -319,6 +322,127 @@ def render_one_sequence_with_face(res_npz_path, output_dir, audio_path, model_fo
     add_audio_to_video(sfile, audio_path, final_clip)
     os.remove(sfile)
     return final_clip
+
+# 改良上面的函数
+def render_sequence_in_batches(
+    res_npz_path,
+    output_dir,
+    audio_path,
+    model_folder="/data/datasets/smplx_models/",
+    model_type='smplx',
+    gender='NEUTRAL_2020',
+    ext='npz',
+    num_betas=300,
+    num_expression_coeffs=100,
+    use_face_contour=False,
+    remove_transl=True,
+    batch_size=60,  # 每次渲染的帧数
+):
+    import smplx
+    import torch
+    import gc
+    import numpy as np
+    import os
+
+    # 准备路径
+    data_np_body = np.load(res_npz_path, allow_pickle=True)
+    if not os.path.exists(output_dir):
+        os.makedirs(output_dir)
+    faces = np.load(f"{model_folder}/smplx/SMPLX_NEUTRAL_2020.npz", allow_pickle=True)["f"]
+    total_frames = data_np_body["poses"].shape[0]
+
+    # 创建模型
+    model = smplx.create(
+        model_folder,
+        model_type=model_type,
+        gender=gender,
+        use_face_contour=use_face_contour,
+        num_betas=num_betas,
+        num_expression_coeffs=num_expression_coeffs,
+        ext=ext,
+        use_pca=False
+    ).cuda()
+
+    # 通用信息
+    betas_np = data_np_body["betas"]
+    poses_np = data_np_body["poses"]
+    trans_np = data_np_body["trans"]
+    expr_np = data_np_body["expressions"]
+
+    # 初始化结果
+    all_vertices = []
+    all_vertices_ref = []
+
+    for start in range(0, total_frames, batch_size):
+        end = min(start + batch_size, total_frames)
+        count = end - start
+
+        with torch.no_grad():
+            # 提取当前 batch 数据
+            beta = torch.from_numpy(betas_np).to(torch.float32).unsqueeze(0).cuda().repeat(count, 1)
+            pose = torch.from_numpy(poses_np[start:end]).to(torch.float32).cuda()
+            jaw_pose = pose[:, 66:69]
+            expression = torch.from_numpy(expr_np[start:end]).to(torch.float32).cuda()
+            transl = torch.from_numpy(trans_np[start:end]).to(torch.float32).cuda()
+            if remove_transl:
+                transl = transl[0:1].repeat(count, 1)
+
+            # 当前 batch 的正向姿态
+            output = model(
+                betas=beta,
+                transl=transl,
+                expression=expression,
+                jaw_pose=jaw_pose,
+                global_orient=pose[:, :3],
+                body_pose=pose[:, 3:21*3+3],
+                left_hand_pose=pose[:, 25*3:40*3],
+                right_hand_pose=pose[:, 40*3:55*3],
+                leye_pose=pose[:, 69:72],
+                reye_pose=pose[:, 72:75],
+                return_verts=True
+            )
+            vertices = output["vertices"].cpu().numpy()
+            all_vertices.append(vertices)
+
+            # 参考姿态
+            pose1 = torch.zeros_like(pose)
+            output_ref = model(
+                betas=beta,
+                transl=transl,
+                expression=expression,
+                jaw_pose=jaw_pose,
+                global_orient=pose1[:, :3],
+                body_pose=pose1[:, 3:21*3+3],
+                left_hand_pose=pose1[:, 25*3:40*3],
+                right_hand_pose=pose1[:, 40*3:55*3],
+                leye_pose=pose1[:, 69:72],
+                reye_pose=pose1[:, 72:75],
+                return_verts=True
+            )
+            v1 = output_ref["vertices"].cpu().numpy() * 7
+            td = np.zeros_like(v1)
+            td[:, :, 1] = 10
+            vertices_ref = v1 - td
+            all_vertices_ref.append(vertices_ref)
+
+        # 手动释放显存
+        del beta, pose, jaw_pose, expression, transl, output, output_ref
+        torch.cuda.empty_cache()
+        gc.collect()
+
+    # 拼接所有帧
+    vertices_all = np.concatenate(all_vertices, axis=0)
+    vertices1_all = np.concatenate(all_vertices_ref, axis=0)
+
+    # 渲染视频并添加音频
+    seconds = vertices_all.shape[0] // 30
+    sfile = generate_silent_videos(int(seconds * args['render_video_fps']), vertices1_all, vertices_all, faces, output_dir)
+    base = os.path.splitext(os.path.basename(res_npz_path))[0]
+    final_clip = os.path.join(output_dir, f"{base}.mp4")
+    add_audio_to_video(sfile, audio_path, final_clip)
+    os.remove(sfile)
+    return final_clip
+
 
 def render_one_sequence(res_npz_path, gt_npz_path, output_dir, audio_path, model_folder="/data/datasets/smplx_models/", model_type='smplx', gender='NEUTRAL_2020', ext='npz', num_betas=300, num_expression_coeffs=100, use_face_contour=False, use_matplotlib=False, remove_transl=True):
     import smplx
